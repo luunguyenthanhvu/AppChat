@@ -1,4 +1,6 @@
 using AppChat.Data;
+using AppChat.Mapping;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +20,9 @@ builder.Services.AddDbContext<DataContext>(options =>
         builder.Configuration.GetConnectionString("WebApiDatabase"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("WebApiDatabase"))
     ));
+builder.Services.AddAutoMapper(typeof(Program));  // Assuming your configuration profiles are located in Startup.cs
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+
 
 var app = builder.Build();
 
