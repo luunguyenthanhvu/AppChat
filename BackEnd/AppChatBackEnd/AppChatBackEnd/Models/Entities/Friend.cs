@@ -9,7 +9,7 @@ namespace AppChat.Models.Entities
         public int FriendUserId { get; set; }
         public FriendStatus Status { get; set; }
 
-        public Users User { get; set; } 
-        public Users FriendUser { get; set; } 
+        public Users User { get; set; }
+        public Users FriendUser { get; set; }
     }
 }
