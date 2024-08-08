@@ -1,0 +1,173 @@
+*{ 
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+}
+.html,body {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* styles.css */
+.background-image {
+    position: relative;
+    background-image: url('../img/HhmATQ.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+}
+  
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); 
+}
+  
+.content {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+}
+  
+.main-container {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh;
+    overflow: hidden;
+    color: #000;
+}
+.img-container {
+    height: 500px;
+}
+.img-container img{
+    height: 500px;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+}
+.login-container {
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 10%;
+    background-color: #fff;
+    width: 400px;
+    height: 500px;
+    text-align: center;
+    padding: 0 20px;
+    color: #000;
+    border: 1px solid #ccc;
+}
+
+.login-container h2 {
+    padding: 20px;
+}
+
+.login-container form {
+    height: 600px;
+}
+
+.login-container .form-group {
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin: 20px 20px;
+}
+.login-container .form-group label {
+   margin: 20px 0;
+}
+.login-container .form-group label svg {
+    stroke: #0062E6; 
+    stroke-width: 40;
+    fill: #fff; 
+    font-size: 15px; 
+    margin-right: 10px;
+}
+
+input {
+    border: none;
+    outline: none; 
+    background: none; 
+    padding: 10px; 
+    font-size: 15px; 
+    border-radius: 4px; 
+    width: 80%;
+}
+
+.form-group.focused {
+    border: 2px solid #0062E6;
+}
+
+.form-group.btn {
+    background-color: #0062E6;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+input, button, a {
+    cursor: pointer;
+}
+
+.login-btn {
+    width: calc(95% - 20px); 
+    padding: 10px; 
+    border-radius: 20px; 
+    background-color: #007bff;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+    border: none; 
+}
+
+.login-btn:hover {
+    background-color: #0360da;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+}
+
+.forget-pass {
+    text-align: right;
+    margin: 10px 20px;
+}
+
+.forget-pass a {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    color:  #007bff;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+}
+
+.forget-pass a:hover {
+    color: #0360da;
+}
+
+.icon-login img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin: 20px;
+}
+
+.break-line {
+    border: 1px solid #8e8e8e;
+    margin: 0 20px;
+}
+
+.register-here {
+    margin: 20px 20px;
+}
+
+.register-here a {
+    font-weight: bold;
+    color:  #007bff;
+    text-decoration: none;
+}
+
+.register-here a:hover {
+    color: #0360da;
+}
