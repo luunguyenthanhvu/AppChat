@@ -1,6 +1,6 @@
 using AppChat.Data;
-using AppChatBackEnd.Repositories;
-using AppChatBackEnd.Repositories.RepositoriesImpl;
+using AppChat.Mapping;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,22 +20,10 @@ builder.Services.AddDbContext<DataContext>(options =>
         builder.Configuration.GetConnectionString("WebApiDatabase"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("WebApiDatabase"))
     ));
-
-// Add auto mapper
-builder.Services.AddAutoMapper(typeof(Program));
-
-// inject repo
-builder.Services.AddScoped<IChatRepository, ChatRepositoryImpl>();
+builder.Services.AddAutoMapper(typeof(Program));  // Assuming your configuration profiles are located in Startup.cs
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 
-// accept cors
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll",
-        builder => builder.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader());
-});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -44,8 +32,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
