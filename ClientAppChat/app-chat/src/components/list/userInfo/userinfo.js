@@ -2,11 +2,17 @@ import React, { useState } from 'react';
 import './userinfo.css';
 import {FaEllipsisH, FaVideo, FaPenSquare} from 'react-icons/fa';
 function UserInfo() {
+    const userName = localStorage.getItem('userName');
+    const email = localStorage.getItem('email');
+    const img = localStorage.getItem('img');
+    console.log(img)
+    const [userImg, setUserImg] = useState('./defaultAvt.png');
+    const UserImgComponent = () => <img src={img} alt="User profile"/>;
     return (
         <div className='userInfo'>
             <div className='user'>
-                <img src='https://thicc-af.mywaifulist.moe/waifus/yukino-yukinoshita-my-teen-romantic-comedy-snafu/59uCJPfF6Qx5DMh2yMpzG0F39VxNqtHqVkTUXPIi_thumbnail.jpg'/>
-                <h2>Vu Luu</h2>
+            <img src={img} alt="User profile"/>
+                <h2>{userName}</h2>
             </div>
 
             <div className='icons'>

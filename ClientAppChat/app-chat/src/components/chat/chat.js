@@ -34,6 +34,12 @@ function Chat() {
                     <div className='texts'>
                         <p>
                             Lodasdjklnqwledrjkaslkdjaslkdjsalk
+                            Lodasdjklnqwledrjkaslkdjaslkdjsalk
+                            Lodasdjklnqwledrjkaslkdjaslkdjsalk
+                            valuev
+                            qweasdqwedkmaskdjlqkwjelkqwjlkadsjlasdsadasdasdasdsdsdsdasdasdsadasdasdssdasdasdasdasdasdasdasdasdsadaasdasdsadasdasdsad
+                            Lodasdjklnqwledrjkaslkdjaslkdjsalk
+                            Lodasdjklnqwledrjkaslkdjaslkdjsalk
                         </p>
                         <span>1 min ago</span>
                     </div>
@@ -48,6 +54,7 @@ function Chat() {
                 </div>
                 <div className='message own'>
                     <div className='texts'>
+                        <img src='./1219692.jpg' alt=''></img>
                         <p>
                             Lodasdjklnqwledrjkaslkdjaslkdjsalk
                         </p>

@@ -3,7 +3,7 @@ import './details.css';
 function Details() {
     return (
         <div className='details'>
-            details
+            <div className=''></div>
         </div>
     );
 }
