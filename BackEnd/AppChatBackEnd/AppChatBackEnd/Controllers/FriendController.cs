@@ -24,55 +24,128 @@ namespace AppChatBackEnd.Controllers
             _mapper = mapper;
         }
 
+        // Finds a user by username and returns their DTO
         [HttpGet("find-friend/{username}")]
         public async Task<IActionResult> FindFriend(string username)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);  // Adjust the property name as per your Users entity
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
             if (user == null)
                 return NotFound("User not found.");
             var userDTO = _mapper.Map<UserDTO>(user);
             return Ok(userDTO);
         }
 
+        // Adds a friend request, default status to "Pending"
         [HttpPost("add-friend")]
         public async Task<IActionResult> AddFriend([FromBody] FriendRequestDTO requestDto)
         {
+            if (requestDto == null)
+            {
+                return BadRequest("Invalid request data.");
+            }
+
             var user = await _context.Users.FindAsync(requestDto.UserId);
             var friend = await _context.Users.FindAsync(requestDto.FriendUserId);
+
             if (user == null || friend == null)
+            {
                 return NotFound("User or friend not found.");
+            }
 
-            var existingFriendship = await _context.Friends.FirstOrDefaultAsync(f => f.UserId == requestDto.UserId && f.FriendUserId == requestDto.FriendUserId);
-            if (existingFriendship != null)
+            // Check if the friendship already exists in either direction
+            bool friendshipExists = await _context.Friends.AnyAsync(f =>
+                (f.UserId == requestDto.UserId && f.FriendUserId == requestDto.FriendUserId) ||
+                (f.UserId == requestDto.FriendUserId && f.FriendUserId == requestDto.UserId));
+
+            if (friendshipExists)
+            {
                 return BadRequest("Friendship already exists.");
+            }
 
-            var friendship = new Friend
+            // Create two friendship entries for both directions
+            var friendship1 = new Friend
             {
                 UserId = requestDto.UserId,
                 FriendUserId = requestDto.FriendUserId,
-                Status = FriendStatus.Pending  // Hoặc trạng thái mặc định khác
+                Status = 0 // Pending
             };
 
-            _context.Friends.Add(friendship);
+            var friendship2 = new Friend
+            {
+                UserId = requestDto.FriendUserId,
+                FriendUserId = requestDto.UserId,
+                Status = 0 // Pending
+            };
+
+            _context.Friends.Add(friendship1);
+            _context.Friends.Add(friendship2);
             await _context.SaveChangesAsync();
-            return Ok("Friend added successfully.");
+
+            return Ok("Friend request sent successfully.");
         }
+
+
 
         [HttpDelete("delete-friend")]
         public async Task<IActionResult> DeleteFriend([FromBody] FriendRequestDTO requestDto)
         {
-            var friendship = await _context.Friends.FirstOrDefaultAsync(f =>
-                (f.UserId == requestDto.UserId && f.FriendUserId == requestDto.FriendUserId) ||
-                (f.UserId == requestDto.FriendUserId && f.FriendUserId == requestDto.UserId));
+            if (requestDto == null)
+            {
+                return BadRequest("Invalid request data.");
+            }
 
-            if (friendship == null)
+            // Find both friendship records
+            var friendships = await _context.Friends
+                .Where(f => (f.UserId == requestDto.UserId && f.FriendUserId == requestDto.FriendUserId) ||
+                            (f.UserId == requestDto.FriendUserId && f.FriendUserId == requestDto.UserId))
+                .ToListAsync();
+
+            if (friendships.Count != 2)
             {
                 return NotFound("Friendship not found.");
             }
 
-            _context.Friends.Remove(friendship);
+            // Remove both entries
+            _context.Friends.RemoveRange(friendships);
             await _context.SaveChangesAsync();
-            return Ok("Friend deleted successfully.");
+
+            return Ok("Friendship deleted successfully.");
         }
+
+
+        [HttpPost("confirm-friend")]
+        public async Task<IActionResult> ConfirmFriend(int userId, int friendUserId, bool isAccepted)
+        {
+            // Find both friendship records
+            var friendships = await _context.Friends
+                .Where(f => (f.UserId == userId && f.FriendUserId == friendUserId) ||
+                            (f.UserId == friendUserId && f.FriendUserId == userId))
+                .ToListAsync();
+
+            if (friendships.Count != 2)
+            {
+                return NotFound("Friendship not found.");
+            }
+
+            if (isAccepted) // Accepted
+            {
+                // Update both entries to Accepted
+                foreach (var friendship in friendships)
+                {
+                    friendship.Status = 1; // Accepted
+                }
+                await _context.SaveChangesAsync();
+                return Ok("Friend request accepted.");
+            }
+            else // Declined
+            {
+                // Remove both entries
+                _context.Friends.RemoveRange(friendships);
+                await _context.SaveChangesAsync();
+                return Ok("Friend request declined and removed.");
+            }
+        }
+
+
     }
 }
