@@ -184,3 +184,19 @@
 ::-webkit-scrollbar-thumb:active {
     background-color: #333; /* Màu của thanh kéo khi active */
 }
+
+.loading-user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:100%; 
+    padding: 20px;
+}
+
+.loading-chat-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:100%; 
+    padding: 20px;
+}
