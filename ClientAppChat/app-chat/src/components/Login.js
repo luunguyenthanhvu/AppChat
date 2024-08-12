@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {createContext, useState, useContext } from 'react';
 import { FaEnvelope, FaLock, FaSignInAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import '../css/login.css';
@@ -7,6 +7,7 @@ import iconGoogle from '../img/google-icon.png';
 import iconFaceBook from '../img/facebook.png';
 import iconTwitter from '../img/twitter-logo.jpg'; 
 import Swal from 'sweetalert2';
+import axios from 'axios';
 function Login() {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
@@ -14,12 +15,14 @@ function Login() {
     const [isUsernameFocused, setIsUsernameFocused] = useState(false);
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
+    const AuthContext = createContext();
+
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
 
-    const loginHandler = (e) => {
+    const loginHandler = async (e) => {
         e.preventDefault();
         let timerInterval;
         if (username.length === 0 || password.length === 0) {
@@ -39,27 +42,47 @@ function Login() {
                 cancelButtonColor: "#d33",
             })
         } else {
-            Swal.fire({
-                title: "Login into account",
-                html: "I will close in <b></b> milliseconds.",
-                timer: 2000,
-                timerProgressBar: true,
-                didOpen: () => {
-                    Swal.showLoading();
-                    const timer = Swal.getPopup().querySelector("b");
-                    timerInterval = setInterval(() => {
-                    timer.textContent = `${Swal.getTimerLeft()}`;
-                    }, 100);
-                },
-                willClose: () => {
-                    clearInterval(timerInterval);
-                }
-                }).then((result) => {
-                if (result.dismiss === Swal.DismissReason.timer) {
-                    console.log("I was closed by the timer");
-                    navigate('/chat')
-                }
+
+            try {
+                const response = await axios.post('http://localhost:5133/api/chat/login', {
+                    email: username,
+                    password : password
                 });
+
+                    // Giả sử token và các thông tin khác nằm trong response.data
+                const { userName, email, img } = response.data;
+
+                localStorage.setItem('userName', userName);
+                localStorage.setItem('email', email);
+                localStorage.setItem('img', img);
+
+                // response OK
+                Swal.fire({
+                    title: "Login into account",
+                    html: "I will close in <b></b> milliseconds.",
+                    timer: 2000,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        const timer = Swal.getPopup().querySelector("b");
+                        timerInterval = setInterval(() => {
+                        timer.textContent = `${Swal.getTimerLeft()}`;
+                        }, 100);
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                    }
+                    }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        console.log("I was closed by the timer");
+                        navigate('/chat')
+                    }
+                    });
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                // Xử lý lỗi khi đăng nhập
+            }
         }
     }
     return (
