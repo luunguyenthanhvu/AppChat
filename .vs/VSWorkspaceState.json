@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\BackEnd",
+    "\\BackEnd\\AppChatBackEnd",
+    "\\BackEnd\\AppChatBackEnd\\AppChatBackEnd",
+    "\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO",
+    "\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Request",
+    "\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\MapperChat",
+    "\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Mappings",
+    "\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models",
+    "\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Enums"
+  ],
+  "SelectedNode": "\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Enums\\FriendStatus.cs",
+  "PreviewInSolutionExplorer": false
+}
