@@ -50,12 +50,13 @@ function Login() {
                 });
 
                     // Giả sử token và các thông tin khác nằm trong response.data
-                const { userName, email, img } = response.data;
+                const { userName, email, img, token } = response.data;
 
                 localStorage.setItem('userName', userName);
                 localStorage.setItem('email', email);
                 localStorage.setItem('img', img);
-
+                localStorage.setItem('token', token);
+                console.log(response.data);
                 // response OK
                 Swal.fire({
                     title: "Login into account",

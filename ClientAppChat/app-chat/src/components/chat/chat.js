@@ -4,12 +4,12 @@ import './chat.css';
 import EmojiPicker from 'emoji-picker-react';
 import Loader from "react-spinners/SyncLoader";
 import { formatDistanceToNow } from 'date-fns';
-function Chat({chattingWith, loadingUser,userChatLoading, chattingContent}) {
+function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendMessage}) {
 
-    const [text, setText] = useState('');
+    const [message, setMessage] = useState('');
     const [openEmoji, setOpenEmoji] = useState(false);
     const handleEmoji = e => {
-        setText(prev => prev + e.emoji);
+        setMessage(prev => prev + e.emoji);
         setOpenEmoji(false);
     }
 
@@ -17,6 +17,14 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent}) {
         const date = new Date(dateString);
         return formatDistanceToNow(date, { addSuffix: true });
     };
+
+    const handleSendMessage = () => {
+        if (message) {
+            console.log(chattingWith)
+            sendMessage(chattingWith.userId, message)
+            setMessage('');
+        }
+    }
 
     if (loadingUser) {
         return (
@@ -93,7 +101,7 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent}) {
                     chattingContent.map((message, index) => (
                         <div
                             className={`message ${message.isMine ? 'own' : ''}`} 
-                            key={message.messageId}
+                            key={message.timestamp}
                         >
                             {!message.isMine && <img src={chattingWith.img} alt='Avatar' />}
                             <div className='texts'>
@@ -147,9 +155,9 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent}) {
                 </div>
 
                 <input type='text'
-                    value={text}
+                    value={message}
                     placeholder='Type a message...'
-                    onChange={e => setText(e.target.value)} />
+                    onChange={e => setMessage(e.target.value)} />
                 
                  <div className='emoji'>
                     <img src='./emoji.png' onClick={() => setOpenEmoji((prev) => !prev) }/>
@@ -158,8 +166,8 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent}) {
                     </div>
                 </div>
 
-                <button className='sendButton'>
-                 
+                <button className='sendButton' onClick={handleSendMessage}>
+
                     <FaPaperPlane/>
                 </button>
             </div>

@@ -5,12 +5,13 @@ import '../css/chatHome.css';
 import Chat from './chat/chat.js';
 import Details from './details/details.js';
 import List from './list/list.js';
+import useChat from './hook/useChat.js';
 function Home() {
-
+    
     // list chat
     const [chatList, setChatList] = useState([]);
     const [loading, setLoading] = useState(true);
-    const token = ''; // Thay thế bằng token thực sự nếu có
+    const token =  localStorage.getItem('token');
     const email = localStorage.getItem('email');
     
     // user chatting
@@ -22,10 +23,14 @@ function Home() {
     // chatting content
     const [chattingContent, setChattingContent] = useState('');
 
+    // chatting 
+    const { messages, sendMessage } = useChat(token); 
+
     const user = {
         userName: localStorage.getItem('userName'),
         email: localStorage.getItem('email'),
         img: localStorage.getItem('img'),
+        token: localStorage.getItem('token')
     };
 
     useEffect(() => {
@@ -66,8 +71,6 @@ function Home() {
     useEffect(() => {
         const fetchChatWithUser = async () => {
             setUserChatLoading(true);
-            console.log(user.email)
-            console.log(chattingWith.userId);
             try {
                 const fetchPromise = await axios.get(`http://localhost:5133/api/chat/messages/${user.email}/${chattingWith.userId}`, {
                     headers: {
@@ -78,8 +81,6 @@ function Home() {
                 const delayPromise = new Promise(resolve => setTimeout(resolve, 1500));
                 const [response] = await Promise.all([fetchPromise, delayPromise]);
                 setChattingContent(response.data);
-                console.log(response.data)
-                console.log(chattingContent);
             } catch (err) {
                 console.log(err);
             } finally {
@@ -91,17 +92,27 @@ function Home() {
             fetchChatWithUser();
         }
     }, [chattingWith, user.email, token])
-
+    
+    useEffect(() => {
+        if (chattingWith) {
+            setChattingContent(prev => [...prev, messages]);
+        }
+    }, [chattingWith, messages])
     const handleChatClick = (user) => {
         setChattingWith(user);
     };
-
     return (
         <div className="background-image">
         <div className='overlay'>
                 <div className='main-container-chat'>
                     <List userInfo = {user} chatList={chatList} loading = {loading} onChatClick={handleChatClick}></List>
-                    <Chat chattingWith={chattingWith} loadingUser={chattingWithLoading} userChatLoading={userChatLoading} chattingContent={chattingContent}></Chat>
+                    <Chat
+                        chattingWith={chattingWith}
+                        loadingUser={chattingWithLoading}
+                        userChatLoading={userChatLoading}
+                        chattingContent={chattingContent}
+                        sendMessage={sendMessage}
+                    ></Chat>
                     <Details></Details>
                 </div>
             </div>
