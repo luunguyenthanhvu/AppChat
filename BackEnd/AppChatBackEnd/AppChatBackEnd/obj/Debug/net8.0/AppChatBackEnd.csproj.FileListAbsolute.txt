@@ -321,3 +321,5 @@ C:\Users\PC\Desktop\ProjectNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\obj
 C:\Users\PC\Desktop\ProjectNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\obj\Debug\net8.0\AppChatBackEnd.pdb
 C:\Users\PC\Desktop\ProjectNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\obj\Debug\net8.0\AppChatBackEnd.genruntimeconfig.cache
 C:\Users\PC\Desktop\ProjectNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\obj\Debug\net8.0\ref\AppChatBackEnd.dll
+C:\Users\PC\Desktop\ProjectNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\bin\Debug\net8.0\Newtonsoft.Json.dll
+C:\Users\PC\Desktop\ProjectNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\bin\Debug\net8.0\System.Net.WebSockets.WebSocketProtocol.dll

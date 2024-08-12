@@ -1,9 +1,11 @@
-﻿using AppChatBackEnd.DTO.Request.NewFolder;
+﻿using AppChat.Models.Entities;
+using AppChatBackEnd.DTO.Request.NewFolder;
 using AppChatBackEnd.DTO.Response.ChatResponse;
 using AppChatBackEnd.NewFolder;
 using AppChatBackEnd.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace AppChatBackEnd.Controllers
 {
@@ -29,7 +31,21 @@ namespace AppChatBackEnd.Controllers
             {
                 data = await chatRepository.CreateDefault();
             }
-            return Ok(mapper.Map<LoginResponseDTO>(data));
+            if (data == null)
+            {
+                return Unauthorized(); 
+            }
+            var token = GenerateFakeToken(data);
+
+            var response = new LoginResponseDTO
+            {
+                UserName = data.UserName,
+                Email = data.Email,
+                Img = data.Img,
+                Token = token
+            };
+
+            return Ok(response);
         }
 
         [HttpGet("user-chat-list")]
@@ -53,5 +69,15 @@ namespace AppChatBackEnd.Controllers
             return Ok(messages);
         }
 
+        private string GenerateFakeToken(Users user)
+        {
+            // Tạo token giả bằng cách sử dụng thông tin người dùng
+            // Đây chỉ là một ví dụ đơn giản, token giả không có giá trị thực sự và không phải là JWT
+
+            // Đối với token giả, bạn có thể chỉ cần ghép thông tin người dùng với một chuỗi cụ thể
+            var token = $"FakeToken_{user.UserId}_{user.Email}";
+
+            return token;
+        }
     }
 }

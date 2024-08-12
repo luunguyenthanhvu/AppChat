@@ -180,7 +180,6 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
             // Chuyển đổi danh sách tin nhắn sang DTO
             var messageDtos = messages.Select(m => new ListMessageResponseDTO
             {   
-                MessageId = m.MessageId,
                 MessageContent = m.Content,
                 IsMine = m.SenderId == userId,
                 Timestamp = m.Timestamp

@@ -1,4 +1,6 @@
-using AppChat.Data;
+﻿using AppChat.Data;
+using AppChatBackEnd.ChatHub;
+using AppChatBackEnd.Connection.WebSocketConnection;
 using AppChatBackEnd.Repositories;
 using AppChatBackEnd.Repositories.RepositoriesImpl;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +29,6 @@ builder.Services.AddAutoMapper(typeof(Program));
 // inject repo
 builder.Services.AddScoped<IChatRepository, ChatRepositoryImpl>();
 
-
 // accept cors
 builder.Services.AddCors(options =>
 {
@@ -36,6 +37,11 @@ builder.Services.AddCors(options =>
                           .AllowAnyMethod()
                           .AllowAnyHeader());
 });
+
+// add connection
+builder.Services.AddSingleton<UserSessionManager>();
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -45,12 +51,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseWebSockets();
 app.UseCors("AllowAll");
-
-app.UseHttpsRedirection();
+app.UseHttpsRedirection(); // Đảm bảo bạn cần HTTPS trong môi trường phát triển
 
 app.UseAuthorization();
+app.UseAuthentication(); // Thêm nếu bạn cần xác thực JWT
 
 app.MapControllers();
+app.MapHub<ChatHub>("/Chat"); // Đảm bảo endpoint khớp với client
 
 app.Run();
