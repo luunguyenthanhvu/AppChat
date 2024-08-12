@@ -1,8 +1,6 @@
 ﻿using AppChat.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 
 namespace AppChat.Data
 {
@@ -16,42 +14,36 @@ namespace AppChat.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configure Friend entity
             modelBuilder.Entity<Friend>()
                 .HasKey(f => f.FriendId);
 
+            // db relationship
             modelBuilder.Entity<Friend>()
-                .HasOne(f => f.User)
+                .HasOne(f => f.User) 
                 .WithMany(u => u.Friends)
                 .HasForeignKey(f => f.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Friend>()
-                .HasOne(f => f.FriendUser)
+                .HasOne(f => f.FriendUser) 
                 .WithMany()
                 .HasForeignKey(f => f.FriendUserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // set auto increment
             modelBuilder.Entity<Friend>()
                 .Property(f => f.FriendId)
-                .ValueGeneratedOnAdd(); // Ensures auto-increment behavior
+                .ValueGeneratedOnAdd();
 
-            // Configure User entity
-            modelBuilder.Entity<Users>()
-                .HasKey(u => u.UserId); // Ensure primary key configuration
-
-            modelBuilder.Entity<Users>()
-                .Property(u => u.UserId)
-                .ValueGeneratedOnAdd(); // Auto-increment UserId
-
+            // unique email
             modelBuilder.Entity<Users>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
 
-            // Configure Message entity
             modelBuilder.Entity<Message>()
                 .HasKey(m => m.MessageId);
 
+            // db relationship
             modelBuilder.Entity<Message>()
                 .HasOne(m => m.Sender)
                 .WithMany(u => u.MessagesSent)
@@ -66,9 +58,8 @@ namespace AppChat.Data
 
             modelBuilder.Entity<Message>()
                 .Property(m => m.MessageId)
-                .ValueGeneratedOnAdd(); // Auto-increment MessageId
+                .ValueGeneratedOnAdd();
         }
-
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
