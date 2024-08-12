@@ -1,4 +1,5 @@
 using AppChat.Data;
+using AppChat.Mapping;
 using AppChatBackEnd.Repositories;
 using AppChatBackEnd.Repositories.RepositoriesImpl;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +24,7 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 // Add auto mapper
 builder.Services.AddAutoMapper(typeof(Program));
-
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 // inject repo
 builder.Services.AddScoped<IChatRepository, ChatRepositoryImpl>();
 
