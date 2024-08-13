@@ -1,5 +1,6 @@
 ﻿using AppChat.Data;
 using AppChatBackEnd.ChatHub;
+using AppChatBackEnd.Connection.NewFolder;
 using AppChatBackEnd.Connection.WebSocketConnection;
 using AppChatBackEnd.Repositories;
 using AppChatBackEnd.Repositories.RepositoriesImpl;
@@ -41,6 +42,7 @@ builder.Services.AddCors(options =>
 // add connection
 builder.Services.AddSingleton<UserSessionManager>();
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<MessageQueue>();
 
 var app = builder.Build();
 

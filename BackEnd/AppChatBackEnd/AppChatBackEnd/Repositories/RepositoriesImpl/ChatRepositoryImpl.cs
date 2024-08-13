@@ -103,7 +103,7 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
 
         public async Task<Users?> GetUsersByEmail(string email)
         {
-            return await dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+            return await dbContext.Users.FirstOrDefaultAsync(x => x.Email.Equals(email));
         }
 
         public async Task<List<UserListChatResponseDTO>> GetUsersListChatByEmail(string email)
@@ -167,6 +167,11 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
             return chatList;
         }
 
+        public async Task SaveMessagesToDatabase(IEnumerable<Message> messages)
+        {
+            dbContext.Messages.AddRange(messages);
+            await dbContext.SaveChangesAsync();
+        }
 
         public async Task<List<ListMessageResponseDTO>> GetUserMessage(int userId, int userChattingId)
         {
@@ -180,9 +185,10 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
             // Chuyển đổi danh sách tin nhắn sang DTO
             var messageDtos = messages.Select(m => new ListMessageResponseDTO
             {   
-                MessageContent = m.Content,
-                IsMine = m.SenderId == userId,
-                Timestamp = m.Timestamp
+               SenderId = m.SenderId,
+               Content = m.Content,
+               ReceiverId = m.ReceiverId,
+               Timestamp = m.Timestamp
             }).ToList();
 
             return messageDtos;

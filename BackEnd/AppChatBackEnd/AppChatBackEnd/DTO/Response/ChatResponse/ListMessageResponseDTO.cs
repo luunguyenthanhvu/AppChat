@@ -2,8 +2,9 @@
 {
     public class ListMessageResponseDTO
     {
-        public string? MessageContent { get; set; }
-        public bool IsMine { get; set; }
+        public int SenderId { get; set; }
+        public int ReceiverId { get; set; }
+        public string Content { get; set; }
         public DateTime Timestamp { get; set; }
     }
 }

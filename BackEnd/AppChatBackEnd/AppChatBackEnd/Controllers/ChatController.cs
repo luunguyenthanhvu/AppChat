@@ -1,4 +1,5 @@
 ﻿using AppChat.Models.Entities;
+using AppChatBackEnd.Connection.NewFolder;
 using AppChatBackEnd.DTO.Request.NewFolder;
 using AppChatBackEnd.DTO.Response.ChatResponse;
 using AppChatBackEnd.NewFolder;
@@ -15,11 +16,13 @@ namespace AppChatBackEnd.Controllers
     {
         private readonly IMapper mapper;
         private readonly IChatRepository chatRepository;
+        private readonly MessageQueue _messageQueue;
 
-        public ChatController (IMapper mapper, IChatRepository chatRepository)
+        public ChatController (IMapper mapper, IChatRepository chatRepository, MessageQueue messageQueue)
         {
             this.mapper = mapper;
             this.chatRepository = chatRepository;
+            _messageQueue = messageQueue;
         }
 
         [HttpPost("login")]
@@ -65,16 +68,26 @@ namespace AppChatBackEnd.Controllers
         public async Task<IActionResult> GetUserMessages(string email, int userChattingId)
         {
             var data = await chatRepository.GetUsersByEmail(email);
-            var messages = await chatRepository.GetUserMessage(data.UserId, userChattingId);
-            return Ok(messages);
+            var oldMessages = await chatRepository.GetUserMessage(data.UserId, userChattingId);
+            var tempMessages = _messageQueue.GetMessages(data.UserId + "", userChattingId + "");
+            _messageQueue.PrintMessages(data.UserId+"");
+            var messageDtos = tempMessages.Select(m => new ListMessageResponseDTO
+            {
+                SenderId = m.SenderId,
+                Content = m.Content,
+                ReceiverId = m.ReceiverId,
+                Timestamp = m.Timestamp
+            }).ToList();
+
+            var allMessages = oldMessages.Concat(messageDtos)
+                                  .OrderBy(m => m.Timestamp)
+                                  .ToList();
+
+            return Ok(allMessages);
         }
 
         private string GenerateFakeToken(Users user)
         {
-            // Tạo token giả bằng cách sử dụng thông tin người dùng
-            // Đây chỉ là một ví dụ đơn giản, token giả không có giá trị thực sự và không phải là JWT
-
-            // Đối với token giả, bạn có thể chỉ cần ghép thông tin người dùng với một chuỗi cụ thể
             var token = $"FakeToken_{user.UserId}_{user.Email}";
 
             return token;

@@ -11,5 +11,7 @@ namespace AppChatBackEnd.Repositories
 
         Task<List<UserListChatResponseDTO>> GetUsersListChatByEmail(String email);
         Task<List<ListMessageResponseDTO>> GetUserMessage(int userId, int userChattingId);
+
+        Task SaveMessagesToDatabase(IEnumerable<Message> messages);
     }
 }
