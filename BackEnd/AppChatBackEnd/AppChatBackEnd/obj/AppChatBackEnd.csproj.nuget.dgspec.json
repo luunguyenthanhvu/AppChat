@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\PC\\Desktop\\ProjectNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj": {}
+    "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj": {}
   },
   "projects": {
-    "C:\\Users\\PC\\Desktop\\ProjectNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj": {
+    "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\PC\\Desktop\\ProjectNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj",
+        "projectUniqueName": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj",
         "projectName": "AppChatBackEnd",
-        "projectPath": "C:\\Users\\PC\\Desktop\\ProjectNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj",
-        "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\PC\\Desktop\\ProjectNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\obj\\",
+        "projectPath": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj",
+        "packagesPath": "C:\\Users\\Yukihira Souma\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Yukihira Souma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -50,6 +54,14 @@
               "target": "Package",
               "version": "[12.0.1, )"
             },
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.7, )"
+            },
             "Microsoft.EntityFrameworkCore.Tools": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
@@ -59,6 +71,10 @@
             "Microsoft.Extensions.DependencyInjection": {
               "target": "Package",
               "version": "[8.0.0, )"
+            },
+            "NETCore.MailKit": {
+              "target": "Package",
+              "version": "[2.1.0, )"
             },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",
