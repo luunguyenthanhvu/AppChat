@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AppChatBackEnd")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+943937eeb801d438a6e16acee29ab5ebf0e7831f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+08cfbb5d573635d3b4a59ebb687ad7f967fb1530")]
 [assembly: System.Reflection.AssemblyProductAttribute("AppChatBackEnd")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AppChatBackEnd")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

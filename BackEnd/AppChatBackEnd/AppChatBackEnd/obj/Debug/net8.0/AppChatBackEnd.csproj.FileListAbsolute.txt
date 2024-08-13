@@ -321,3 +321,15 @@ C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\App
 C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\obj\Debug\net8.0\AppChatBackEnd.pdb
 C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\obj\Debug\net8.0\AppChatBackEnd.genruntimeconfig.cache
 C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\obj\Debug\net8.0\ref\AppChatBackEnd.dll
+C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\bin\Debug\net8.0\MailKit.dll
+C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\bin\Debug\net8.0\MimeKit.dll
+C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\bin\Debug\net8.0\NETCore.MailKit.dll
+C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\bin\Debug\net8.0\BouncyCastle.Crypto.dll
+C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\bin\Debug\net8.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Yukihira Souma\Desktop\ProjectDotNet\AppChat\BackEnd\AppChatBackEnd\AppChatBackEnd\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll

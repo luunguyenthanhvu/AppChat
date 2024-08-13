@@ -1,4 +1,5 @@
 ﻿using AppChat.Models.Entities;
+using AppChatBackEnd.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -59,6 +60,35 @@ namespace AppChat.Data
             modelBuilder.Entity<Message>()
                 .Property(m => m.MessageId)
                 .ValueGeneratedOnAdd();
+
+            //Tạo db Role
+            modelBuilder.Entity<Role>()
+            .HasData(
+                new Role { RoleId = 1, RoleName = "admin" },
+                new Role { RoleId = 2, RoleName = "user" }
+            );
+
+            // Cấu hình mối quan hệ giữa User và Role
+            modelBuilder.Entity<Users>()
+                .HasOne(u => u.Role)
+                .WithMany(r => r.Users)
+                .HasForeignKey(u => u.RoleId);
+            //Tạo db UserDetail
+            modelBuilder.Entity<UserDetails>()
+                .HasKey(ud => ud.UserDetailId);
+            modelBuilder.Entity<UserDetails>()
+            .HasIndex(ud => ud.UserId)
+            .IsUnique();
+
+            //Tạo mối quan hệ giữ Users và UserDetails
+            modelBuilder.Entity<Users>()
+        .HasOne(u => u.UserDetail)
+        .WithOne(ud => ud.User)
+        .HasForeignKey<UserDetails>(ud => ud.UserId)
+        .OnDelete(DeleteBehavior.Cascade);
+
+
+
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
@@ -68,7 +98,9 @@ namespace AppChat.Data
         }
 
         public DbSet<Users> Users { get; set; }
+        public DbSet<UserDetails> UserDetails { get; set; } 
         public DbSet<Friend> Friends { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Role> Roles { get; set; }  
     }
 }

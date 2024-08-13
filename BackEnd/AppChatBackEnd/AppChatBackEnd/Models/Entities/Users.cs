@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AppChatBackEnd.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AppChat.Models.Entities
@@ -17,6 +18,10 @@ namespace AppChat.Models.Entities
         public string Img { get; set; }
         public ICollection<Friend> Friends { get; set; }
         public ICollection<Message> MessagesSent { get; set; } 
-        public ICollection<Message> MessagesReceived { get; set; } 
+        public ICollection<Message> MessagesReceived { get; set; }
+        public int RoleId { get; set; }
+
+        public Role Role { get; set; }
+        public UserDetails UserDetail { get; set; }
     }
 }

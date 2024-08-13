@@ -1,7 +1,60 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\projectdotnet\\appchat\\backend\\appchatbackend\\appchatbackend\\dto\\response\\loginresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\dto\\response\\loginresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\projectdotnet\\appchat\\backend\\appchatbackend\\appchatbackend\\controllers\\userservicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\controllers\\userservicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\projectdotnet\\appchat\\backend\\appchatbackend\\appchatbackend\\services\\imp\\senddataloginimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\services\\imp\\senddataloginimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\projectdotnet\\appchat\\backend\\appchatbackend\\appchatbackend\\data\\datacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\data\\datacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\projectdotnet\\appchat\\backend\\appchatbackend\\appchatbackend\\models\\entities\\userdetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\models\\entities\\userdetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\projectdotnet\\appchat\\backend\\appchatbackend\\appchatbackend\\models\\entities\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\models\\entities\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\projectdotnet\\appchat\\backend\\appchatbackend\\appchatbackend\\models\\entities\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\models\\entities\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\projectdotnet\\appchat\\backend\\appchatbackend\\appchatbackend\\dto\\request\\loginrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\dto\\request\\loginrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\projectdotnet\\appchat\\backend\\appchatbackend\\appchatbackend\\models\\secretkeymodel\\appsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\models\\secretkeymodel\\appsettings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\projectdotnet\\appchat\\backend\\appchatbackend\\appchatbackend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\projectdotnet\\appchat\\backend\\appchatbackend\\appchatbackend\\utils\\myutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\utils\\myutil.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\projectdotnet\\appchat\\backend\\appchatbackend\\appchatbackend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\projectdotnet\\appchat\\backend\\appchatbackend\\appchatbackend\\services\\template\\isenddatalogin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\services\\template\\isenddatalogin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,15 +62,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{131369f2-062d-44a2-8671-91ff31efb4f4}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
             {
               "$type": "Bookmark",
@@ -30,6 +79,168 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "LoginResponseDTO.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Response\\LoginResponseDTO.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Response\\LoginResponseDTO.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Response\\LoginResponseDTO.cs",
+              "RelativeToolTip": "AppChatBackEnd\\DTO\\Response\\LoginResponseDTO.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAoAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-13T08:34:37.883Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DataContext.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Data\\DataContext.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Data\\DataContext.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Data\\DataContext.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Data\\DataContext.cs",
+              "ViewState": "AQIAADwAAAAAAAAAAAAowAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-12T15:32:03.341Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Role.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Entities\\Role.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Models\\Entities\\Role.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Entities\\Role.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Models\\Entities\\Role.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAA1AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-12T15:29:54.43Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UserDetails.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Entities\\UserDetails.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Models\\Entities\\UserDetails.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Entities\\UserDetails.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Models\\Entities\\UserDetails.cs",
+              "ViewState": "AQIAAAgAAAAAAAAAAAAQwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-12T15:31:38.236Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SendDataLoginImpl.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Services\\imp\\SendDataLoginImpl.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Services\\imp\\SendDataLoginImpl.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Services\\imp\\SendDataLoginImpl.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Services\\imp\\SendDataLoginImpl.cs",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAewBcAAAAMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-12T15:16:40.775Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "MyUtil.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\utils\\MyUtil.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\utils\\MyUtil.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\utils\\MyUtil.cs",
+              "RelativeToolTip": "AppChatBackEnd\\utils\\MyUtil.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAApAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-12T14:49:01.646Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\appsettings.json",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\appsettings.json",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\appsettings.json",
+              "RelativeToolTip": "AppChatBackEnd\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-08-12T08:33:21.186Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "AppSettings.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\SecretKeyModel\\AppSettings.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Models\\SecretKeyModel\\AppSettings.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\SecretKeyModel\\AppSettings.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Models\\SecretKeyModel\\AppSettings.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-12T08:32:27.069Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Program.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Program.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Program.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Program.cs",
+              "ViewState": "AQIAABUAAAAAAAAAAAAAADgAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-12T08:30:06.501Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Users.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Entities\\Users.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Models\\Entities\\Users.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Entities\\Users.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Models\\Entities\\Users.cs",
+              "ViewState": "AQIAAAgAAAAAAAAAAIAwwBcAAAATAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-12T08:11:00.221Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserServicesController.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\UserServicesController.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Controllers\\UserServicesController.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\UserServicesController.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Controllers\\UserServicesController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAkAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-12T08:05:40.253Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "LoginRequestDTO.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Request\\LoginRequestDTO.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Request\\LoginRequestDTO.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Request\\LoginRequestDTO.cs",
+              "RelativeToolTip": "AppChatBackEnd\\DTO\\Request\\LoginRequestDTO.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAsAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-12T08:01:33.573Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ISendDataLogin.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Services\\template\\ISendDataLogin.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Services\\template\\ISendDataLogin.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\ProjectDotNet\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Services\\template\\ISendDataLogin.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Services\\template\\ISendDataLogin.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAABAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-12T07:54:44.452Z"
             }
           ]
         }
