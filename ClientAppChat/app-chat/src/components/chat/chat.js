@@ -42,6 +42,9 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
             </div>
         );
     } 
+
+    console.log(chattingContent);
+    console.log()
         
     if (userChatLoading) {
         return (
@@ -100,12 +103,12 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
                 ): (
                     chattingContent.map((message, index) => (
                         <div
-                            className={`message ${message.isMine ? 'own' : ''}`} 
+                            className={`message ${chattingWith.userId === message.receiverId ? 'own' : ''}`} 
                             key={message.timestamp}
                         >
-                            {!message.isMine && <img src={chattingWith.img} alt='Avatar' />}
+                            {chattingWith.userId !== message.receiverId && <img src={chattingWith.img} alt='Avatar' />}
                             <div className='texts'>
-                                <p>{message.messageContent}</p>
+                                <p>{message.content}</p>
                                 <span>{formatDate(message.timestamp)}</span>
                             </div>
                         </div>

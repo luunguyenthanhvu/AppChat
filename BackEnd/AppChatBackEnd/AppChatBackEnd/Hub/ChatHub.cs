@@ -99,7 +99,7 @@ namespace AppChatBackEnd.ChatHub
                 SenderId = int.Parse(senderUserId),
                 ReceiverId = int.Parse(recipientUserId),
                 Content = message,
-                Timestamp = DateTime.UtcNow
+                Timestamp = DateTime.Now
             };
 
             var messageSave = new Message
@@ -107,9 +107,10 @@ namespace AppChatBackEnd.ChatHub
                 SenderId = int.Parse(senderUserId),
                 ReceiverId = int.Parse(recipientUserId),
                 Content = message,
-                Timestamp = DateTime.UtcNow
+                Timestamp = DateTime.Now
             };
             Console.WriteLine(messageSave);
+            await _chatRepository.SaveMessagesToDatabase(messageSave);
             _messageQueue.EnqueueMessage(recipientUserId, messageSave);
 
             // Gửi tin nhắn đến tất cả các kết nối của người nhận
@@ -124,11 +125,6 @@ namespace AppChatBackEnd.ChatHub
                 await Clients.Client(connectionId).SendAsync("ReceiveMessage", messageResponse);
             }
             await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", messageResponse);
-        }
-
-        private async Task SaveMessagesToDatabase(IEnumerable<Message> messages)
-        {
-           await _chatRepository.SaveMessagesToDatabase(messages);
         }
     }
 }

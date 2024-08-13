@@ -129,11 +129,13 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
                 return new List<UserListChatResponseDTO>();
             }
 
-            // Lấy tất cả tin nhắn gửi từ các bạn bè của người dùng
+            // Lấy tất cả tin nhắn liên quan đến người dùng hiện tại và bạn bè
             var friendUserIds = userFriends.Select(u => u.UserId).ToList();
+            var currentUserId = user.UserId;
 
             var messages = await (from m in dbContext.Messages
-                                  where friendUserIds.Contains(m.SenderId)
+                                  where (friendUserIds.Contains(m.SenderId) && m.ReceiverId == currentUserId)
+                                     || (friendUserIds.Contains(m.ReceiverId) && m.SenderId == currentUserId)
                                   select new
                                   {
                                       m.Content,
@@ -142,32 +144,34 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
                                       m.Timestamp
                                   }).ToListAsync();
 
-            // Xác định ID của người dùng hiện tại
-            var currentUserId = user.UserId;
-
             // Tạo danh sách kết quả với tin nhắn cuối cùng cho mỗi bạn bè
-            var chatList = userFriends.Select(friend => new UserListChatResponseDTO
+            var chatList = userFriends.Select(friend =>
             {
-                UserId = friend.UserId,
-                UserName = friend.UserName,
-                Img = friend.Img,
-                // Lấy tin nhắn cuối cùng của người dùng này
-                MessageContent = messages.Where(m => m.SenderId == friend.UserId && m.ReceiverId == currentUserId)
-                                         .OrderByDescending(m => m.Timestamp)
-                                         .Select(m => m.Content)
-                                         .FirstOrDefault() ?? string.Empty,
-                // Xác định xem người gửi có phải là người dùng hiện tại không
-                IsMine = messages.Where(m => m.SenderId == friend.UserId && m.ReceiverId == currentUserId)
-                                 .OrderByDescending(m => m.Timestamp)
-                                 .Select(m => m.SenderId)
-                                 .FirstOrDefault() == currentUserId,
-                Timestamp = DateTime.Now // Timestamp hiện tại nếu không có tin nhắn
+                // Lấy tin nhắn cuối cùng giữa người dùng và bạn
+                var lastMessage = messages.Where(m =>
+                                         (m.SenderId == friend.UserId && m.ReceiverId == currentUserId)
+                                      || (m.SenderId == currentUserId && m.ReceiverId == friend.UserId))
+                                          .OrderByDescending(m => m.Timestamp)
+                                          .FirstOrDefault();
+
+                var isMine = lastMessage?.SenderId == currentUserId;
+
+                return new UserListChatResponseDTO
+                {
+                    UserId = friend.UserId,
+                    UserName = friend.UserName,
+                    Img = friend.Img,
+                    MessageContent = isMine ? $"You: {lastMessage?.Content}" : lastMessage?.Content ?? string.Empty,
+                    IsMine = isMine,
+                    Timestamp = lastMessage?.Timestamp ?? DateTime.Now // Nếu không có tin nhắn, dùng thời gian hiện tại
+                };
             }).ToList();
 
             return chatList;
         }
 
-        public async Task SaveMessagesToDatabase(IEnumerable<Message> messages)
+
+        public async Task SaveMessagesToDatabase(Message messages)
         {
             dbContext.Messages.AddRange(messages);
             await dbContext.SaveChangesAsync();

@@ -69,7 +69,9 @@ namespace AppChatBackEnd.Controllers
         {
             var data = await chatRepository.GetUsersByEmail(email);
             var oldMessages = await chatRepository.GetUserMessage(data.UserId, userChattingId);
-            var tempMessages = _messageQueue.GetMessages(data.UserId + "", userChattingId + "");
+            /*
+             *
+             *var tempMessages = _messageQueue.GetMessages(data.UserId + "", userChattingId + "");
             _messageQueue.PrintMessages(data.UserId+"");
             var messageDtos = tempMessages.Select(m => new ListMessageResponseDTO
             {
@@ -82,8 +84,8 @@ namespace AppChatBackEnd.Controllers
             var allMessages = oldMessages.Concat(messageDtos)
                                   .OrderBy(m => m.Timestamp)
                                   .ToList();
-
-            return Ok(allMessages);
+            */
+            return Ok(oldMessages);
         }
 
         private string GenerateFakeToken(Users user)
