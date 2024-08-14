@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import * as signalR from '@microsoft/signalr';
 
-const useChat = (token) => {
+const useChat = () => {
+    const token =  localStorage.getItem('token');
     const [connection, setConnection] = useState(null);
     const [messages, setMessages] = useState('');
-
+    const [newListChat, setNewListChat] = useState('');
     useEffect(() => {
         const createConnection = async () => {
             const hubConnection = new signalR.HubConnectionBuilder()
@@ -18,6 +19,12 @@ const useChat = (token) => {
                 console.log('this is message: ' + message);
                 setMessages(message);
             });
+
+        
+            hubConnection.on("NewListChatReceive", (listChat) => {
+                console.log('this is new list chat' + listChat);
+                setNewListChat(listChat);
+            })
             
             try {
                 await hubConnection.start();
@@ -35,7 +42,7 @@ const useChat = (token) => {
                 connection.stop().catch(err => console.log('Error stopping connection: ', err));
             }
         };
-    }, [token]);
+    }, []);
 
     const sendMessage = async (recipientUserId, message) => {
         if (connection) {
@@ -48,7 +55,7 @@ const useChat = (token) => {
         }
     }
 
-    return { connection, messages, sendMessage };
+    return { newListChat,connection, messages, sendMessage };
 }
 
 export default useChat;

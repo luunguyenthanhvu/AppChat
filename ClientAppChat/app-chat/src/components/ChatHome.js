@@ -24,7 +24,7 @@ function Home() {
     const [chattingContent, setChattingContent] = useState('');
 
     // chatting 
-    const { messages, sendMessage } = useChat(token); 
+    const { newListChat ,messages, sendMessage } = useChat(); 
 
     const user = {
         userName: localStorage.getItem('userName'),
@@ -32,6 +32,13 @@ function Home() {
         img: localStorage.getItem('img'),
         token: localStorage.getItem('token')
     };
+
+    const getLastTenMessages = () => {
+        if (chattingContent.length > 0) {
+            console.log( chattingContent[chattingContent.length - 1])
+            return chattingContent[chattingContent.length - 1];
+        }
+    }
 
     useEffect(() => {
         const fetchChatList = async () => {
@@ -53,7 +60,7 @@ function Home() {
                 setChatList(response.data);
                 if (response.data && !chattingWith) {
                     setChattingWith(response.data[0])
-                    console.log(chattingWith)
+                    console.log('dag chat voi ' + response.data[0])
                 }
             } catch (err) {
                 console.log(err);
@@ -94,10 +101,23 @@ function Home() {
     }, [chattingWith, user.email, token])
     
     useEffect(() => {
-        if (chattingWith) {
-            setChattingContent(prev => [...prev, messages]);
+        if (chattingWith.userId === messages.receiverId ||
+            chattingWith.userId === messages.senderId
+        ) {
+            const lastMessage = getLastTenMessages();
+            const isDuplicate = lastMessage && lastMessage.messageId === messages.messageId;
+
+            if (!isDuplicate) {
+                setChattingContent(prev => [...prev, messages]);
+            }
         }
     }, [chattingWith, messages])
+
+    useEffect(() => {
+        setChatList(newListChat)
+    }, [newListChat])
+
+
     const handleChatClick = (user) => {
         setChattingWith(user);
     };
@@ -105,7 +125,11 @@ function Home() {
         <div className="background-image">
         <div className='overlay'>
                 <div className='main-container-chat'>
-                    <List userInfo = {user} chatList={chatList} loading = {loading} onChatClick={handleChatClick}></List>
+                    <List
+                        userInfo={user}
+                        chatList={chatList}
+                        loading={loading}
+                        onChatClick={handleChatClick}></List>
                     <Chat
                         chattingWith={chattingWith}
                         loadingUser={chattingWithLoading}
