@@ -1,7 +1,10 @@
 using AppChat.Data;
 using AppChat.Mapping;
+using AppChat.Repositories.RepositoriesImpl;
 using AppChatBackEnd.Repositories;
 using AppChatBackEnd.Repositories.RepositoriesImpl;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,8 +30,13 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 // inject repo
 builder.Services.AddScoped<IChatRepository, ChatRepositoryImpl>();
-
-
+builder.Services.AddScoped<INotificationService, NotificationService>();
+/*
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile("appsettings.json")
+});
+*/
 // accept cors
 builder.Services.AddCors(options =>
 {
@@ -38,6 +46,8 @@ builder.Services.AddCors(options =>
                           .AllowAnyHeader());
 });
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

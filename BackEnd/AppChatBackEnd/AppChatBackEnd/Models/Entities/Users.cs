@@ -17,6 +17,9 @@ namespace AppChat.Models.Entities
         public string Img { get; set; }
         public ICollection<Friend> Friends { get; set; }
         public ICollection<Message> MessagesSent { get; set; } 
-        public ICollection<Message> MessagesReceived { get; set; } 
+        public ICollection<Message> MessagesReceived { get; set; }
+
+
+        public string FcmToken { get; set; }
     }
 }
