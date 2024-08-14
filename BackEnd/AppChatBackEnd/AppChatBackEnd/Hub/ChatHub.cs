@@ -4,6 +4,7 @@ using AppChatBackEnd.Connection.WebSocketConnection;
 using AppChatBackEnd.DTO.Response.ChatResponse;
 using AppChatBackEnd.Repositories;
 using Microsoft.AspNetCore.SignalR;
+using System.ComponentModel;
 using System.IO;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
@@ -84,7 +85,6 @@ namespace AppChatBackEnd.ChatHub
         public async Task SendMessage(string recipientUserId, string message)
         { 
             var senderUserId = Context.Items["UserId"] +"";
-
             var connectionsRecipents = _userSessionManager.GetConnections(recipientUserId);
             var connectionsSenders = _userSessionManager.GetConnections(senderUserId);
 
@@ -96,6 +96,7 @@ namespace AppChatBackEnd.ChatHub
 
             var messageResponse = new ListMessageResponseDTO
             {
+                MessageId = Guid.NewGuid(),
                 SenderId = int.Parse(senderUserId),
                 ReceiverId = int.Parse(recipientUserId),
                 Content = message,
@@ -109,22 +110,25 @@ namespace AppChatBackEnd.ChatHub
                 Content = message,
                 Timestamp = DateTime.Now
             };
-            Console.WriteLine(messageSave);
-            await _chatRepository.SaveMessagesToDatabase(messageSave);
-            _messageQueue.EnqueueMessage(recipientUserId, messageSave);
 
+            await _chatRepository.SaveMessagesToDatabase(messageSave);
+            var listChatUserReceive = await _chatRepository.GetUsersListChatById(int.Parse(recipientUserId));
+            var listChatUserSender = await _chatRepository.GetUsersListChatById(int.Parse(senderUserId));
             // Gửi tin nhắn đến tất cả các kết nối của người nhận
             foreach (var connectionId in connectionsRecipents)
             {
                 await Clients.Client(connectionId).SendAsync("ReceiveMessage", messageResponse);
+                await Clients.Client(connectionId).SendAsync("NewListChatReceive", listChatUserReceive);
             }
 
             // Gửi tin nhắn đến tất cả các kết nối của người gửi
             foreach (var connectionId in connectionsSenders)
             {
                 await Clients.Client(connectionId).SendAsync("ReceiveMessage", messageResponse);
+                await Clients.Client(connectionId).SendAsync("NewListChatReceive", listChatUserSender);
+
             }
-            await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", messageResponse);
+           // await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", messageResponse);
         }
     }
 }

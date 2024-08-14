@@ -55,7 +55,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseWebSockets();
 app.UseCors("AllowAll");
-app.UseHttpsRedirection(); // Đảm bảo bạn cần HTTPS trong môi trường phát triển
 
 app.UseAuthorization();
 app.UseAuthentication(); // Thêm nếu bạn cần xác thực JWT
