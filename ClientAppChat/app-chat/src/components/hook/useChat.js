@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import * as signalR from '@microsoft/signalr';
+import {BACKEND_URL_HTTP, BACKEND_URL_HTTPS} from '../../config.js'
 
 const useChat = () => {
     const token =  localStorage.getItem('token');
@@ -9,7 +10,7 @@ const useChat = () => {
     useEffect(() => {
         const createConnection = async () => {
             const hubConnection = new signalR.HubConnectionBuilder()
-                .withUrl(`https://localhost:7084/Chat?access_token=${token}`, {
+                .withUrl(`http://${BACKEND_URL_HTTP}/Chat?access_token=${token}`, {
                     skipNegotiation: true,
                     transport: signalR.HttpTransportType.WebSockets
                 })

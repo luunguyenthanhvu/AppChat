@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BACKEND_URL_HTTP, BACKEND_URL_HTTPS } from '../config.js';
 import axios from 'axios';
 import '../css/chatHome.css';
 import Chat from './chat/chat.js';
@@ -44,7 +45,7 @@ function Home() {
         const fetchChatList = async () => {
             try {
 
-                const fetchPromise = await axios.get('http://localhost:5133/api/chat/user-chat-list', {
+                const fetchPromise = await axios.get(`http://${BACKEND_URL_HTTP}/api/chat/user-chat-list`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     },
@@ -79,7 +80,7 @@ function Home() {
         const fetchChatWithUser = async () => {
             setUserChatLoading(true);
             try {
-                const fetchPromise = await axios.get(`http://localhost:5133/api/chat/messages/${user.email}/${chattingWith.userId}`, {
+                const fetchPromise = await axios.get(`http://${BACKEND_URL_HTTP}/api/chat/messages/${user.email}/${chattingWith.userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
