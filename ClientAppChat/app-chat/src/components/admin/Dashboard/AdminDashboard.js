@@ -1,46 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import StatCard from './StatCards';
 import Users from '../UserManagement/Users';
 import Groups from '../GroupManagement/Groups';
 import Reports from '../ReportManagement/Reports';
 import BlockedUsers from '../BlockedUsers/BlockedUsers';
+import Notifications from '../Notification/Notification';
 import '../../../css/AdminDashboard.css';
-import Notifications from "../Notification/Notification";
 
 const AdminDashboard = () => {
     const [activeContent, setActiveContent] = useState('users');
-    const [statCardData, setStatCardData] = useState([
-        { title: "Users", count: 0, icon: "/icons/user-icon.png", bgColor: "#4CAF50" },
-        { title: "Groups", count: 0, icon: "/icons/groups-icon.png", bgColor: "#2196F3" },
-        { title: "Reports", count: 0, icon: "/icons/reports-icon.png", bgColor: "#FFC107" },
-        { title: "Blocked Users", count: 0, icon: "/icons/blocked-icon.png", bgColor: "#F44336" }
-    ]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [usersRes, groupsRes, reportsRes, blockedUsersRes] = await Promise.all([
-                    axios.get('http://localhost:5133/api/User/count-users'),
-                    axios.get('http://localhost:5133/api/Group/count-groups'),
-                    axios.get('http://localhost:5133/api/Report/count-reports'),
-                    axios.get('http://localhost:5133/api/User/count-blocked-users'),
-                ]);
-
-                setStatCardData([
-                    { title: "Users", count: usersRes.data, icon: "/icons/user-icon.png", bgColor: "#4CAF50" },
-                    { title: "Groups", count: groupsRes.data, icon: "/icons/groups-icon.png", bgColor: "#2196F3" },
-                    { title: "Reports", count: reportsRes.data, icon: "/icons/reports-icon.png", bgColor: "#FFC107" },
-                    { title: "Blocked Users", count: blockedUsersRes.data, icon: "/icons/blocked-icon.png", bgColor: "#F44336" }
-                ]);
-            } catch (error) {
-                console.error("Error fetching data for stat cards:", error);
-            }
-        };
-
-        fetchData();
-    }, []);
+    const statCardData = [
+        { title: "Users", icon: "/icons/user-icon.png", bgColor: "#4CAF50", apiUrl: 'http://localhost:5133/api/User/count-users' },
+        { title: "Groups", icon: "/icons/groups-icon.png", bgColor: "#2196F3", apiUrl: 'http://localhost:5133/api/Group/count-groups' },
+        { title: "Reports", icon: "/icons/reports-icon.png", bgColor: "#FFC107", apiUrl: 'http://localhost:5133/api/Report/count-reports' },
+        { title: "Blocked Users", icon: "/icons/blocked-icon.png", bgColor: "#F44336", apiUrl: 'http://localhost:5133/api/User/count-blocked-users' }
+    ];
 
     const renderContent = () => {
         switch (activeContent) {
@@ -64,8 +40,8 @@ const AdminDashboard = () => {
             <Sidebar setActiveContent={setActiveContent} />
             <div className="main-content">
                 <div className="stats-cards">
-                    {statCardData.map(card => (
-                        <StatCard key={card.title} {...card} />
+                    {statCardData.map((card, index) => (
+                        <StatCard key={index} {...card} />
                     ))}
                 </div>
                 {renderContent()}

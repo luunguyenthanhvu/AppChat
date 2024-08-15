@@ -9,8 +9,7 @@ const StatCard = ({ title, icon, bgColor, apiUrl }) => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(apiUrl);
-                console.log(`Response for ${title}:`, response.data);
-                setCount(response.data);
+                setCount(response.data); // Ensure that the API returns just the count
             } catch (error) {
                 console.error(`Error fetching ${title} count:`, error);
                 setCount(0);

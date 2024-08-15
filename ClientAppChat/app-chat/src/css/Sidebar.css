@@ -43,10 +43,3 @@
     color: #D1D5DB;
 }
 
-.content {
-    margin-left: 250px; /* Tạo khoảng trống bên trái để sidebar không đè lên content */
-    padding: 20px;
-    background-color: #2D3748;
-    color: white;
-    height: 100vh;
-}

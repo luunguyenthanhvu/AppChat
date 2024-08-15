@@ -1,44 +1,12 @@
-/* global CKEDITOR */ // Add this to let ESLint know CKEDITOR is defined globally
-
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
 import axios from 'axios';
-import '../../../../../../../../AppChat/ClientAppChat/app-chat/src/css/Notifications.css'; // Your custom styles
+import '../../../css/Notifications.css';
 
 function Notifications() {
-    useEffect(() => {
-        // Initialize CKEditor 4
-        if (window.CKEDITOR) {
-            CKEDITOR.replace('editor', {
-                toolbar: [
-                    { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates'] },
-                    { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
-                    { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt'] },
-                    { name: 'forms', items: ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'] },
-                    '/',
-                    { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat'] },
-                    { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language'] },
-                    { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-                    { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar', 'PageBreak', 'Iframe'] },
-                    '/',
-                    { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
-                    { name: 'colors', items: ['TextColor', 'BGColor'] },
-                    { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
-                ]
-            });
-        }
-
-        return () => {
-            // Safely destroy CKEditor instances
-            if (window.CKEDITOR) {
-                for (let instance in CKEDITOR.instances) {
-                    CKEDITOR.instances[instance].destroy();
-                }
-            }
-        };
-    }, []);
-
     const handleSend = async () => {
-        const editorData = CKEDITOR.instances.editor.getData();
+        const editorData = window.editor.getData();
 
         try {
             const response = await axios.post('http://localhost:5133/api/Notification/send-notification', {
@@ -56,7 +24,40 @@ function Notifications() {
         <div className="notifications-container">
             <div className="push-notifications">
                 <div className="form-group">
-                    <textarea id="editor" placeholder="Message" className="message-input"></textarea>
+                    <CKEditor
+                        editor={ClassicEditor}
+                        config={{
+                            toolbar: [
+                                'heading', '|',
+                                'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', '|',
+                                'fontSize', 'fontColor', 'fontBackgroundColor', '|',
+                                'alignment', 'outdent', 'indent', '|',
+                                'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
+                                'insertTable', 'mediaEmbed', 'imageUpload', '|',
+                                'undo', 'redo', '|',
+                                'removeFormat', 'sourceEditing', '|',
+                                'specialCharacters', 'highlight', 'horizontalLine', 'codeBlock', '|',
+                                'findAndReplace'
+                            ],
+                            fontSize: {
+                                options: [
+                                    9,
+                                    11,
+                                    13,
+                                    'default',
+                                    17,
+                                    19,
+                                    21
+                                ]
+                            },
+                            alignment: {
+                                options: ['left', 'center', 'right', 'justify']
+                            }
+                        }}
+                        onReady={(editor) => {
+                            window.editor = editor;
+                        }}
+                    />
                 </div>
                 <button onClick={handleSend} className="send-button">
                     Send message
