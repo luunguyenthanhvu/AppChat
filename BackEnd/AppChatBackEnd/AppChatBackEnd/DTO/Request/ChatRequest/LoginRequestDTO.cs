@@ -1,4 +1,4 @@
-﻿namespace AppChatBackEnd.DTO.Request.NewFolder
+﻿namespace AppChatBackEnd.DTO.Request.ChatRequest
 {
     public class LoginRequestDTO
     {

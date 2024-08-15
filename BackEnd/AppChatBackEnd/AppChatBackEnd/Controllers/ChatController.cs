@@ -1,4 +1,4 @@
-﻿using AppChatBackEnd.DTO.Request.NewFolder;
+﻿
 using AppChatBackEnd.DTO.Response.ChatResponse;
 using AppChatBackEnd.NewFolder;
 using AppChatBackEnd.Repositories;
@@ -21,7 +21,7 @@ namespace AppChatBackEnd.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
+        public async Task<IActionResult> Login([FromBody] LoginResponseDTO loginRequestDTO)
         {
             var data = await chatRepository.GetUsersByEmail(loginRequestDTO.Email);
 

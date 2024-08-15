@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppChatBackEnd.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240806134238_db app chat")]
-    partial class dbappchat
+    [Migration("20240813115303_ThemTableUserDetailVaRoleMoi")]
+    partial class ThemTableUserDetailVaRoleMoi
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -90,7 +90,6 @@ namespace AppChatBackEnd.Migrations
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Img")
@@ -101,6 +100,9 @@ namespace AppChatBackEnd.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -110,7 +112,84 @@ namespace AppChatBackEnd.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
+                    b.HasIndex("RoleId");
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("AppChatBackEnd.Models.Entities.Role", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("RoleId"));
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("RoleId");
+
+                    b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            RoleId = 1,
+                            RoleName = "admin"
+                        },
+                        new
+                        {
+                            RoleId = 2,
+                            RoleName = "user"
+                        });
+                });
+
+            modelBuilder.Entity("AppChatBackEnd.Models.Entities.UserDetails", b =>
+                {
+                    b.Property<int>("UserDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserDetailId"));
+
+                    b.Property<DateTime?>("Dob")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Img")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Otp")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("OtpExpiryTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Verified")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserDetailId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserDetails");
                 });
 
             modelBuilder.Entity("AppChat.Models.Entities.Friend", b =>
@@ -153,11 +232,41 @@ namespace AppChatBackEnd.Migrations
 
             modelBuilder.Entity("AppChat.Models.Entities.Users", b =>
                 {
+                    b.HasOne("AppChatBackEnd.Models.Entities.Role", "Role")
+                        .WithMany("Users")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("AppChatBackEnd.Models.Entities.UserDetails", b =>
+                {
+                    b.HasOne("AppChat.Models.Entities.Users", "User")
+                        .WithOne("UserDetail")
+                        .HasForeignKey("AppChatBackEnd.Models.Entities.UserDetails", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AppChat.Models.Entities.Users", b =>
+                {
                     b.Navigation("Friends");
 
                     b.Navigation("MessagesReceived");
 
                     b.Navigation("MessagesSent");
+
+                    b.Navigation("UserDetail")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("AppChatBackEnd.Models.Entities.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

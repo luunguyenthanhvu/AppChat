@@ -1,9 +1,16 @@
 using AppChat.Data;
 using AppChat.Mapping;
-using AppChat.Repositories.RepositoriesImpl;
+using AppChatBackEnd.Models.EmailModel;
+using AppChatBackEnd.Models.SecretKeyModel;
 using AppChatBackEnd.Repositories;
 using AppChatBackEnd.Repositories.RepositoriesImpl;
+using AppChatBackEnd.Services.imp;
+using AppChatBackEnd.Services.template;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +42,34 @@ builder.Services.AddCors(options =>
         builder => builder.AllowAnyOrigin()
                           .AllowAnyMethod()
                           .AllowAnyHeader());
+
+});
+// Thêm cấu hình gửi Email
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddSingleton(resolver =>
+    resolver.GetRequiredService<IOptions<MailSettings>>().Value);
+builder.Services.AddTransient<IMailService, MailServiceImpl>();
+// Cấu hình JWT
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+var scretKey = builder.Configuration["AppSettings:SecretKey"];
+var scretKeyByte = Encoding.UTF8.GetBytes(scretKey);
+builder.Services.AddTransient<ISendDataLogin, SendDataLoginImpl>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
+{
+    opt.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        //tự cấp token
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        //ký vào token
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(scretKeyByte),
+
+        ClockSkew = TimeSpan.Zero,
+
+    };
+
+
 });
 var app = builder.Build();
 
