@@ -54,8 +54,7 @@
               "RelativeToolTip": "AppChatBackEnd\\DTO\\Request\\ChangePasswordRequestDTO.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAYAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-14T12:19:38.837Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-08-14T12:19:38.837Z"
             },
             {
               "$type": "Document",
@@ -67,8 +66,7 @@
               "RelativeToolTip": "AppChatBackEnd\\Models\\Entities\\UserDetails.cs",
               "ViewState": "AQIAAAgAAAAAAAAAAAAQwBQAAAAHAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-14T09:09:05.186Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-08-14T09:09:05.186Z"
             },
             {
               "$type": "Document",
@@ -80,8 +78,7 @@
               "RelativeToolTip": "AppChatBackEnd\\DTO\\Response\\MessageResponseDTO.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-14T08:50:58.606Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-08-14T08:50:58.606Z"
             },
             {
               "$type": "Document",
@@ -91,7 +88,7 @@
               "RelativeDocumentMoniker": "AppChatBackEnd\\Controllers\\UserServicesController.cs",
               "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\UserServicesController.cs",
               "RelativeToolTip": "AppChatBackEnd\\Controllers\\UserServicesController.cs",
-              "ViewState": "AQIAAFgAAAAAAAAAAAAowNoAAABvAAAA",
+              "ViewState": "AQIAAFgAAAAAAAAAAAAowGIAAAAnAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-08-14T08:48:08.429Z",
               "EditorCaption": ""
