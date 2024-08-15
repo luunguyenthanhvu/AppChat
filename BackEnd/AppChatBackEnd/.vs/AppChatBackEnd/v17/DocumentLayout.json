@@ -1,46 +1,42 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\",
+  "WorkspaceRootPath": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\new folder\\appchat\\backend\\appchatbackend\\appchatbackend\\controllers\\userservicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\testcode\\appchat\\backend\\appchatbackend\\appchatbackend\\controllers\\userservicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\controllers\\userservicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\new folder\\appchat\\backend\\appchatbackend\\appchatbackend\\migrations\\20240813122025_capnhapthemthuoctinhuserdetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\migrations\\20240813122025_capnhapthemthuoctinhuserdetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\testcode\\appchat\\backend\\appchatbackend\\appchatbackend\\dto\\request\\changepasswordrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\dto\\request\\changepasswordrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\new folder\\appchat\\backend\\appchatbackend\\appchatbackend\\models\\entities\\userdetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\testcode\\appchat\\backend\\appchatbackend\\appchatbackend\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\testcode\\appchat\\backend\\appchatbackend\\appchatbackend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\testcode\\appchat\\backend\\appchatbackend\\appchatbackend\\models\\enums\\friendstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\models\\enums\\friendstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\testcode\\appchat\\backend\\appchatbackend\\appchatbackend\\dto\\request\\friendrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\dto\\request\\friendrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\testcode\\appchat\\backend\\appchatbackend\\appchatbackend\\dto\\request\\createuserrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\dto\\request\\createuserrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\testcode\\appchat\\backend\\appchatbackend\\appchatbackend\\models\\entities\\userdetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\models\\entities\\userdetails.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\new folder\\appchat\\backend\\appchatbackend\\appchatbackend\\models\\entities\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\models\\entities\\users.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\new folder\\appchat\\backend\\appchatbackend\\appchatbackend\\models\\entities\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\models\\entities\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\new folder\\appchat\\backend\\appchatbackend\\appchatbackend\\data\\datacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\data\\datacontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\new folder\\appchat\\backend\\appchatbackend\\appchatbackend\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\new folder\\appchat\\backend\\appchatbackend\\appchatbackend\\dto\\request\\chatrequest\\loginrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\dto\\request\\chatrequest\\loginrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\new folder\\appchat\\backend\\appchatbackend\\appchatbackend\\services\\imp\\mailserviceimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\services\\imp\\mailserviceimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\new folder\\appchat\\backend\\appchatbackend\\appchatbackend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\yukihira souma\\desktop\\testcode\\appchat\\backend\\appchatbackend\\appchatbackend\\dto\\response\\messageresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\dto\\response\\messageresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -50,7 +46,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 13,
           "Children": [
             {
               "$type": "Bookmark",
@@ -69,126 +65,120 @@
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "20240813122025_CapNhapThemThuocTinhUserDetails.cs",
-              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Migrations\\20240813122025_CapNhapThemThuocTinhUserDetails.cs",
-              "RelativeDocumentMoniker": "AppChatBackEnd\\Migrations\\20240813122025_CapNhapThemThuocTinhUserDetails.cs",
-              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Migrations\\20240813122025_CapNhapThemThuocTinhUserDetails.cs",
-              "RelativeToolTip": "AppChatBackEnd\\Migrations\\20240813122025_CapNhapThemThuocTinhUserDetails.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAjAAAA",
+              "Title": "ChangePasswordRequestDTO.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Request\\ChangePasswordRequestDTO.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Request\\ChangePasswordRequestDTO.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Request\\ChangePasswordRequestDTO.cs",
+              "RelativeToolTip": "AppChatBackEnd\\DTO\\Request\\ChangePasswordRequestDTO.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-13T12:20:25.255Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "DataContext.cs",
-              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Data\\DataContext.cs",
-              "RelativeDocumentMoniker": "AppChatBackEnd\\Data\\DataContext.cs",
-              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Data\\DataContext.cs",
-              "RelativeToolTip": "AppChatBackEnd\\Data\\DataContext.cs",
-              "ViewState": "AQIAAGQAAAAAAAAAAAAIwG4AAAA8AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-13T10:53:24.746Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "MailServiceImpl.cs",
-              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Services\\imp\\MailServiceImpl.cs",
-              "RelativeDocumentMoniker": "AppChatBackEnd\\Services\\imp\\MailServiceImpl.cs",
-              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Services\\imp\\MailServiceImpl.cs",
-              "RelativeToolTip": "AppChatBackEnd\\Services\\imp\\MailServiceImpl.cs",
-              "ViewState": "AQIAAAoAAAAAAAAAAAAgwAMAAAAGAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-13T11:10:16.861Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Users.cs",
-              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Entities\\Users.cs",
-              "RelativeDocumentMoniker": "AppChatBackEnd\\Models\\Entities\\Users.cs",
-              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Entities\\Users.cs",
-              "RelativeToolTip": "AppChatBackEnd\\Models\\Entities\\Users.cs",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAAAA8AAAAWAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-13T11:03:12.475Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\appsettings.json",
-              "RelativeDocumentMoniker": "AppChatBackEnd\\appsettings.json",
-              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\appsettings.json",
-              "RelativeToolTip": "AppChatBackEnd\\appsettings.json",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAAADAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-08-13T11:08:56.508Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "UserServicesController.cs",
-              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\UserServicesController.cs",
-              "RelativeDocumentMoniker": "AppChatBackEnd\\Controllers\\UserServicesController.cs",
-              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\UserServicesController.cs",
-              "RelativeToolTip": "AppChatBackEnd\\Controllers\\UserServicesController.cs",
-              "ViewState": "AQIAACMAAAAAAAAAAAAWwDkAAAAbAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-13T10:59:27.094Z",
+              "WhenOpened": "2024-08-15T13:04:37.932Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "UserDetails.cs",
-              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Entities\\UserDetails.cs",
-              "RelativeDocumentMoniker": "AppChatBackEnd\\Models\\Entities\\UserDetails.cs",
-              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Entities\\UserDetails.cs",
-              "RelativeToolTip": "AppChatBackEnd\\Models\\Entities\\UserDetails.cs",
-              "ViewState": "AQIAAAkAAAAAAAAAAAAzwBQAAAAuAAAA",
+              "Title": "UserController.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Controllers\\UserController.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\UserController.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Controllers\\UserController.cs",
+              "ViewState": "AQIAADEAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-13T11:32:18.023Z"
+              "WhenOpened": "2024-08-15T13:04:21.574Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Program.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Program.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Program.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Program.cs",
+              "ViewState": "AQIAABQAAAAAAAAAAAAvwCIAAAA6AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-15T13:03:23.573Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "Role.cs",
-              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Entities\\Role.cs",
-              "RelativeDocumentMoniker": "AppChatBackEnd\\Models\\Entities\\Role.cs",
-              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Entities\\Role.cs",
-              "RelativeToolTip": "AppChatBackEnd\\Models\\Entities\\Role.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAVAAAA",
+              "Title": "FriendStatus.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Enums\\FriendStatus.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Models\\Enums\\FriendStatus.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Enums\\FriendStatus.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Models\\Enums\\FriendStatus.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-13T11:38:11.056Z"
+              "WhenOpened": "2024-08-15T13:02:45.677Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "FriendRequestDTO.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Request\\FriendRequestDTO.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Request\\FriendRequestDTO.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Request\\FriendRequestDTO.cs",
+              "RelativeToolTip": "AppChatBackEnd\\DTO\\Request\\FriendRequestDTO.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-15T13:02:31.582Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "ChatController.cs",
-              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\ChatController.cs",
-              "RelativeDocumentMoniker": "AppChatBackEnd\\Controllers\\ChatController.cs",
-              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\ChatController.cs",
-              "RelativeToolTip": "AppChatBackEnd\\Controllers\\ChatController.cs",
-              "ViewState": "AQIAABAAAAAAAAAAAAD4vxcAAABKAAAA",
+              "Title": "CreateUserRequestDTO.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Request\\CreateUserRequestDTO.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Request\\CreateUserRequestDTO.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Request\\CreateUserRequestDTO.cs",
+              "RelativeToolTip": "AppChatBackEnd\\DTO\\Request\\CreateUserRequestDTO.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-13T11:27:16.567Z"
+              "WhenOpened": "2024-08-15T13:01:36.549Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 7,
-              "Title": "LoginRequestDTO.cs",
-              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Request\\ChatRequest\\LoginRequestDTO.cs",
-              "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Request\\ChatRequest\\LoginRequestDTO.cs",
-              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Request\\ChatRequest\\LoginRequestDTO.cs",
-              "RelativeToolTip": "AppChatBackEnd\\DTO\\Request\\ChatRequest\\LoginRequestDTO.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAApAAAA",
+              "Title": "UserDetails.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Entities\\UserDetails.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Models\\Entities\\UserDetails.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Entities\\UserDetails.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Models\\Entities\\UserDetails.cs",
+              "ViewState": "AQIAAAgAAAAAAAAAAAAQwBQAAAAHAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-13T11:23:30.424Z"
+              "WhenOpened": "2024-08-14T09:09:05.186Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "MessageResponseDTO.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Response\\MessageResponseDTO.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Response\\MessageResponseDTO.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Response\\MessageResponseDTO.cs",
+              "RelativeToolTip": "AppChatBackEnd\\DTO\\Response\\MessageResponseDTO.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-14T08:50:58.606Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UserServicesController.cs",
+              "DocumentMoniker": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\UserServicesController.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Controllers\\UserServicesController.cs",
+              "ToolTip": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\UserServicesController.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Controllers\\UserServicesController.cs",
+              "ViewState": "AQIAALcAAAAAAAAAAAAAAFMAAABvAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-14T08:48:08.429Z",
+              "EditorCaption": ""
             }
           ]
         }
