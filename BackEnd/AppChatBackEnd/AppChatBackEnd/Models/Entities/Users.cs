@@ -20,7 +20,6 @@ namespace AppChat.Models.Entities
         public ICollection<Message> MessagesSent { get; set; } 
         public ICollection<Message> MessagesReceived { get; set; }
         public int RoleId { get; set; }
-
         public Role Role { get; set; }
         public UserDetails UserDetail { get; set; }
     }

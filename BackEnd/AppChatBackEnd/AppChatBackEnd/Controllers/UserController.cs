@@ -79,5 +79,48 @@ namespace AppChatBackEnd.Controllers
         {
             return BCrypt.Net.BCrypt.HashPassword(password);
         }
+
+        [HttpGet("all-users")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+                // Fetch only the necessary fields
+                var users = await _context.Users
+                    .Select(u => new
+                    {
+                        u.UserId,
+                        u.UserName,
+                        u.Email,
+                    })
+                    .ToListAsync();
+
+                return Ok(users); // Returns only the selected fields in JSON format
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details here for further investigation
+                return StatusCode(500, "An error occurred while fetching the users: " + ex.Message);
+            }
+        }
+
+        [HttpGet("count-users")]
+        public async Task<IActionResult> CountUsers()
+        {
+            try
+            {
+                var userCount = await _context.Users.CountAsync();
+                return Ok(userCount); // Trả về số lượng người dùng
+            }
+            catch (Exception ex)
+            {
+                // Ghi log chi tiết ngoại lệ để điều tra thêm
+                return StatusCode(500, "An error occurred while counting the users: " + ex.Message);
+            }
+        }
+
+
+
+
     }
 }
