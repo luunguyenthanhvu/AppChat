@@ -1,0 +1,143 @@
+/* AdminDashboard.css */
+
+.admin-dashboard {
+    display: flex;
+    height: 100vh; /* Chiếm toàn bộ chiều cao màn hình */
+    background-color: #1E1E2F;
+    color: #ffffff;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #2C2C3B;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box; /* Đảm bảo padding không làm thay đổi kích thước thực tế */
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.sidebar-logo img {
+    width: 40px;
+    margin-right: 10px;
+}
+
+.sidebar h2 {
+    font-size: 18px;
+    margin: 0;
+}
+
+.sidebar-menu {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.sidebar-item {
+    margin: 15px 0;
+}
+
+.sidebar-item a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.sidebar-item a:hover {
+    color: #4CAF50;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.stats-cards {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    width: 23%; /* Điều chỉnh để các card hiển thị đều nhau */
+    padding: 20px;
+    background-color: #323248;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card img {
+    width: 40px;
+}
+
+.stat-card h3 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.stat-card p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.main-content h1 {
+    margin-bottom: 20px;
+}
+
+.main-content h2 {
+    margin-top: 20px;
+}
+
+.user-list, .group-list {
+    margin-top: 20px;
+}
+
+.user-list table, .group-list table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-list th, .user-list td, .group-list th, .group-list td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.user-list th, .group-list th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Additional customization */
+.sidebar-item {
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+.sidebar-item a.active {
+    color: #4CAF50;
+}
+
+.sidebar-logo img {
+    width: 50px;
+    margin-right: 15px;
+}
+
+.sidebar h2 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.sidebar-menu {
+    padding-top: 20px;
+}

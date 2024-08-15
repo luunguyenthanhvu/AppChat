@@ -1,0 +1,51 @@
+.notifications-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    color: rgba(222, 193, 74, 0.95);
+}
+
+.push-notifications {
+    background-color: #2e2f45;
+    padding: 50px;
+    border-radius: 15px;
+    text-align: center;
+    width: 90%;
+    max-width: 1200px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.ck-editor__editable {
+    min-height: 330px;
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    padding: 20px;
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.2);
+    font-size: 18px;
+}
+
+.ck-editor__top {
+    flex-wrap: wrap; /* Cho phép toolbar bung ra nhiều dòng */
+    max-height: none; /* Loại bỏ giới hạn chiều cao */
+}
+
+.send-button {
+    margin-top: 30px;
+    background-color: #007bff;
+    color: white;
+    padding: 20px 40px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 20px;
+    width: 30%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.send-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.1);
+}

@@ -1,4 +1,4 @@
-﻿using AppChat.Data;
+using AppChat.Data;
 using AppChat.Mapping;
 using AppChatBackEnd.Models.EmailModel;
 using AppChatBackEnd.Models.SecretKeyModel;
@@ -35,8 +35,6 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 // inject repo
 builder.Services.AddScoped<IChatRepository, ChatRepositoryImpl>();
-
-
 // accept cors
 builder.Services.AddCors(options =>
 {
@@ -74,6 +72,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 });
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
