@@ -28,18 +28,18 @@ function Users() {
         fetchUsers();
     }, []);
 
-    const filteredUsers = users.filter(user => {
-        const lowerSearchTerm = searchTerm.toLowerCase();
-        const match = searchFilter
-            ? (searchFilter === 'username' && user.UserName && user.UserName.toLowerCase().includes(lowerSearchTerm)) ||
-            (searchFilter === 'email' && user.Email && user.Email.toLowerCase().includes(lowerSearchTerm)) ||
-            (searchFilter === 'id' && user.UserId && user.UserId.toString().includes(lowerSearchTerm))
-            : (user.UserName && user.UserName.toLowerCase().includes(lowerSearchTerm)) ||
-            (user.Email && user.Email.toLowerCase().includes(lowerSearchTerm)) ||
-            (user.UserId && user.UserId.toString().includes(lowerSearchTerm));
-
-        return match;
-    });
+    // const filteredUsers = users.filter(user => {
+    //     const lowerSearchTerm = searchTerm.toLowerCase();
+    //     const match = searchFilter
+    //         ? (searchFilter === 'username' && user.UserName && user.UserName.toLowerCase().includes(lowerSearchTerm)) ||
+    //         (searchFilter === 'email' && user.Email && user.Email.toLowerCase().includes(lowerSearchTerm)) ||
+    //         (searchFilter === 'id' && user.UserId && user.UserId.toString().includes(lowerSearchTerm))
+    //         : (user.UserName && user.UserName.toLowerCase().includes(lowerSearchTerm)) ||
+    //         (user.Email && user.Email.toLowerCase().includes(lowerSearchTerm)) ||
+    //         (user.UserId && user.UserId.toString().includes(lowerSearchTerm));
+    //
+    //     return match;
+    // });
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -92,9 +92,9 @@ function Users() {
                 {filteredUsers.length > 0 ? (
                     filteredUsers.map(user => (
                         <tr key={user.UserId}>
-                            <td>{user.UserId}</td>
-                            <td>@{user.UserName}</td>
-                            <td>{user.Email}</td>
+                            <td>{user.userId}</td>
+                            <td>@{user.userName}</td>
+                            <td>{user.email}</td>
                         </tr>
                     ))
                 ) : (

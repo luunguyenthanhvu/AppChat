@@ -1,56 +1,66 @@
-import React, { useState } from 'react';
+/* global CKEDITOR */ // Add this to let ESLint know CKEDITOR is defined globally
+
+import React, { useEffect } from 'react';
 import axios from 'axios';
-import '../../../css/Notifications.css'; // Đảm bảo bạn có CSS tương tự để tạo phong cách như hình ảnh
+import '../../../../../../../../AppChat/ClientAppChat/app-chat/src/css/Notifications.css'; // Your custom styles
 
 function Notifications() {
-    const [title, setTitle] = useState('');
-    const [message, setMessage] = useState('');
-    const [status, setStatus] = useState('');
+    useEffect(() => {
+        // Initialize CKEditor 4
+        if (window.CKEDITOR) {
+            CKEDITOR.replace('editor', {
+                toolbar: [
+                    { name: 'document', items: ['Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates'] },
+                    { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
+                    { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'Scayt'] },
+                    { name: 'forms', items: ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'] },
+                    '/',
+                    { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'CopyFormatting', 'RemoveFormat'] },
+                    { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language'] },
+                    { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+                    { name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'SpecialChar', 'PageBreak', 'Iframe'] },
+                    '/',
+                    { name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize'] },
+                    { name: 'colors', items: ['TextColor', 'BGColor'] },
+                    { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
+                ]
+            });
+        }
+
+        return () => {
+            // Safely destroy CKEditor instances
+            if (window.CKEDITOR) {
+                for (let instance in CKEDITOR.instances) {
+                    CKEDITOR.instances[instance].destroy();
+                }
+            }
+        };
+    }, []);
 
     const handleSend = async () => {
+        const editorData = CKEDITOR.instances.editor.getData();
+
         try {
             const response = await axios.post('http://localhost:5133/api/Notification/send-notification', {
-                title,
-                message
+                message: editorData
             });
 
-            if (response.data.Success) {
-                setStatus('Notification sent successfully!');
-            } else {
-                setStatus('Failed to send notification.');
-            }
+            alert(response.data.Success ? 'Notification sent successfully!' : 'Failed to send notification.');
         } catch (error) {
             console.error('Error sending notification:', error);
-            setStatus('Error occurred while sending notification.');
+            alert('Error occurred while sending notification.');
         }
     };
 
     return (
         <div className="notifications-container">
             <div className="push-notifications">
-                <h2>Push notifications</h2>
-                <p>Send push notifications to all users</p>
                 <div className="form-group">
-                    <input
-                        type="text"
-                        placeholder="Title (optional)"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className="title-input"
-                    />
-                </div>
-                <div className="form-group">
-                    <textarea
-                        placeholder="Message"
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        className="message-input"
-                    />
+                    <textarea id="editor" placeholder="Message" className="message-input"></textarea>
                 </div>
                 <button onClick={handleSend} className="send-button">
                     Send message
                 </button>
-                {status && <p className="status-message">{status}</p>}
             </div>
         </div>
     );
