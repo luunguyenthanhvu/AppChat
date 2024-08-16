@@ -24,6 +24,11 @@ builder.Services.AddDbContext<DataContext>(options =>
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("WebApiDatabase"))
     ));
 
+// setting cloudinary
+builder.Services.Configure<AppChatBackEnd.CloudinarySetting.CloudinarySettings>(
+    builder.Configuration.GetSection("CloudinarySettings")
+);
+
 // Add auto mapper
 builder.Services.AddAutoMapper(typeof(Program));
 

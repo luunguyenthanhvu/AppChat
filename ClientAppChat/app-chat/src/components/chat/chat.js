@@ -4,8 +4,40 @@ import './chat.css';
 import EmojiPicker from 'emoji-picker-react';
 import Loader from "react-spinners/SyncLoader";
 import { formatDistanceToNow } from 'date-fns';
-function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendMessage}) {
+import { FilePond, File, registerPlugin } from 'react-filepond';
+import 'filepond/dist/filepond.min.css';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import axios from 'axios';
+import { BACKEND_URL_HTTP, BACKEND_URL_HTTPS } from '../../config.js';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
+import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
+import FilePondPluginImageEdit from 'filepond-plugin-image-edit';
+import FilePondPluginImageCrop from 'filepond-plugin-image-crop';
+import FilePondPluginImageTransform from 'filepond-plugin-image-transform';
+import FilePondPluginImageFilter from 'filepond-plugin-image-filter';
 
+// Đăng ký các plugin
+registerPlugin(
+    FilePondPluginImagePreview,
+    FilePondPluginImageExifOrientation,
+    FilePondPluginFileValidateSize,
+    FilePondPluginImageEdit,
+    FilePondPluginImageCrop,
+    FilePondPluginImageTransform,
+    FilePondPluginImageFilter
+);
+
+function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendMessage}) {
+    const [isUploading, setIsUploading] = useState(false);
+
+    const handleFileChange = (fileItems) => {
+        if (fileItems.length > 0) {
+            setIsUploading(true);
+        } else {
+            setIsUploading(false);
+        }
+    };
     const [message, setMessage] = useState('');
     const [openEmoji, setOpenEmoji] = useState(false);
     const handleEmoji = e => {
@@ -32,10 +64,107 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
     const handleSendMessage = () => {
         if (message) {
             console.log(chattingWith)
-            sendMessage(chattingWith.userId, message)
+            sendMessage(chattingWith.userId, message, false)
             setMessage('');
         }
     }
+
+    // for user send to other a image
+    const [imageFile, setImageFile] = useState('');
+    const filePondRef = useRef(null);
+    const [showFilePond, setShowFilePond] = useState(false);
+
+    const handleChatImg = () => {
+        setShowFilePond(true);
+        filePondRef.current.browse();
+        if (filePondRef.current) {
+            filePondRef.current.browse(); // Chỉ gọi browse nếu ref không null
+        } else {
+            console.warn('FilePond component is not yet rendered or ref is not set.');
+        }
+    };
+    const handleFileImageChange = (fileItems) => {
+        setImageFile(fileItems.map(fileItem => fileItem.file));
+    };
+
+
+    const [imgList, setImgList] = useState([]);
+  
+
+    const handleProcess = async (fieldName, file, metadata, load, error, progress, abort) => {
+        try {
+            const signatureResponse = await axios.get(`http://${BACKEND_URL_HTTP}/api/cloudinary`);
+            //get-signature
+            console.log("signature ne" + signatureResponse.data.apiKey + signatureResponse.data.signature);
+            
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("api_key", signatureResponse.data.apiKey); 
+            formData.append("signature", signatureResponse.data.signature);
+            formData.append("timestamp", signatureResponse.data.timestamp);
+            
+    
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', 'https://api.cloudinary.com/v1_1/dter3mlpl/image/upload');
+          
+          xhr.upload.onprogress = (event) => {
+            const progressPercentage = Math.round((event.loaded / event.total) * 100);
+            progress(progressPercentage);
+          };
+    
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              const response = JSON.parse(xhr.responseText);
+              const public_id = response.public_id;
+              
+              setImgList((prevList) => [
+                ...prevList,
+                {
+                  publicId: response.public_id,
+                  assetId: response.asset_id,
+                  url: response.url
+                }
+              ]);
+    
+              load(public_id);
+            } else {
+              error('Upload error');
+            }
+          };
+    
+          xhr.onerror = () => {
+            error('Upload error');
+          };
+    
+          xhr.send(formData);
+    
+          // Trả về một hàm để xử lý việc hủy upload
+          return {
+            abort: () => {
+              xhr.abort();
+              abort();
+            }
+          };
+        } catch (err) {
+          console.error(err);
+          error('Error occurred during upload');
+        }
+      };
+    
+      const handleRevert = (source, load, error) => {
+        const removeImage = async () => {
+          try {
+            await axios.get(`${window.context}/cloudinary/remove-image`, { params: { id: source } });
+            setImgList((prevList) => prevList.filter((img) => img.publicId !== source));
+            load();
+          } catch (err) {
+            console.error('Error removing image:', err);
+            error('Error occurred during removal');
+          }
+        };
+    
+        removeImage();
+      };
 
     if (loadingUser) {
         return (
@@ -127,7 +256,7 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
                                 {/* Chỉ hiển thị hình ảnh nếu tin nhắn trước đó không phải của cùng người gửi */}
                                 {chattingWith.userId !== message.receiverId && <img src={chattingWith.img} alt='Avatar' className={hiddenImg} />}
                                 <div className='texts'>
-                                    <p>{message.content}</p>
+                                    {!message.isImage ? <p>{message.content}</p> :  <img src={message.content} alt=''></img>}
                                     {(showTimestamp) && <span>{formatDate(message.timestamp)}</span>}
                                 </div>
                             </div>
@@ -136,29 +265,6 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
                 )}
             </div>
             {/* <div className='center'>
-                <div className='message'>
-                    <img src='./avatar.jpg' />
-                    <div className='texts'>
-                        <p>
-                            Lodasdjklnqwledrjkaslkdjaslkdjsalk
-                            Lodasdjklnqwledrjkaslkdjaslkdjsalk
-                            Lodasdjklnqwledrjkaslkdjaslkdjsalk
-                            valuev
-                            qweasdqwedkmaskdjlqkwjelkqwjlkadsjlasdsadasdasdasdsdsdsdasdasdsadasdasdssdasdasdasdasdasdasdasdasdsadaasdasdsadasdasdsad
-                            Lodasdjklnqwledrjkaslkdjaslkdjsalk
-                            Lodasdjklnqwledrjkaslkdjaslkdjsalk
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
-                <div className='message own'>
-                    <div className='texts'>
-                        <p>
-                            Lodasdjklnqwledrjkaslkdjaslkdjsalk
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
                 <div className='message own'>
                     <div className='texts'>
                         <img src='./1219692.jpg' alt=''></img>
@@ -169,21 +275,40 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
                     </div>
                 </div>
             </div> */}
-
+             {showFilePond && (
+                <FilePond
+                    ref={filePondRef}
+                    files={imageFile}
+                    onupdatefiles={handleFileImageChange}
+                    allowMultiple={false}
+                    acceptedFileTypes={['image/*']}
+                    server={{
+                        process: handleProcess,
+                        revert: handleRevert
+                    }}
+                    name="files"
+                    labelIdle='Input your image'
+                    id='filePond'
+                />
+            )}
             <div className='bottom'>
+        
                 <div className='icons'>
-                    <img src='./img.png'/>
-                    <img src='./camera.png'/>
-                    <img src='./mic.png'/>
+                        <img src='./img.png' onClick={handleChatImg}/>
+                        <img src='./camera.png'/>
+                        <img src='./mic.png'/>
                 </div>
 
-                <input type='text'
+                <input
+                    type='text'
                     value={message}
                     placeholder='Type a message...'
-                    onChange={e => setMessage(e.target.value)} />
+                    onChange={e => setMessage(e.target.value)}
+                />
+            
                 
-                 <div className='emoji'>
-                    <img src='./emoji.png' onClick={() => setOpenEmoji((prev) => !prev) }/>
+                <div className='emoji'>
+                    <img src='./emoji.png' onClick={() => setOpenEmoji(prev => !prev)} alt='Emoji Icon' />
                     <div className='picker'>
                         <EmojiPicker open={openEmoji} onEmojiClick={handleEmoji} />
                     </div>

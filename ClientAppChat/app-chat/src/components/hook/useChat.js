@@ -45,11 +45,11 @@ const useChat = () => {
         };
     }, []);
 
-    const sendMessage = async (recipientUserId, message) => {
+    const sendMessage = async (recipientUserId, message, isImage) => {
         if (connection) {
             try {
                 console.log(recipientUserId, message)
-                await connection.invoke("SendMessage", recipientUserId.toString(), message.toString());
+                await connection.invoke("SendMessage", recipientUserId.toString(), message.toString(), isImage);
             } catch (err) {
                 console.log("send fail: " + err);
             }

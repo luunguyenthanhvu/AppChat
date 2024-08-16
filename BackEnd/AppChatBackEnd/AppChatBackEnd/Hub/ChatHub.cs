@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.SignalR;
 using System.ComponentModel;
 using System.IO;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AppChatBackEnd.ChatHub
 {
@@ -82,7 +83,7 @@ namespace AppChatBackEnd.ChatHub
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task SendMessage(string recipientUserId, string message)
+        public async Task SendMessage(string recipientUserId, string message,bool isImage)
         { 
             var senderUserId = Context.Items["UserId"] +"";
             var connectionsRecipents = _userSessionManager.GetConnections(recipientUserId);
@@ -100,7 +101,8 @@ namespace AppChatBackEnd.ChatHub
                 SenderId = int.Parse(senderUserId),
                 ReceiverId = int.Parse(recipientUserId),
                 Content = message,
-                Timestamp = DateTime.Now
+                Timestamp = DateTime.Now,
+                IsImage = isImage
             };
 
             var messageSave = new Message
@@ -108,7 +110,8 @@ namespace AppChatBackEnd.ChatHub
                 SenderId = int.Parse(senderUserId),
                 ReceiverId = int.Parse(recipientUserId),
                 Content = message,
-                Timestamp = DateTime.Now
+                Timestamp = DateTime.Now,
+                isImage = isImage
             };
 
             await _chatRepository.SaveMessagesToDatabase(messageSave);

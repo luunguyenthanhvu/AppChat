@@ -80,7 +80,8 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
                     SenderId = mainUser.UserId,
                     ReceiverId = friendUser.UserId,
                     Content = $"Hello {friendUser.UserName}, this is a message from {mainUser.UserName}.",
-                    Timestamp = DateTime.UtcNow
+                    Timestamp = DateTime.UtcNow,
+                    isImage = false,
                 });
 
                 // Tạo một vài tin nhắn từ bạn bè gửi đến mainUser
@@ -89,7 +90,8 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
                     SenderId = friendUser.UserId,
                     ReceiverId = mainUser.UserId,
                     Content = $"Hi {mainUser.UserName}, this is a reply from {friendUser.UserName}.",
-                    Timestamp = DateTime.UtcNow.AddMinutes(5) // Thời gian gửi sau tin nhắn trước 5 phút
+                    Timestamp = DateTime.UtcNow.AddMinutes(5),
+                    isImage = false,
                 });
             }
 
@@ -146,7 +148,8 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
                                       m.Content,
                                       m.SenderId,
                                       m.ReceiverId,
-                                      m.Timestamp
+                                      m.Timestamp,
+                                      m.isImage
                                   }).ToListAsync();
 
             // Tạo danh sách kết quả với tin nhắn cuối cùng cho mỗi bạn bè
@@ -160,15 +163,25 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
                                           .FirstOrDefault();
 
                 var isMine = lastMessage?.SenderId == currentUserId;
+                var isImg = lastMessage.isImage;
+                var messageContent = "";
+                if (isImg)
+                {
+                    messageContent = isMine ? $"You: Image.png" : "Image.png" ?? string.Empty;
+                } else
+                {
+                    messageContent = isMine ? $"You: {lastMessage?.Content}" : lastMessage?.Content ?? string.Empty;
+                }
 
                 return new UserListChatResponseDTO
                 {
                     UserId = friend.UserId,
                     UserName = friend.UserName,
                     Img = friend.Img,
-                    MessageContent = isMine ? $"You: {lastMessage?.Content}" : lastMessage?.Content ?? string.Empty,
+                    MessageContent = messageContent,
                     IsMine = isMine,
-                    Timestamp = lastMessage?.Timestamp ?? DateTime.Now 
+                    Timestamp = lastMessage?.Timestamp ?? DateTime.Now ,
+                    IsImage = lastMessage.isImage
                 };
             })
                 .OrderByDescending(chat => chat.Timestamp)
@@ -212,7 +225,8 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
                                       m.Content,
                                       m.SenderId,
                                       m.ReceiverId,
-                                      m.Timestamp
+                                      m.Timestamp,
+                                      m.isImage
                                   }).ToListAsync();
 
             // Tạo danh sách kết quả với tin nhắn cuối cùng cho mỗi bạn bè
@@ -226,15 +240,26 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
                                           .FirstOrDefault();
 
                 var isMine = lastMessage?.SenderId == currentUserId;
+                var isImg = lastMessage.isImage;
+                var messageContent = "";
+                if (isImg)
+                {
+                    messageContent = isMine ? $"You: Image.png" : "Image.png" ?? string.Empty;
+                }
+                else
+                {
+                    messageContent = isMine ? $"You: {lastMessage?.Content}" : lastMessage?.Content ?? string.Empty;
+                }
 
                 return new UserListChatResponseDTO
                 {
                     UserId = friend.UserId,
                     UserName = friend.UserName,
                     Img = friend.Img,
-                    MessageContent = isMine ? $"You: {lastMessage?.Content}" : lastMessage?.Content ?? string.Empty,
+                    MessageContent = messageContent,
                     IsMine = isMine,
-                    Timestamp = lastMessage?.Timestamp ?? DateTime.Now
+                    Timestamp = lastMessage?.Timestamp ?? DateTime.Now,
+                    IsImage = lastMessage.isImage
                 };
             })
                 .OrderByDescending(chat => chat.Timestamp)
@@ -264,7 +289,8 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
                SenderId = m.SenderId,
                Content = m.Content,
                ReceiverId = m.ReceiverId,
-               Timestamp = m.Timestamp
+               Timestamp = m.Timestamp,
+               IsImage = m.isImage
             }).ToList();
 
             return messageDtos;

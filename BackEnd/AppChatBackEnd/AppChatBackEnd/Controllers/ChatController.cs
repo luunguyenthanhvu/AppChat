@@ -2,7 +2,6 @@
 using AppChatBackEnd.Connection.NewFolder;
 using AppChatBackEnd.DTO.Request.NewFolder;
 using AppChatBackEnd.DTO.Response.ChatResponse;
-using AppChatBackEnd.NewFolder;
 using AppChatBackEnd.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
