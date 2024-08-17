@@ -160,7 +160,9 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
     
         removeImage();
     };
-    
+    const handleInputBlur = () => {
+        setShowFilePond(false);
+    }
     useEffect(() => {
         console.log("img ne")
         console.log(imageMessage)
@@ -257,7 +259,19 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
                                 {/* Chỉ hiển thị hình ảnh nếu tin nhắn trước đó không phải của cùng người gửi */}
                                 {chattingWith.userId !== message.receiverId && <img src={chattingWith.img} alt='Avatar' className={hiddenImg} />}
                                 <div className='texts'>
-                                    {!message.isImage ? <p>{message.content}</p> :  <img src={message.content} alt=''></img>}
+                                    {!message.isImage ?
+                                        <p>{message.content}</p>
+                                        :
+                                        <img
+                                            src={message.content}
+                                            alt=''
+                                            style={{
+                                                width:'300px',
+                                                maxWidth: '400px', 
+                                                height: 'auto',
+                                                objectFit: 'cover' 
+                                            }}  
+                                        />}
                                     {(showTimestamp) && <span>{formatDate(message.timestamp)}</span>}
                                 </div>
                             </div>
@@ -265,17 +279,6 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
                     })                    
                 )}
             </div>
-            {/* <div className='center'>
-                <div className='message own'>
-                    <div className='texts'>
-                        <img src='./1219692.jpg' alt=''></img>
-                        <p>
-                            Lodasdjklnqwledrjkaslkdjaslkdjsalk
-                        </p>
-                        <span>1 min ago</span>
-                    </div>
-                </div>
-            </div> */}
              {showFilePond && (
                 <FilePond
                   ref={filePondRef}
@@ -306,6 +309,7 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
                     id='imageFileInput'
                     style={{ display: 'none' }}
                     onChange={handleFileChange}
+                    onBlur={handleInputBlur}
                 />
 
                 <input

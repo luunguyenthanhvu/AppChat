@@ -138,7 +138,11 @@ function Home() {
                         chattingContent={chattingContent}
                         sendMessage={sendMessage}
                     ></Chat>
-                    <Details></Details>
+                    <Details
+                        chattingWith={chattingWith}
+                    >
+
+                    </Details>
                 </div>
             </div>
         </div>
