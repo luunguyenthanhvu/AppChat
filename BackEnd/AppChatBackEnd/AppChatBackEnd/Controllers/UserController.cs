@@ -148,6 +148,27 @@ namespace AppChatBackEnd.Controllers
             return Ok(new { message = "User profile updated successfully." });
         }
 
+        // cậo nhật user avatar
+        [HttpPut("update-user-avatar")]
+        public async Task<IActionResult> UpdateUserAvatar([FromBody] UpdateUserAvatarRequestDTO request)
+        {
+            if (request == null)
+            {
+                return BadRequest("Invalid request data.");
+            }
+
+            var user = await _context.Users.FindAsync(request.UserId);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            //var newUser = _mapper.Map<Users>(request);
+            if (request.Img != null)
+                user.Img = request.Img;
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "User avatar updated successfully." });
+        }
 
     }
 }
