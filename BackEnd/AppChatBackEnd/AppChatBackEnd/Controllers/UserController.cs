@@ -120,6 +120,56 @@ namespace AppChatBackEnd.Controllers
         }
 
 
+        // cậo nhật user profile
+        [HttpPut("update-user-infor-profile")]
+        public async Task<IActionResult> UpdateUserInforProfile([FromBody] UpdateUserInforProfileRequestDTO request)
+        {
+            if (request == null)
+            {
+                return BadRequest("Invalid request data.");
+            }
+
+            var user = _context.Users
+                .Include(u => u.UserDetail)
+                .FirstOrDefault(u => u.UserId == request.UserId);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            //var newUser = _mapper.Map<Users>(request);
+            if (request.UserName != null)
+                user.UserName = request.UserName;
+            if (request.Gender != null)
+                user.UserDetail.Gender = request.Gender;
+            if (request.DateOfBirth != null)
+                user.UserDetail.Dob = request.DateOfBirth;
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "User profile updated successfully." });
+        }
+
+        // cậo nhật user avatar
+        [HttpPut("update-user-avatar")]
+        public async Task<IActionResult> UpdateUserAvatar([FromBody] UpdateUserAvatarRequestDTO request)
+        {
+            if (request == null)
+            {
+                return BadRequest("Invalid request data.");
+            }
+
+            var user = await _context.Users.FindAsync(request.UserId);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            //var newUser = _mapper.Map<Users>(request);
+            if (request.Img != null)
+                user.Img = request.Img;
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "User avatar updated successfully." });
+        }
 
 
     }
