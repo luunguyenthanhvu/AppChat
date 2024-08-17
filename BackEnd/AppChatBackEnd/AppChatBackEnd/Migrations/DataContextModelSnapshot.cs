@@ -69,6 +69,9 @@ namespace AppChatBackEnd.Migrations
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<bool>("isImage")
+                        .HasColumnType("tinyint(1)");
+
                     b.HasKey("MessageId");
 
                     b.HasIndex("ReceiverId");

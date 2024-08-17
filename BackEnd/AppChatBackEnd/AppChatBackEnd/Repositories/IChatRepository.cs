@@ -6,10 +6,13 @@ namespace AppChatBackEnd.Repositories
     public interface IChatRepository
     {
         Task<Users?> GetUsersByEmail(String email);
-
+        Task<Users> GetUsersById(int id);
         Task<Users?> CreateDefault();
 
         Task<List<UserListChatResponseDTO>> GetUsersListChatByEmail(String email);
+        Task<List<UserListChatResponseDTO>> GetUsersListChatById(int id);
         Task<List<ListMessageResponseDTO>> GetUserMessage(int userId, int userChattingId);
+
+        Task SaveMessagesToDatabase(Message messages);
     }
 }

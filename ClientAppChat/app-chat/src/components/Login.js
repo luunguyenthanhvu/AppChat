@@ -2,6 +2,7 @@ import React, {createContext, useState, useContext } from 'react';
 import { FaEnvelope, FaLock, FaSignInAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import '../css/login.css';
+import { BACKEND_URL_HTTP, BACKEND_URL_HTTPS } from '../config.js';
 import imgHolder from '../img/login-holder.jpg';
 import iconGoogle from '../img/google-icon.png';
 import iconFaceBook from '../img/facebook.png';
@@ -44,18 +45,19 @@ function Login() {
         } else {
 
             try {
-                const response = await axios.post('http://localhost:5133/api/chat/login', {
+                const response = await axios.post(`http://${BACKEND_URL_HTTP}/api/chat/login`, {
                     email: username,
                     password : password
                 });
 
                     // Giả sử token và các thông tin khác nằm trong response.data
-                const { userName, email, img } = response.data;
+                const { userName, email, img, token } = response.data;
 
                 localStorage.setItem('userName', userName);
                 localStorage.setItem('email', email);
                 localStorage.setItem('img', img);
-
+                localStorage.setItem('token', token);
+                console.log(response.data);
                 // response OK
                 Swal.fire({
                     title: "Login into account",
