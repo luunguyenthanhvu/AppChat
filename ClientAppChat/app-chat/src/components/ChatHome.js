@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BACKEND_URL_HTTP, BACKEND_URL_HTTPS } from '../config.js';
 import axios from 'axios';
 import '../css/chatHome.css';
 import Chat from './chat/chat.js';
 import Details from './details/details.js';
 import List from './list/list.js';
+import useChat from './hook/useChat.js';
 function Home() {
-
+    
     // list chat
     const [chatList, setChatList] = useState([]);
     const [loading, setLoading] = useState(true);
-    const token = ''; // Thay thế bằng token thực sự nếu có
+    const token =  localStorage.getItem('token');
     const email = localStorage.getItem('email');
     
     // user chatting
@@ -22,17 +24,28 @@ function Home() {
     // chatting content
     const [chattingContent, setChattingContent] = useState('');
 
+    // chatting 
+    const { newListChat ,messages, sendMessage } = useChat(); 
+
     const user = {
         userName: localStorage.getItem('userName'),
         email: localStorage.getItem('email'),
         img: localStorage.getItem('img'),
+        token: localStorage.getItem('token')
     };
+
+    const getLastTenMessages = () => {
+        if (chattingContent.length > 0) {
+            console.log( chattingContent[chattingContent.length - 1])
+            return chattingContent[chattingContent.length - 1];
+        }
+    }
 
     useEffect(() => {
         const fetchChatList = async () => {
             try {
 
-                const fetchPromise = await axios.get('http://localhost:5133/api/chat/user-chat-list', {
+                const fetchPromise = await axios.get(`http://${BACKEND_URL_HTTP}/api/chat/user-chat-list`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     },
@@ -48,7 +61,7 @@ function Home() {
                 setChatList(response.data);
                 if (response.data && !chattingWith) {
                     setChattingWith(response.data[0])
-                    console.log(chattingWith)
+                    console.log('dag chat voi ' + response.data[0])
                 }
             } catch (err) {
                 console.log(err);
@@ -66,10 +79,8 @@ function Home() {
     useEffect(() => {
         const fetchChatWithUser = async () => {
             setUserChatLoading(true);
-            console.log(user.email)
-            console.log(chattingWith.userId);
             try {
-                const fetchPromise = await axios.get(`http://localhost:5133/api/chat/messages/${user.email}/${chattingWith.userId}`, {
+                const fetchPromise = await axios.get(`http://${BACKEND_URL_HTTP}/api/chat/messages/${user.email}/${chattingWith.userId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
@@ -78,8 +89,6 @@ function Home() {
                 const delayPromise = new Promise(resolve => setTimeout(resolve, 1500));
                 const [response] = await Promise.all([fetchPromise, delayPromise]);
                 setChattingContent(response.data);
-                console.log(response.data)
-                console.log(chattingContent);
             } catch (err) {
                 console.log(err);
             } finally {
@@ -91,18 +100,49 @@ function Home() {
             fetchChatWithUser();
         }
     }, [chattingWith, user.email, token])
+    
+    useEffect(() => {
+        if (chattingWith.userId === messages.receiverId ||
+            chattingWith.userId === messages.senderId
+        ) {
+            const lastMessage = getLastTenMessages();
+            const isDuplicate = lastMessage && lastMessage.messageId === messages.messageId;
+
+            if (!isDuplicate) {
+                setChattingContent(prev => [...prev, messages]);
+            }
+        }
+    }, [chattingWith, messages])
+
+    useEffect(() => {
+        setChatList(newListChat)
+    }, [newListChat])
+
 
     const handleChatClick = (user) => {
         setChattingWith(user);
     };
-
     return (
         <div className="background-image">
         <div className='overlay'>
                 <div className='main-container-chat'>
-                    <List userInfo = {user} chatList={chatList} loading = {loading} onChatClick={handleChatClick}></List>
-                    <Chat chattingWith={chattingWith} loadingUser={chattingWithLoading} userChatLoading={userChatLoading} chattingContent={chattingContent}></Chat>
-                    <Details></Details>
+                    <List
+                        userInfo={user}
+                        chatList={chatList}
+                        loading={loading}
+                        onChatClick={handleChatClick}></List>
+                    <Chat
+                        chattingWith={chattingWith}
+                        loadingUser={chattingWithLoading}
+                        userChatLoading={userChatLoading}
+                        chattingContent={chattingContent}
+                        sendMessage={sendMessage}
+                    ></Chat>
+                    <Details
+                        chattingWith={chattingWith}
+                    >
+
+                    </Details>
                 </div>
             </div>
         </div>

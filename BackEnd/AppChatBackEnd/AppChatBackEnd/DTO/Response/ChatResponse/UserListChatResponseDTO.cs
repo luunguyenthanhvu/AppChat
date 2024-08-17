@@ -9,6 +9,7 @@ namespace AppChatBackEnd.DTO.Response.ChatResponse
         public string Img { get; set; }
         public string? MessageContent { get; set; }
         public bool IsMine { get; set; }
+        public Boolean IsImage { get; set; }
         public DateTime Timestamp { get; set; }
     }
 }
