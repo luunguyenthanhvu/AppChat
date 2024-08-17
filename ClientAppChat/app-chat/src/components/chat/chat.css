@@ -1,5 +1,5 @@
 .chat {
-    flex: 2;
+    flex: 2.4;
     border-left: 1px solid #dddddd35;
     border-right: 1px solid #dddddd35;
     height: 100%;
@@ -60,7 +60,7 @@
             min-width: none;
             max-width: 70%;
             display: flex;
-            gap: 10px;
+            gap: 10px; 
 
             &.own {
                 align-self: flex-end;
@@ -78,6 +78,7 @@
                 border-radius: 50%;
                 object-fit: cover;
             }
+            
 
             .texts {
      
@@ -199,4 +200,54 @@
     align-items: center;
     height:100%; 
     padding: 20px;
+}
+
+.hidden {
+    visibility: hidden; 
+}
+
+.message-input-container {
+    display: flex;
+    align-items: center;
+}
+  
+.image-preview {
+    position: relative;
+    margin-right: 10px;
+}
+  
+.image-preview img {
+    max-width: 50px;
+    max-height: 50px;
+    border-radius: 5px;
+ }
+  
+.image-preview button {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 10px;
+}
+  
+.filepond--root {
+    width: 100%;
+    max-width: 200px; 
+    margin: 0 auto;
+}
+  
+.filepond--panel {
+    width: 100%;
+    max-height: 200px; 
+}
+.filepond--wrapper {
+    display: flex;
+    align-items: flex-start;
+    align-content: flex-start;
+    flex-wrap: nowrap;
+    width: 210px;
 }

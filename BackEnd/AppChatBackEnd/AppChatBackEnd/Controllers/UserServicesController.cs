@@ -81,7 +81,7 @@ namespace AppChatBackEnd.Controllers
                 _dataContext.Add(user);
                 _dataContext.SaveChanges();
 
-                return Ok(new MessageResponseDTO("Đăng ký tài khoản thành công ! Vui lòng xác minh tài khoản");
+                return Ok(new MessageResponseDTO("Đăng ký tài khoản thành công ! Vui lòng xác minh tài khoản"));
             }
             catch (Exception ex) {
                 return StatusCode(500, $"Đã xảy ra lỗi khi đăng ký người dùng: {ex.InnerException.Message}");
