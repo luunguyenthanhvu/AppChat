@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj": {}
+    "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj": {
+    "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj",
+        "projectUniqueName": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj",
         "projectName": "AppChatBackEnd",
-        "projectPath": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj",
+        "projectPath": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj",
         "packagesPath": "C:\\Users\\Yukihira Souma\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Yukihira Souma\\Desktop\\New folder\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\obj\\",
+        "outputPath": "C:\\Users\\Yukihira Souma\\Desktop\\TestCode\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
