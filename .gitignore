@@ -1,5 +1,17 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
+﻿# Bỏ qua các thư mục và tệp của Visual Studio
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.sln.docstates
 
-/BackEnd/AppChatBackEnd/.vs/AppChatBackEnd/FileContentIndex/4c615d9e-f8c8-4370-8fef-b5beaf30b170.vsidx
+# Bỏ qua các tệp cấu hình của môi trường phát triển
+*.env
+
+# Bỏ qua các tệp nhị phân và thư viện bên ngoài
+*.dll
+*.exe
+
+# Bỏ qua các tệp log
+*.log
