@@ -1,4 +1,5 @@
 ﻿using AppChatBackEnd.DTO.Response;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
@@ -44,5 +45,33 @@ namespace AppChatBackEnd.Controllers
 
             return Ok(response);
         }
+
+        [HttpPost("remove-image/{public_id}")]
+        public async Task<IActionResult> RemoveImage(string public_id)
+        {
+            try
+            {
+                var deletionParams = new DeletionParams(public_id)
+                {
+                    ResourceType = ResourceType.Image 
+                };
+
+                var deletionResult = await _cloudinary.DestroyAsync(deletionParams);
+
+                if (deletionResult.Result == "ok")
+                {
+                    return Ok(new { message = "Image deleted successfully." });
+                }
+                else
+                {
+                    return BadRequest(new { message = "Failed to delete image.", result = deletionResult });
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while deleting the image.", error = ex.Message });
+            }
+        }
+
     }
 }

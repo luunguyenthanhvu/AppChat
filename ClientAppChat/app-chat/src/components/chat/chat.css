@@ -209,20 +209,20 @@
 .message-input-container {
     display: flex;
     align-items: center;
-  }
+}
   
-  .image-preview {
+.image-preview {
     position: relative;
     margin-right: 10px;
-  }
+}
   
-  .image-preview img {
+.image-preview img {
     max-width: 50px;
     max-height: 50px;
     border-radius: 5px;
-  }
+ }
   
-  .image-preview button {
+.image-preview button {
     position: absolute;
     top: -5px;
     right: -5px;
@@ -232,16 +232,22 @@
     border-radius: 50%;
     cursor: pointer;
     font-size: 10px;
-  }
+}
   
-  .filepond--root {
+.filepond--root {
     width: 100%;
     max-width: 200px; 
     margin: 0 auto;
-  }
+}
   
-  .filepond--panel {
+.filepond--panel {
     width: 100%;
     max-height: 200px; 
-  }
-  
+}
+.filepond--wrapper {
+    display: flex;
+    align-items: flex-start;
+    align-content: flex-start;
+    flex-wrap: nowrap;
+    width: 210px;
+}
