@@ -171,6 +171,33 @@ namespace AppChatBackEnd.Controllers
             return Ok(new { message = "User avatar updated successfully." });
         }
 
+        // report user
+        [HttpPut("report-user")]
+        public async Task<IActionResult> ReportUser([FromBody] ReportUserRequestDTO request)
+        {
+            //var userReported = _context.Users
+            //  .Include(u => u.UserDetail)
+            //.FirstOrDefault(u => u.UserId ==request.ReportedUserId);
+
+            //if (userReported == null)
+            //{
+            //  return Ok("Hệ thống không tìm thấy user bị report với ID này, đảm bảo bạn đã report đúng ID");
+            //}
+
+            //var userReporting = _context.Users
+            //  .Include(u => u.UserDetail)
+            // .FirstOrDefault(u => u.UserId == request.ReportingUserId);
+
+            //if (userReporting == null)
+            //{
+            //  return Ok("Hệ thống không tìm thấy user đang report với ID này");
+            //}
+
+            //           user.UserDetail.reportAmount++;
+            //         await _context.SaveChangesAsync();
+            //       return Ok(new { message = "User reportAmount updated successfully." });
+            return BadRequest("Hàm chưa sài dc");
+        }
 
     }
 }
