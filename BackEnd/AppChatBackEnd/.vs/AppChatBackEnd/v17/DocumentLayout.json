@@ -3,12 +3,36 @@
   "WorkspaceRootPath": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\repositories\\repositoriesimpl\\chatrepositoryimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\repositories\\repositoriesimpl\\chatrepositoryimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\controllers\\friendcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\controllers\\friendcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\controllers\\chatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\controllers\\weatherforecastcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\controllers\\userservicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\controllers\\userservicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\controllers\\cloudinariescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\controllers\\cloudinariescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\dto\\request\\createuserrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\dto\\request\\createuserrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\repositories\\repositoriesimpl\\chatrepositoryimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\repositories\\repositoriesimpl\\chatrepositoryimpl.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\models\\entities\\message.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -37,10 +61,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\controllers\\cloudinariescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\controllers\\cloudinariescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\appchatbackend.http||{5703B403-55E7-4C63-8C88-A8F52C7A45C5}",
@@ -75,10 +95,6 @@
       "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\dto\\response\\loginresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\dto\\request\\createuserrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\dto\\request\\createuserrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\dto\\request\\friendrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\dto\\request\\friendrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -87,16 +103,8 @@
       "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\dto\\request\\changepasswordrequestdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\controllers\\userservicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\controllers\\userservicescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\appchatbackend.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
       "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\appchatbackend.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|solutionrelative:appchatbackend\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{D11EF216-9009-4A8B-889F-D8D225BEB501}|AppChatBackEnd\\AppChatBackEnd.csproj|c:\\users\\pc\\desktop\\chatappnet\\appchat\\backend\\appchatbackend\\appchatbackend\\dto\\response\\messageresponsedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -114,7 +122,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 13,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -138,7 +146,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 3,
+              "Title": "WeatherForecastController.cs",
+              "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\WeatherForecastController.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Controllers\\WeatherForecastController.cs",
+              "ToolTip": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\WeatherForecastController.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Controllers\\WeatherForecastController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-17T08:44:56.661Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FriendController.cs",
+              "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\FriendController.cs",
+              "RelativeDocumentMoniker": "AppChatBackEnd\\Controllers\\FriendController.cs",
+              "ToolTip": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\FriendController.cs",
+              "RelativeToolTip": "AppChatBackEnd\\Controllers\\FriendController.cs",
+              "ViewState": "AQIAAGwAAAAAAAAAAAAuwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-08-17T08:42:56.04Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
               "Title": "20240817082842_Update all data base with message d2.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Migrations\\20240817082842_Update all data base with message d2.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\Migrations\\20240817082842_Update all data base with message d2.cs",
@@ -150,7 +184,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 8,
               "Title": "Message.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Entities\\Message.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\Models\\Entities\\Message.cs",
@@ -162,7 +196,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 11,
               "Title": "ListMessageResponseDTO.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Response\\ChatResponse\\ListMessageResponseDTO.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Response\\ChatResponse\\ListMessageResponseDTO.cs",
@@ -174,7 +208,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 10,
               "Title": "LoginResponseDTO.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Response\\ChatResponse\\LoginResponseDTO.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Response\\ChatResponse\\LoginResponseDTO.cs",
@@ -186,19 +220,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 5,
               "Title": "CloudinariesController.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\CloudinariesController.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\Controllers\\CloudinariesController.cs",
               "ToolTip": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\CloudinariesController.cs",
               "RelativeToolTip": "AppChatBackEnd\\Controllers\\CloudinariesController.cs",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAAAAkAAAATAAAA",
+              "ViewState": "AQIAABMAAAAAAAAAAAAQwAkAAAATAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-17T08:12:17.791Z"
+              "WhenOpened": "2024-08-17T08:12:17.791Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 13,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\appsettings.json",
               "RelativeDocumentMoniker": "AppChatBackEnd\\appsettings.json",
@@ -210,7 +245,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 15,
               "Title": "AppChatBackEnd.http",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.http",
               "RelativeDocumentMoniker": "AppChatBackEnd\\AppChatBackEnd.http",
@@ -222,7 +257,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 16,
               "Title": "IChatRepository.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Repositories\\IChatRepository.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\Repositories\\IChatRepository.cs",
@@ -234,20 +269,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 7,
               "Title": "ChatRepositoryImpl.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Repositories\\RepositoriesImpl\\ChatRepositoryImpl.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\Repositories\\RepositoriesImpl\\ChatRepositoryImpl.cs",
               "ToolTip": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Repositories\\RepositoriesImpl\\ChatRepositoryImpl.cs",
               "RelativeToolTip": "AppChatBackEnd\\Repositories\\RepositoriesImpl\\ChatRepositoryImpl.cs",
-              "ViewState": "AQIAAJwAAAAAAAAAAAAuwLUAAAArAAAA",
+              "ViewState": "AQIAAKIAAAAAAAAAAAAuwLUAAAArAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-08-17T08:10:05.627Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 17,
               "Title": "AppSettings.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\SecretKeyModel\\AppSettings.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\Models\\SecretKeyModel\\AppSettings.cs",
@@ -259,7 +294,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 19,
               "Title": "ERole.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Enums\\ERole.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\Models\\Enums\\ERole.cs",
@@ -271,7 +306,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 9,
               "Title": "MapperChatDTO.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\MapperChat\\MapperChatDTO.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\MapperChat\\MapperChatDTO.cs",
@@ -283,7 +318,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 21,
               "Title": "CloudinaryResponseDTO.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Response\\CloudinaryResponseDTO.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Response\\CloudinaryResponseDTO.cs",
@@ -295,7 +330,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 22,
               "Title": "LoginResponseDTO.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Response\\LoginResponseDTO.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Response\\LoginResponseDTO.cs",
@@ -307,7 +342,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 12,
               "Title": "LoginRequestDTO.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Request\\ChatRequest\\LoginRequestDTO.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Request\\ChatRequest\\LoginRequestDTO.cs",
@@ -319,7 +354,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 25,
               "Title": "AppChatBackEnd",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj",
               "RelativeDocumentMoniker": "AppChatBackEnd\\AppChatBackEnd.csproj",
@@ -330,7 +365,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 20,
               "Title": "AppChatBackEnd.csproj",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\AppChatBackEnd.csproj",
               "RelativeDocumentMoniker": "AppChatBackEnd\\AppChatBackEnd.csproj",
@@ -348,13 +383,14 @@
               "RelativeDocumentMoniker": "AppChatBackEnd\\Controllers\\ChatController.cs",
               "ToolTip": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\ChatController.cs",
               "RelativeToolTip": "AppChatBackEnd\\Controllers\\ChatController.cs",
-              "ViewState": "AQIAADIAAAAAAAAAAAAqwDoAAAAMAAAA",
+              "ViewState": "AQIAAEsAAAAAAAAAAAAAwDoAAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-17T08:02:34.9Z"
+              "WhenOpened": "2024-08-17T08:02:34.9Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 24,
               "Title": "ChangePasswordRequestDTO.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Request\\ChangePasswordRequestDTO.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Request\\ChangePasswordRequestDTO.cs",
@@ -366,19 +402,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 2,
               "Title": "UserController.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\UserController.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\Controllers\\UserController.cs",
               "ToolTip": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\UserController.cs",
               "RelativeToolTip": "AppChatBackEnd\\Controllers\\UserController.cs",
-              "ViewState": "AQIAAC4AAAAAAAAAAIBJwAAAAAAAAAAA",
+              "ViewState": "AQIAAD8AAAAAAAAAAAAAwAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-15T13:04:21.574Z"
+              "WhenOpened": "2024-08-15T13:04:21.574Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 14,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Program.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\Program.cs",
@@ -390,7 +427,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 18,
               "Title": "FriendStatus.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Models\\Enums\\FriendStatus.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\Models\\Enums\\FriendStatus.cs",
@@ -402,7 +439,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 23,
               "Title": "FriendRequestDTO.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Request\\FriendRequestDTO.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Request\\FriendRequestDTO.cs",
@@ -414,7 +451,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 6,
               "Title": "CreateUserRequestDTO.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Request\\CreateUserRequestDTO.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Request\\CreateUserRequestDTO.cs",
@@ -422,11 +459,12 @@
               "RelativeToolTip": "AppChatBackEnd\\DTO\\Request\\CreateUserRequestDTO.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-15T13:01:36.549Z"
+              "WhenOpened": "2024-08-15T13:01:36.549Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 26,
               "Title": "MessageResponseDTO.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\DTO\\Response\\MessageResponseDTO.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\DTO\\Response\\MessageResponseDTO.cs",
@@ -438,15 +476,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 4,
               "Title": "UserServicesController.cs",
               "DocumentMoniker": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\UserServicesController.cs",
               "RelativeDocumentMoniker": "AppChatBackEnd\\Controllers\\UserServicesController.cs",
               "ToolTip": "C:\\Users\\PC\\Desktop\\ChatAppNEt\\AppChat\\BackEnd\\AppChatBackEnd\\AppChatBackEnd\\Controllers\\UserServicesController.cs",
               "RelativeToolTip": "AppChatBackEnd\\Controllers\\UserServicesController.cs",
-              "ViewState": "AQIAAMMAAAAAAAAAAAAwwFMAAABvAAAA",
+              "ViewState": "AQIAAMwAAAAAAAAAAADwv1MAAABvAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-14T08:48:08.429Z"
+              "WhenOpened": "2024-08-14T08:48:08.429Z",
+              "EditorCaption": ""
             }
           ]
         }
