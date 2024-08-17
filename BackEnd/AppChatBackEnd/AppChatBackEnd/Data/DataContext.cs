@@ -107,7 +107,7 @@ namespace AppChat.Data
         public DbSet<Users> Users { get; set; }
         public DbSet<Friend> Friends { get; set; }
         public DbSet<Message> Messages { get; set; }
-        private DbSet<Role> Roles { get; set; }
-        private DbSet<UserDetails> UserDetails { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<UserDetails> UserDetails { get; set; }
     }
 }

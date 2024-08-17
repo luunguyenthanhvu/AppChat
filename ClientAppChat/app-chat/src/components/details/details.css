@@ -1,3 +1,84 @@
 .details {
-    flex: 1;
+    flex: 0.7;
+    align-items: center;
 }
+
+.user-chatting-details {
+    margin: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    img {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        object-fit: cover;
+        cursor: pointer;
+    }
+
+    h2 {
+        font-size: 30px;
+        font-weight: 500;
+    }
+
+    .icons {
+        display: flex;
+        gap: 20px;
+
+        img {
+            width: 30px;
+            height: 30px;
+            border-radius: 0;
+            object-fit: cover;
+        }
+
+        .add-group {
+            filter: invert(1);
+        }
+
+        .user {
+            filter: invert(1);
+            width: 25px;
+            height: 25px;
+        }
+
+        .delete-friend {
+            width: 30px;
+            height: 30px;
+            color: #ff4d4d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px; /* Kích thước chữ */
+            cursor: pointer;
+            border: none; /* Xóa viền của nút */
+            transition: background-color 0.3s ease, transform 0.3s ease; /* Hiệu ứng chuyển tiếp */
+        }   
+    }
+
+    .report-content{
+        padding: 10px;
+    }
+}
+
+.user-chatting-details:first-of-type {
+    margin-top: 50px; 
+}
+
+.user-chatting-details:last-of-type {
+    margin-top: 30px; 
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid;
+}
+
+.user-chatting-details:last-of-type:hover {
+    background-color: #f0f0f0; /* Thay đổi màu nền khi hover */
+    border-color: red; /* Thay đổi màu viền khi hover */
+    transform: scale(1.05); /* Phóng to phần tử khi hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Thêm bóng đổ khi hover */
+    color: red;
+    font-size: 16px;
+}
+
