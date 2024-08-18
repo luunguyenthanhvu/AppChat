@@ -2,4 +2,14 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
+<<<<<<< HEAD
+/BackEnd/AppChatBackEnd/.vs/AppChatBackEnd/FileContentIndex
+=======
 /BackEnd/AppChatBackEnd/.vs/AppChatBackEnd/FileContentIndex/4c615d9e-f8c8-4370-8fef-b5beaf30b170.vsidx
+<<<<<<< HEAD
+/BackEnd/AppChatBackEnd/.vs/AppChatBackEnd/FileContentIndex
+/.gitignore
+/.gitignore
+=======
+>>>>>>> d7b6623d019373a4a69a1ebbc1d716bf24f6af45
+>>>>>>> main

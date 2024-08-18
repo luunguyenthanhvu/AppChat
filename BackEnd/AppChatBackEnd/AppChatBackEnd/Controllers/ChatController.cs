@@ -1,6 +1,7 @@
 ﻿
+using AppChat.Models.Entities;
+using AppChatBackEnd.DTO.Request.ChatRequest;
 using AppChatBackEnd.DTO.Response.ChatResponse;
-using AppChatBackEnd.NewFolder;
 using AppChatBackEnd.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -14,14 +15,15 @@ namespace AppChatBackEnd.Controllers
         private readonly IMapper mapper;
         private readonly IChatRepository chatRepository;
 
-        public ChatController (IMapper mapper, IChatRepository chatRepository)
+
+        public ChatController(IMapper mapper, IChatRepository chatRepository)
         {
             this.mapper = mapper;
             this.chatRepository = chatRepository;
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginResponseDTO loginRequestDTO)
+        public async Task<IActionResult> Login([FromBody] LoginRequestDTO loginRequestDTO)
         {
             var data = await chatRepository.GetUsersByEmail(loginRequestDTO.Email);
 
@@ -29,7 +31,21 @@ namespace AppChatBackEnd.Controllers
             {
                 data = await chatRepository.CreateDefault();
             }
-            return Ok(mapper.Map<LoginResponseDTO>(data));
+            if (data == null)
+            {
+                return Unauthorized();
+            }
+            var token = GenerateFakeToken(data);
+
+            var response = new LoginResponseDTO
+            {
+                UserName = data.UserName,
+                Email = data.Email,
+                Img = data.Img,
+                Token = token
+            };
+
+            return Ok(response);
         }
 
         [HttpGet("user-chat-list")]
@@ -49,9 +65,14 @@ namespace AppChatBackEnd.Controllers
         public async Task<IActionResult> GetUserMessages(string email, int userChattingId)
         {
             var data = await chatRepository.GetUsersByEmail(email);
-            var messages = await chatRepository.GetUserMessage(data.UserId, userChattingId);
-            return Ok(messages);
+            var oldMessages = await chatRepository.GetUserMessage(data.UserId, userChattingId);
+            return Ok(oldMessages);
         }
 
+        private string GenerateFakeToken(Users user)
+        {
+            var token = $"FakeToken_{user.UserId}_{user.Email}";
+            return token;
+        }
     }
 }
