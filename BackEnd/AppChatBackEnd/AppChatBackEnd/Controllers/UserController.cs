@@ -148,20 +148,57 @@ namespace AppChatBackEnd.Controllers
         }
 
 
-        [HttpGet("count-users")]
-        public async Task<IActionResult> CountUsers()
+        // API to count active users
+        [HttpGet("count-active-users")]
+        public async Task<IActionResult> CountActiveUsers()
         {
             try
             {
-                var userCount = await _context.Users.CountAsync();
-                return Ok(userCount); // Trả về số lượng người dùng
+                var activeUserCount = await _context.Users
+                    .Where(u => u.UserDetail.Status == "Active")
+                    .CountAsync();
+                return Ok(activeUserCount);
             }
             catch (Exception ex)
             {
-                // Ghi log chi tiết ngoại lệ để điều tra thêm
-                return StatusCode(500, "An error occurred while counting the users: " + ex.Message);
+                return StatusCode(500, "An error occurred while counting active users: " + ex.Message);
             }
         }
+
+        // API to count blocked users
+        [HttpGet("count-blocked-users")]
+        public async Task<IActionResult> CountBlockedUsers()
+        {
+            try
+            {
+                var blockedUserCount = await _context.Users
+                    .Where(u => u.UserDetail.Status == "Blocked")
+                    .CountAsync();
+                return Ok(blockedUserCount);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while counting blocked users: " + ex.Message);
+            }
+        }
+
+        // API to count reported users
+        [HttpGet("count-reported-users")]
+        public async Task<IActionResult> CountReportedUsers()
+        {
+            try
+            {
+                var reportedUserCount = await _context.Users
+                    .Where(u => u.UserDetail.Status == "Reported")
+                    .CountAsync();
+                return Ok(reportedUserCount);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while counting reported users: " + ex.Message);
+            }
+        }
+
 
 
         // cậo nhật user profile

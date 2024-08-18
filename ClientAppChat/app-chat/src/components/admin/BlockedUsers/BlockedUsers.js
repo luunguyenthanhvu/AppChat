@@ -15,7 +15,7 @@ function BlockedUsers() {
                 setLoading(true);
                 const response = await axios.get('http://localhost:5133/api/User/all-users');
                 // Filter users with 'Inactive' status
-                const blockedUsersList = response.data.filter(user => user.status === 'Inactive');
+                const blockedUsersList = response.data.filter(user => user.status === 'Blocked');
                 setBlockedUsers(blockedUsersList);
             } catch (err) {
                 setError(err.message);
@@ -85,7 +85,7 @@ function BlockedUsers() {
                     filteredBlockedUsers.map(user => (
                         <tr key={user.userId}>
                             <td>{user.userId}</td>
-                            <td>@{user.userName}</td>
+                            <td>{user.userName}</td>
                             <td>{user.email}</td>
                             <td>
                                     <span className="blocked-status-label">
