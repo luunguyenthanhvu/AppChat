@@ -8,15 +8,21 @@ function Users() {
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchFilter, setSearchFilter] = useState('');
-    const [statusFilter, setStatusFilter] = useState('');
+    const [showAddForm, setShowAddForm] = useState(false);
+    const [newUser, setNewUser] = useState({
+        userName: '',
+        email: '',
+        role: 'User'
+    });
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 setLoading(true);
                 const response = await axios.get('http://localhost:5133/api/User/all-users');
-                console.log(response.data); // Log the response to check data
-                setUsers(response.data);
+                // setUsers(response.data);
+                const activeUsers = response.data.filter(user => user.status === 'Active');
+                setUsers(activeUsers);
             } catch (err) {
                 setError(err.message);
                 console.error("Error fetching users:", err);
@@ -27,19 +33,46 @@ function Users() {
 
         fetchUsers();
     }, []);
-    const filteredUsers = users
-    // const filteredUsers = users.filter(user => {
-        // const lowerSearchTerm = searchTerm.toLowerCase();
-        // const match = searchFilter
-        //     ? (searchFilter === 'username' && user.UserName && user.UserName.toLowerCase().includes(lowerSearchTerm)) ||
-        //     (searchFilter === 'email' && user.Email && user.Email.toLowerCase().includes(lowerSearchTerm)) ||
-        //     (searchFilter === 'id' && user.UserId && user.UserId.toString().includes(lowerSearchTerm))
-        //     : (user.UserName && user.UserName.toLowerCase().includes(lowerSearchTerm)) ||
-        //     (user.Email && user.Email.toLowerCase().includes(lowerSearchTerm)) ||
-        //     (user.UserId && user.UserId.toString().includes(lowerSearchTerm));
-        //
-        // return match;
-    // });
+
+    const handleEdit = (userId) => {
+        console.log(`Edit user with ID: ${userId}`);
+    };
+
+    const handleDelete = (userId) => {
+        console.log(`Delete user with ID: ${userId}`);
+    };
+
+    const handleRoleChange = (userId, newRole) => {
+        console.log(`Change role for user with ID: ${userId} to ${newRole}`);
+    };
+
+    const handleAddUser = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.post('http://localhost:5133/api/User/add-user', newUser);
+            const createdUser = response.data;
+            setUsers([...users, createdUser]);
+            setShowAddForm(false);
+        } catch (error) {
+            console.error('Error adding user:', error);
+            alert('Failed to add user. Please try again.');
+        }
+    };
+
+    const filteredUsers = users.filter(user => {
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        return (
+            searchFilter === 'username' && user.userName.toLowerCase().includes(lowerSearchTerm) ||
+            searchFilter === 'email' && user.email.toLowerCase().includes(lowerSearchTerm) ||
+            searchFilter === 'id' && user.userId.toString().includes(lowerSearchTerm) ||
+            !searchFilter && (
+                user.userName.toLowerCase().includes(lowerSearchTerm) ||
+                user.email.toLowerCase().includes(lowerSearchTerm) ||
+                user.userId.toString().includes(lowerSearchTerm)
+            )
+        );
+    });
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -66,40 +99,74 @@ function Users() {
                     <option value="email">Email</option>
                     <option value="id">User ID</option>
                 </select>
-                <select
-                    className="search-status"
-                    value={statusFilter}
-                    onChange={e => setStatusFilter(e.target.value)}
-                >
-                    <option value="">Status</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                </select>
-                <button className="search-button">
-                    <i className="fa fa-search"></i>
-                </button>
             </div>
+
+            {showAddForm && (
+                <form className="add-user-form" onSubmit={handleAddUser}>
+                    <input
+                        type="text"
+                        placeholder="Username"
+                        value={newUser.userName}
+                        onChange={e => setNewUser({ ...newUser, userName: e.target.value })}
+                        required
+                    />
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={newUser.email}
+                        onChange={e => setNewUser({ ...newUser, email: e.target.value })}
+                        required
+                    />
+                    <select
+                        value={newUser.role}
+                        onChange={e => setNewUser({ ...newUser, role: e.target.value })}
+                    >
+                        <option value="User">User</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                    <button type="submit">Add</button>
+                    <button type="button" onClick={() => setShowAddForm(false)}>Cancel</button>
+                </form>
+            )}
 
             <table className="user-list">
                 <thead>
                 <tr>
-                    <th >User ID</th>
-                    <th >Username</th>
-                    <th >Email</th>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Role</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 {filteredUsers.length > 0 ? (
                     filteredUsers.map(user => (
-                        <tr key={user.UserId}>
+                        <tr key={user.userId}>
                             <td>{user.userId}</td>
                             <td>{user.userName}</td>
                             <td>{user.email}</td>
+                            <td>
+                                <span className="users-status-label">
+                                    {user.status}
+                                </span>
+                            </td>
+                            <td>
+                                <span className="users-role-label">
+                                    {user.role}
+                                </span>
+                            </td>
+                            <td>
+                                <button onClick={() => setShowAddForm(true)}>Add</button>
+                                <button onClick={() => handleDelete(user.userId)}>Delete</button>
+                                <button onClick={() => handleEdit(user.userId)}>Edit</button>
+                            </td>
                         </tr>
                     ))
                 ) : (
                     <tr>
-                        <td colSpan="3">No users found</td>
+                        <td colSpan="6">No users found</td>
                     </tr>
                 )}
                 </tbody>
