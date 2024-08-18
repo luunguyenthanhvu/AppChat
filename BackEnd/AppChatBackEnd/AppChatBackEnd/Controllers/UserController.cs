@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
+using AppChatBackEnd.Models.Entities;
 
 
 namespace AppChatBackEnd.Controllers
@@ -120,7 +121,116 @@ namespace AppChatBackEnd.Controllers
         }
 
 
+        // cậo nhật user profile
+        [HttpPut("update-user-infor-profile")]
+        public async Task<IActionResult> UpdateUserInforProfile([FromBody] UpdateUserInforProfileRequestDTO request)
+        {
+            if (request == null)
+            {
+                return BadRequest("Invalid request data.");
+            }
 
+            var user = await _context.Users
+                .Include(u => u.UserDetail)
+                .FirstOrDefaultAsync(u => u.UserId == request.UserId);
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            //var newUser = _mapper.Map<Users>(request);
+            if (request.UserName != null)
+                user.UserName = request.UserName;
+            if (request.Gender != null)
+                user.UserDetail.Gender = request.Gender;
+            if (request.DateOfBirth != null)
+                user.UserDetail.Dob = request.DateOfBirth;
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "User profile updated successfully." });
+        }
+
+        // cậo nhật user avatar
+        [HttpPut("update-user-avatar")]
+        public async Task<IActionResult> UpdateUserAvatar([FromBody] UpdateUserAvatarRequestDTO request)
+        {
+            if (request == null)
+            {
+                return BadRequest("Invalid request data.");
+            }
+
+            var user = await _context.Users.FindAsync(request.UserId);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            //var newUser = _mapper.Map<Users>(request);
+            if (request.Img != null)
+                user.Img = request.Img;
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "User avatar updated successfully." });
+        }
+
+        // report user
+        [HttpPut("report-user")]
+        public async Task<IActionResult> ReportUser([FromBody] ReportUserRequestDTO request)
+        {
+            var userReported = await _context.Users
+             .Include(u => u.UserDetail)
+             .FirstOrDefaultAsync(u => u.UserId == request.ReportedUserId);
+
+            if (userReported == null)
+            {
+              return NotFound("Hệ thống không tìm thấy user bị report với ID này, đảm bảo bạn đã report đúng ID");
+            }
+
+            var userReporting = await _context.Users
+              .Include(u => u.UserDetail)
+              .FirstOrDefaultAsync(u => u.UserId == request.ReportingUserId);
+
+            if (userReporting == null)
+            {
+              return NotFound("Hệ thống không tìm thấy user đang report với ID này");
+            }
+
+            if (userReporting.UserId == userReported.UserId)
+            {
+                return BadRequest("Bạn không được tự report bản thân");
+            }
+
+            // tìm dòng gần nhất mà id người A report id người B trong bảng reports
+            var report = await _context.Reports
+            .Where(r => r.ReportingUserId == request.ReportingUserId && r.ReportedUserId == request.ReportedUserId)
+            .OrderByDescending(r => r.Timestamp)
+            .FirstOrDefaultAsync();
+
+            if (report != null)
+            {
+                // check xem người A có report người B trong 1 time ngắn ko?
+                DateTime nearestReportingUtcTime = report.Timestamp;
+                DateTime nowUtcTime = DateTime.UtcNow;
+                TimeSpan timeDifference = nowUtcTime - nearestReportingUtcTime;
+                // Kiểm tra nếu thời gian chênh lệch nhỏ hơn hoặc bằng 1 phút
+                if (timeDifference <= TimeSpan.FromMinutes(1))
+                {
+                    return BadRequest($"Bạn không được spam report, hãy chờ {60-timeDifference.TotalSeconds} giây");
+                }
+            }
+
+            var newReport = new Reports
+            {
+                ReportingUserId = request.ReportingUserId,
+                ReportedUserId = request. ReportedUserId,
+                Reason = request.Reason,
+                Timestamp = DateTime.UtcNow
+            };
+
+            await _context.Reports.AddAsync(newReport);
+            userReported.UserDetail.reportAmount++;
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "User reportAmount updated successfully." });
+        }
 
     }
 }
