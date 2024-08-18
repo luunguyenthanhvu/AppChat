@@ -14,7 +14,7 @@ function BlockedUsers() {
             try {
                 setLoading(true);
                 const response = await axios.get('http://localhost:5133/api/User/all-users');
-                // Filter users with 'Inactive' status
+                // Filter users with 'Blocked' status
                 const blockedUsersList = response.data.filter(user => user.status === 'Blocked');
                 setBlockedUsers(blockedUsersList);
             } catch (err) {
@@ -72,6 +72,7 @@ function BlockedUsers() {
             <table className="blocked-user-list">
                 <thead>
                 <tr>
+                    <th>Avatar</th>
                     <th>User ID</th>
                     <th>Username</th>
                     <th>Email</th>
@@ -84,18 +85,25 @@ function BlockedUsers() {
                 {filteredBlockedUsers.length > 0 ? (
                     filteredBlockedUsers.map(user => (
                         <tr key={user.userId}>
+                            <td>
+                                <img
+                                    src={user.img} // Assuming your API provides the avatar URL in this field
+                                    alt={`${user.userName}'s avatar`}
+                                    className="blocked-user-avatar"
+                                />
+                            </td>
                             <td>{user.userId}</td>
                             <td>{user.userName}</td>
                             <td>{user.email}</td>
                             <td>
-                                    <span className="blocked-status-label">
-                                        {user.status}
-                                    </span>
+                                <span className="blocked-status-label">
+                                    {user.status}
+                                </span>
                             </td>
                             <td>
-                                    <span className="blocked-role-label">
-                                        {user.role}
-                                    </span>
+                                <span className="blocked-role-label">
+                                    {user.role}
+                                </span>
                             </td>
                             <td>
                                 <button onClick={() => console.log(`Edit user with ID: ${user.userId}`)}>Edit</button>
@@ -104,7 +112,7 @@ function BlockedUsers() {
                     ))
                 ) : (
                     <tr>
-                        <td colSpan="6">No blocked users found</td>
+                        <td colSpan="7">No blocked users found</td>
                     </tr>
                 )}
                 </tbody>

@@ -72,6 +72,7 @@ function Reports() {
             <table className="report-list">
                 <thead>
                 <tr>
+                    <th>Avatar</th>
                     <th>Report ID</th>
                     <th>Username</th>
                     <th>Email</th>
@@ -84,6 +85,13 @@ function Reports() {
                 {filteredReports.length > 0 ? (
                     filteredReports.map(report => (
                         <tr key={report.userId}>
+                            <td>
+                                <img
+                                    src={report.img} // Assuming your API provides the avatar URL in this field
+                                    alt={`${report.userName}'s avatar`}
+                                    className="report-avatar"
+                                />
+                            </td>
                             <td>{report.userId}</td>
                             <td>{report.userName}</td>
                             <td>{report.email}</td>
@@ -104,7 +112,7 @@ function Reports() {
                     ))
                 ) : (
                     <tr>
-                        <td colSpan="6">No reports found</td>
+                        <td colSpan="7">No reports found</td>
                     </tr>
                 )}
                 </tbody>

@@ -12,7 +12,8 @@ function Users() {
     const [newUser, setNewUser] = useState({
         userName: '',
         email: '',
-        role: 'User'
+        role: 'User',
+        img: '' // Added field for avatar image
     });
 
     useEffect(() => {
@@ -20,7 +21,6 @@ function Users() {
             try {
                 setLoading(true);
                 const response = await axios.get('http://localhost:5133/api/User/all-users');
-                // setUsers(response.data);
                 const activeUsers = response.data.filter(user => user.status === 'Active');
                 setUsers(activeUsers);
             } catch (err) {
@@ -117,6 +117,12 @@ function Users() {
                         onChange={e => setNewUser({ ...newUser, email: e.target.value })}
                         required
                     />
+                    <input
+                        type="text"
+                        placeholder="Avatar URL"
+                        value={newUser.img} // Input for avatar URL
+                        onChange={e => setNewUser({ ...newUser, img: e.target.value })}
+                    />
                     <select
                         value={newUser.role}
                         onChange={e => setNewUser({ ...newUser, role: e.target.value })}
@@ -132,6 +138,7 @@ function Users() {
             <table className="user-list">
                 <thead>
                 <tr>
+                    <th>Avatar</th> {/* New Avatar Column */}
                     <th>User ID</th>
                     <th>Username</th>
                     <th>Email</th>
@@ -144,6 +151,9 @@ function Users() {
                 {filteredUsers.length > 0 ? (
                     filteredUsers.map(user => (
                         <tr key={user.userId}>
+                            <td>
+                                <img src={user.img} alt={user.userName} className="user-avatar" /> {/* Avatar Image */}
+                            </td>
                             <td>{user.userId}</td>
                             <td>{user.userName}</td>
                             <td>{user.email}</td>
@@ -158,7 +168,6 @@ function Users() {
                                 </span>
                             </td>
                             <td>
-                                <button onClick={() => setShowAddForm(true)}>Add</button>
                                 <button onClick={() => handleDelete(user.userId)}>Delete</button>
                                 <button onClick={() => handleEdit(user.userId)}>Edit</button>
                             </td>
@@ -166,7 +175,7 @@ function Users() {
                     ))
                 ) : (
                     <tr>
-                        <td colSpan="6">No users found</td>
+                        <td colSpan="7">No users found</td> {/* Updated colSpan to 7 */}
                     </tr>
                 )}
                 </tbody>

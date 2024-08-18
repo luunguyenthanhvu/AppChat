@@ -134,7 +134,8 @@ namespace AppChatBackEnd.Controllers
                         u.UserName,
                         u.Email,
                         Status = u.UserDetail.Status, // Lấy Status từ bảng UserDetails
-                        Role = u.Role.RoleName // Lấy tên Role từ bảng Role
+                        Role = u.Role.RoleName, // Lấy tên Role từ bảng Role
+                        u.Img
                     })
                     .ToListAsync();
 

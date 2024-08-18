@@ -164,3 +164,11 @@ select {
 .add-user-form button:hover {
     background-color: #0056b3;
 }
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #4CAF50; /* Optional: Add border for better visibility */
+    margin-right: 10px;
+}
