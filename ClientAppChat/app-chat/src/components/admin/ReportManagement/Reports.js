@@ -7,14 +7,16 @@ function Reports() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const [statusFilter, setStatusFilter] = useState('');
+    const [searchFilter, setSearchFilter] = useState('');
 
     useEffect(() => {
         const fetchReports = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get('http://localhost:5133/api/Report/all-reports');
-                setReports(response.data);
+                const response = await axios.get('http://localhost:5133/api/User/all-users');
+                // Filter users with 'Reported' status
+                const reportsList = response.data.filter(user => user.status === 'Reported');
+                setReports(reportsList);
             } catch (err) {
                 setError(err.message);
                 console.error("Error fetching reports:", err);
@@ -28,9 +30,16 @@ function Reports() {
 
     const filteredReports = reports.filter(report => {
         const lowerSearchTerm = searchTerm.toLowerCase();
-        const match = report.ReportName && report.ReportName.toLowerCase().includes(lowerSearchTerm);
-
-        return match && (!statusFilter || report.Status.toLowerCase() === statusFilter.toLowerCase());
+        return (
+            searchFilter === 'username' && report.userName.toLowerCase().includes(lowerSearchTerm) ||
+            searchFilter === 'email' && report.email.toLowerCase().includes(lowerSearchTerm) ||
+            searchFilter === 'id' && report.userId.toString().includes(lowerSearchTerm) ||
+            !searchFilter && (
+                report.userName.toLowerCase().includes(lowerSearchTerm) ||
+                report.email.toLowerCase().includes(lowerSearchTerm) ||
+                report.userId.toString().includes(lowerSearchTerm)
+            )
+        );
     });
 
     if (loading) return <div>Loading...</div>;
@@ -38,52 +47,64 @@ function Reports() {
 
     return (
         <div className="report-list-container">
-            <h1>Reports</h1>
+            <h1>All Reports</h1>
 
             <div className="report-search-bar">
                 <input
                     type="text"
-                    placeholder="Search Report by name"
+                    placeholder="Search Report by: @username, email & ID"
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                     className="search-input"
                 />
                 <select
-                    className="search-status"
-                    value={statusFilter}
-                    onChange={e => setStatusFilter(e.target.value)}
+                    className="search-filter"
+                    value={searchFilter}
+                    onChange={e => setSearchFilter(e.target.value)}
                 >
-                    <option value="">Status</option>
-                    <option value="open">Open</option>
-                    <option value="closed">Closed</option>
+                    <option value="">Search by</option>
+                    <option value="username">Username</option>
+                    <option value="email">Email</option>
+                    <option value="id">Report ID</option>
                 </select>
-                <button className="search-button">
-                    <i className="fa fa-search"></i>
-                </button>
             </div>
 
             <table className="report-list">
                 <thead>
                 <tr>
                     <th>Report ID</th>
-                    <th>Report Name</th>
-                    <th>Created at</th>
+                    <th>Username</th>
+                    <th>Email</th>
                     <th>Status</th>
+                    <th>Role</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 {filteredReports.length > 0 ? (
                     filteredReports.map(report => (
-                        <tr key={report.ReportId}>
-                            <td>{report.ReportId}</td>
-                            <td>{report.ReportName}</td>
-                            <td>{new Date(report.CreatedAt).toLocaleString()}</td>
-                            <td>{report.Status}</td>
+                        <tr key={report.userId}>
+                            <td>{report.userId}</td>
+                            <td>{report.userName}</td>
+                            <td>{report.email}</td>
+                            <td>
+                                <span className="reports-status-label">
+                                    {report.status}
+                                </span>
+                            </td>
+                            <td>
+                                <span className="reports-role-label">
+                                    {report.role}
+                                </span>
+                            </td>
+                            <td>
+                                <button onClick={() => console.log(`Edit report with ID: ${report.userId}`)}>Edit</button>
+                            </td>
                         </tr>
                     ))
                 ) : (
                     <tr>
-                        <td colSpan="4">No reports found</td>
+                        <td colSpan="6">No reports found</td>
                     </tr>
                 )}
                 </tbody>

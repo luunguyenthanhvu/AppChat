@@ -73,7 +73,12 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
     const handleChatImg = () => {
         document.getElementById('imageFileInput').click();
     };
-
+    useEffect(() => {
+        setImageFile('');
+        setShowFilePond(false);
+        setImageMessage('');
+        setMessage('');
+    }, [chattingWith]);
     const handleFileChange = (event) => {
         setShowFilePond(true);
         setImageFile([...event.target.files]);

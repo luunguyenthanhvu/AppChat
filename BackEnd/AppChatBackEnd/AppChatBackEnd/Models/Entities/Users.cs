@@ -22,5 +22,7 @@ namespace AppChat.Models.Entities
         public int RoleId { get; set; }
         public Role Role { get; set; }
         public UserDetails UserDetail { get; set; }
+        // Quan hệ một-nhiều với Report
+        public ICollection<Reports> Reports { get; set; }
     }
 }

@@ -10,11 +10,13 @@ function BlockedUsers() {
     const [searchFilter, setSearchFilter] = useState('');
 
     useEffect(() => {
-        const fetchBlockedUsers = async () => {
+        const fetchUsers = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get('http://localhost:5133/api/User/blocked-users');
-                setBlockedUsers(response.data);
+                const response = await axios.get('http://localhost:5133/api/User/all-users');
+                // Filter users with 'Inactive' status
+                const blockedUsersList = response.data.filter(user => user.status === 'Blocked');
+                setBlockedUsers(blockedUsersList);
             } catch (err) {
                 setError(err.message);
                 console.error("Error fetching blocked users:", err);
@@ -23,20 +25,21 @@ function BlockedUsers() {
             }
         };
 
-        fetchBlockedUsers();
+        fetchUsers();
     }, []);
 
     const filteredBlockedUsers = blockedUsers.filter(user => {
         const lowerSearchTerm = searchTerm.toLowerCase();
-        const match = searchFilter
-            ? (searchFilter === 'username' && user.UserName && user.UserName.toLowerCase().includes(lowerSearchTerm)) ||
-            (searchFilter === 'email' && user.Email && user.Email.toLowerCase().includes(lowerSearchTerm)) ||
-            (searchFilter === 'id' && user.UserId && user.UserId.toString().includes(lowerSearchTerm))
-            : (user.UserName && user.UserName.toLowerCase().includes(lowerSearchTerm)) ||
-            (user.Email && user.Email.toLowerCase().includes(lowerSearchTerm)) ||
-            (user.UserId && user.UserId.toString().includes(lowerSearchTerm));
-
-        return match;
+        return (
+            searchFilter === 'username' && user.userName.toLowerCase().includes(lowerSearchTerm) ||
+            searchFilter === 'email' && user.email.toLowerCase().includes(lowerSearchTerm) ||
+            searchFilter === 'id' && user.userId.toString().includes(lowerSearchTerm) ||
+            !searchFilter && (
+                user.userName.toLowerCase().includes(lowerSearchTerm) ||
+                user.email.toLowerCase().includes(lowerSearchTerm) ||
+                user.userId.toString().includes(lowerSearchTerm)
+            )
+        );
     });
 
     if (loading) return <div>Loading...</div>;
@@ -64,9 +67,6 @@ function BlockedUsers() {
                     <option value="email">Email</option>
                     <option value="id">User ID</option>
                 </select>
-                <button className="search-button">
-                    <i className="fa fa-search"></i>
-                </button>
             </div>
 
             <table className="blocked-user-list">
@@ -75,20 +75,36 @@ function BlockedUsers() {
                     <th>User ID</th>
                     <th>Username</th>
                     <th>Email</th>
+                    <th>Status</th>
+                    <th>Role</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 {filteredBlockedUsers.length > 0 ? (
                     filteredBlockedUsers.map(user => (
-                        <tr key={user.UserId}>
-                            <td>{user.UserId}</td>
-                            <td>@{user.UserName}</td>
-                            <td>{user.Email}</td>
+                        <tr key={user.userId}>
+                            <td>{user.userId}</td>
+                            <td>{user.userName}</td>
+                            <td>{user.email}</td>
+                            <td>
+                                    <span className="blocked-status-label">
+                                        {user.status}
+                                    </span>
+                            </td>
+                            <td>
+                                    <span className="blocked-role-label">
+                                        {user.role}
+                                    </span>
+                            </td>
+                            <td>
+                                <button onClick={() => console.log(`Edit user with ID: ${user.userId}`)}>Edit</button>
+                            </td>
                         </tr>
                     ))
                 ) : (
                     <tr>
-                        <td colSpan="3">No blocked users found</td>
+                        <td colSpan="6">No blocked users found</td>
                     </tr>
                 )}
                 </tbody>
