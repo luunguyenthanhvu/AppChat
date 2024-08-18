@@ -28,25 +28,24 @@
     border-radius: 50%;
 }
 
-.status-label {
+.users-status-label {
     padding: 5px 10px;
     border-radius: 5px;
     color: white;
     font-weight: bold;
     display: inline-block;
+    background-color: #28a745; /* Status label uses the same green color */
 }
 
-.status-label.active {
-    background-color: #4CAF50;
+.users-role-label {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    display: inline-block;
+    background-color: #28a745; /* Role label uses the same green color */
 }
 
-.status-label.inactive {
-    background-color: #F44336;
-}
-
-.status-label.pending {
-    background-color: #FFC107;
-}
 .user-list-container {
     padding: 20px;
     background-color: #1E1E2F;
@@ -76,20 +75,15 @@
     border-radius: 50%;
     object-fit: cover;
 }
-/* Users.css */
 
 .user-list-container h1 {
-    color: #ffffff; /* Makes the header "All Users" red */
+    color: #ffffff;
 }
 
 .user-list td {
-    color: #ffffff; /* Makes the table data text red */
+    color: #ffffff;
 }
 
-/* Optionally, if you want to style the table headers too */
-.user-list th {
-    color: #ffffff; /* Makes the table headers red */
-}
 .user-search-bar {
     display: flex;
     align-items: center;
@@ -102,16 +96,16 @@
     padding: 8px;
     border-radius: 4px;
     border: 1px solid #ccc;
-    background-color: #2D3748; /* Dark background */
-    color: white; /* White text */
+    background-color: #2D3748;
+    color: white;
 }
 
-.search-filter, .search-status, .search-button {
+.search-filter, .search-button {
     padding: 8px;
     border-radius: 4px;
     border: 1px solid #ccc;
-    background-color: #2D3748; /* Dark background */
-    color: white; /* White text */
+    background-color: #2D3748;
+    color: white;
     cursor: pointer;
 }
 
@@ -120,3 +114,53 @@
     color: white;
 }
 
+button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+select {
+    padding: 5px;
+    margin: 0 10px;
+}
+
+.add-user-button {
+    margin: 10px 0;
+    padding: 5px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.add-user-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.add-user-form input,
+.add-user-form select {
+    padding: 5px;
+    border: 1px solid #ccc;
+}
+
+.add-user-form button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.add-user-form button:hover {
+    background-color: #0056b3;
+}

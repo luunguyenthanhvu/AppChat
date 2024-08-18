@@ -24,12 +24,21 @@ namespace AppChatBackEnd.Controllers
             _mapper = mapper;
         }
 
+
+
         [HttpPost("add-user")]
         public async Task<IActionResult> AddUser([FromBody] CreateUserRequestDTO request)
         {
             if (request == null)
             {
                 return BadRequest("Invalid request data.");
+            }
+
+            // Check if the role exists in the database
+            var roleExists = await _context.Roles.AnyAsync(r => r.RoleId == request.RoleId);
+            if (!roleExists)
+            {
+                return BadRequest("Invalid RoleId. Please provide a valid role.");
             }
 
             // Check if the email already exists
@@ -39,18 +48,47 @@ namespace AppChatBackEnd.Controllers
                 return BadRequest("Email already in use. Please use a different email.");
             }
 
-            try
+            using (var transaction = await _context.Database.BeginTransactionAsync())
             {
-                var newUser = _mapper.Map<Users>(request);
-                newUser.Password = HashPassword(request.Password);  // Hash the password before saving
-                await _context.Users.AddAsync(newUser);
-                await _context.SaveChangesAsync();
-                return Ok(new { message = "User added successfully.", userId = newUser.UserId });
-            }
-            catch (Exception ex)
-            {
-                // Log the exception details here for further investigation
-                return StatusCode(500, "An error occurred while adding the user: " + ex.Message);
+                try
+                {
+                    // Map CreateUserRequestDTO to Users entity
+                    var newUser = _mapper.Map<Users>(request);
+                    newUser.Password = HashPassword(request.Password); // Hash the password before saving
+
+                    // Create UserDetails with default information and status
+                    var userDetails = new UserDetails
+                    {
+                        FirstName = newUser.UserName, // Giả sử tên người dùng là tên đầu tiên
+                        LastName = string.Empty, // Để trống hoặc sử dụng thông tin khác nếu có
+                        Status = "Active", // Đặt trạng thái mặc định là Active
+                        User = newUser // Liên kết với người dùng
+                    };
+
+                    // Gán UserDetails vào đối tượng Users
+                    newUser.UserDetail = userDetails;
+
+                    // Lưu cả Users và UserDetails
+                    await _context.Users.AddAsync(newUser);
+                    await _context.SaveChangesAsync();
+
+                    // Commit transaction
+                    await transaction.CommitAsync();
+
+                    return Ok(new { message = "User added successfully.", userId = newUser.UserId });
+                }
+                catch (DbUpdateException ex)
+                {
+                    // Rollback transaction if something goes wrong
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, "Database error occurred while adding the user: " + (ex.InnerException?.Message ?? ex.Message));
+                }
+                catch (Exception ex)
+                {
+                    // Rollback transaction if something goes wrong
+                    await transaction.RollbackAsync();
+                    return StatusCode(500, "An unexpected error occurred while adding the user: " + ex.Message);
+}
             }
         }
 
@@ -86,17 +124,21 @@ namespace AppChatBackEnd.Controllers
         {
             try
             {
-                // Fetch only the necessary fields
+                // Fetch necessary fields including status from UserDetails and role from Role
                 var users = await _context.Users
+                    .Include(u => u.UserDetail) // Include UserDetails
+                    .Include(u => u.Role) // Include Role
                     .Select(u => new
                     {
                         u.UserId,
                         u.UserName,
                         u.Email,
+                        Status = u.UserDetail.Status, // Lấy Status từ bảng UserDetails
+                        Role = u.Role.RoleName // Lấy tên Role từ bảng Role
                     })
                     .ToListAsync();
 
-                return Ok(users); // Returns only the selected fields in JSON format
+                return Ok(users); // Returns the selected fields in JSON format
             }
             catch (Exception ex)
             {
@@ -105,20 +147,58 @@ namespace AppChatBackEnd.Controllers
             }
         }
 
-        [HttpGet("count-users")]
-        public async Task<IActionResult> CountUsers()
+
+        // API to count active users
+        [HttpGet("count-active-users")]
+        public async Task<IActionResult> CountActiveUsers()
         {
             try
             {
-                var userCount = await _context.Users.CountAsync();
-                return Ok(userCount); // Trả về số lượng người dùng
+                var activeUserCount = await _context.Users
+                    .Where(u => u.UserDetail.Status == "Active")
+                    .CountAsync();
+                return Ok(activeUserCount);
             }
             catch (Exception ex)
             {
-                // Ghi log chi tiết ngoại lệ để điều tra thêm
-                return StatusCode(500, "An error occurred while counting the users: " + ex.Message);
+                return StatusCode(500, "An error occurred while counting active users: " + ex.Message);
             }
         }
+
+        // API to count blocked users
+        [HttpGet("count-blocked-users")]
+        public async Task<IActionResult> CountBlockedUsers()
+        {
+            try
+            {
+                var blockedUserCount = await _context.Users
+                    .Where(u => u.UserDetail.Status == "Blocked")
+                    .CountAsync();
+                return Ok(blockedUserCount);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while counting blocked users: " + ex.Message);
+            }
+        }
+
+        // API to count reported users
+        [HttpGet("count-reported-users")]
+        public async Task<IActionResult> CountReportedUsers()
+        {
+            try
+            {
+                var reportedUserCount = await _context.Users
+                    .Where(u => u.UserDetail.Status == "Reported")
+                    .CountAsync();
+                return Ok(reportedUserCount);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while counting reported users: " + ex.Message);
+            }
+        }
+
 
 
         // cậo nhật user profile
