@@ -1,7 +1,20 @@
 import React, { useState } from 'react';
 import './details.css';
 import { FaExclamationTriangle, FaUserMinus } from 'react-icons/fa';
-function Details(chattingWith) {
+import Loader from "react-spinners/SyncLoader";
+function Details({loadingUser, chattingWith}) {
+
+    console.log("chatting with ne" + JSON.stringify(chattingWith))
+
+    if (loadingUser) {
+        return (
+            <div className='details'>
+                    <div className="loading-user">
+                        <Loader size={10} color={"#5183fe"} loading={loadingUser} />
+                    </div>
+            </div>
+        );
+    }
     return (
         <div className='details'>
             <div className='user-chatting-details'>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login.js';
 import ChatHome from './components/ChatHome.js';
 import AdminDashboard from './components/admin/Dashboard/AdminDashboard';
@@ -12,7 +12,8 @@ function App() {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Login />} />
+                <Route path="/" element={<Navigate to="/login" />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/chat" element={<ChatHome />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/users" element={<Users />} />

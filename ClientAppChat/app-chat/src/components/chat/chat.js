@@ -43,7 +43,7 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
         if (chatContainer) {
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
-    }, [chattingContent]);
+    }, [chattingContent,chattingWith]);
 
     const TEN_MINUTES = 10 * 60 * 1000;
 

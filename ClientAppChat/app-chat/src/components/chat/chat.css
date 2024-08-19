@@ -51,10 +51,11 @@
     .center {
         padding: 20px;
         flex: 1;
-        overflow-y: scroll;
+        overflow-y: auto;
         display: flex;
         flex-direction: column;
         gap: 20px;
+        height: 100%;
 
         .message {
             min-width: none;

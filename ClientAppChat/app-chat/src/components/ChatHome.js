@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { json, useNavigate } from 'react-router-dom';
 import { BACKEND_URL_HTTP, BACKEND_URL_HTTPS } from '../config.js';
 import axios from 'axios';
 import '../css/chatHome.css';
@@ -61,7 +61,7 @@ function Home() {
                 setChatList(response.data);
                 if (response.data && !chattingWith) {
                     setChattingWith(response.data[0])
-                    console.log('dag chat voi ' + response.data[0])
+                    console.log('dag chat voi ' + JSON.stringify(response.data[0]))
                 }
             } catch (err) {
                 console.log(err);
@@ -130,7 +130,10 @@ function Home() {
                         userInfo={user}
                         chatList={chatList}
                         loading={loading}
-                        onChatClick={handleChatClick}></List>
+                        onChatClick={handleChatClick}>
+                        
+                    </List>
+                    
                     <Chat
                         chattingWith={chattingWith}
                         loadingUser={chattingWithLoading}
@@ -138,8 +141,10 @@ function Home() {
                         chattingContent={chattingContent}
                         sendMessage={sendMessage}
                     ></Chat>
+                    
                     <Details
                         chattingWith={chattingWith}
+                        loadingUser={chattingWithLoading}
                     >
 
                     </Details>
