@@ -9,6 +9,35 @@ import iconFaceBook from '../img/facebook.png';
 import iconTwitter from '../img/twitter-logo.jpg'; 
 import Swal from 'sweetalert2';
 import axios from 'axios';
+
+import { GoogleLogin } from '@react-oauth/google';
+
+const handleLoginSuccess = (credentialResponse) => {
+    console.log(credentialResponse);
+    // Xử lý logic sau khi đăng nhập thành công, ví dụ gửi token đến server.
+    fetch('http://localhost:5133/api/account/google-login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            token: credentialResponse.credential,
+        }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            // Lưu JWT hoặc thực hiện các bước tiếp theo
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+};
+
+const handleLoginFailure = (error) => {
+    console.error('Login Failed:', error);
+};
+
 function Login() {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
@@ -137,6 +166,11 @@ function Login() {
                     <div>
                         or login with
                     </div>
+
+                    <GoogleLogin
+                        onSuccess={handleLoginSuccess}
+                        onError={handleLoginFailure}
+                    />
 
                     <div className='login-option'>
                         <a href='' className='icon-login'>
