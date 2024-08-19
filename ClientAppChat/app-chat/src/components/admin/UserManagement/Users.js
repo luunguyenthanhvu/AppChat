@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Pagination from '../Pagination/Pagination'; // Importing the pagination component
+import Modal from '../Modal/Modal'; // Importing the reusable modal component
 import '../../../css/Users.css'; // Ensure the path is correct
 import { BACKEND_URL_HTTP } from '../../../config.js'; // Importing the backend URL
 
@@ -13,14 +14,21 @@ function Users() {
     const [newUser, setNewUser] = useState({
         userName: '',
         email: '',
-        password: '', // Added field for password
+        password: '',
         img: '',
-        roleId: 2 // Default to a basic user role (adjust based on your logic)
+        roleId: 2
     });
+
+    // States for handling modal
+    const [showModal, setShowModal] = useState(false);
+    const [modalAction, setModalAction] = useState(null);
+    const [selectedUserId, setSelectedUserId] = useState(null);
+    const [modalTitle, setModalTitle] = useState('');
+    const [modalMessage, setModalMessage] = useState('');
 
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
-    const [usersPerPage] = useState(5); // Set users per page
+    const [usersPerPage] = useState(5);
 
     useEffect(() => {
         fetchUsers();
@@ -52,9 +60,9 @@ function Users() {
             setLoading(true);
             const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/UserManagement/getUserById/${searchTerm}`);
             if (response.data) {
-                setUsers([response.data]); // Display only the found user in the list
+                setUsers([response.data]);
             } else {
-                setUsers([]); // Clear users if no match
+                setUsers([]);
                 alert('User not found.');
             }
         } catch (error) {
@@ -65,48 +73,77 @@ function Users() {
         }
     };
 
-
     const handleEdit = (userId) => {
         console.log(`Edit user with ID: ${userId}`);
     };
 
     const handleBlock = (userId) => {
-        console.log(`Block user with ID: ${userId}`);
+        openModal('block', userId, 'Block User', 'Are you sure you want to block this user?');
     };
 
-    const handleDelete = async (userId) => {
-        try {
-            await axios.delete(`http://${BACKEND_URL_HTTP}/api/User/remove-user/${userId}`);
-            // After successful deletion, update the user list
-            setUsers(users.filter(user => user.userId !== userId));
-        } catch (error) {
-            console.error('Error deleting user:', error);
-            alert('Failed to delete user. Please try again.');
-        }
+    const handleDelete = (userId) => {
+        openModal('delete', userId, 'Delete User', 'Are you sure you want to delete this user?');
     };
 
-    const handleAddUser = async (e) => {
-        e.preventDefault(); // Prevent form refresh
+    const handleReport = (userId) => {
+        openModal('report', userId, 'Report User', 'Are you sure you want to report this user?');
+    };
 
+    const handleAddUser = async () => {
         try {
             const response = await axios.post(`http://${BACKEND_URL_HTTP}/api/User/add-user`, newUser);
             const createdUser = response.data;
-            setUsers([...users, createdUser]); // Add the new user to the list
-            setShowAddForm(false); // Close the form after adding
+            setUsers([...users, createdUser]);
+            setShowAddForm(false);
             setNewUser({
                 userName: '',
                 email: '',
                 password: '',
                 img: '',
                 roleId: 2
-            }); // Reset the form fields
+            });
         } catch (error) {
             console.error('Error adding user:', error);
             alert('Failed to add user. Please try again.');
         }
     };
 
-    // Pagination logic: determine current users
+    const openModal = (action, userId, title, message) => {
+        setModalAction(action);
+        setSelectedUserId(userId);
+        setModalTitle(title);
+        setModalMessage(message);
+        setShowModal(true);
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+        setSelectedUserId(null);
+        setModalAction(null);
+    };
+
+    const confirmAction = async () => {
+        if (modalAction === 'delete') {
+            try {
+                await axios.delete(`http://${BACKEND_URL_HTTP}/api/User/remove-user/${selectedUserId}`);
+                setUsers(users.filter(user => user.userId !== selectedUserId));
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                alert('Failed to delete user. Please try again.');
+            }
+        } else if (modalAction === 'block') {
+            // Implement block logic here
+            console.log(`User with ID ${selectedUserId} has been blocked.`);
+        } else if (modalAction === 'report') {
+            // Implement report logic here
+            console.log(`User with ID ${selectedUserId} has been reported.`);
+        } else if (modalAction === 'add') {
+            handleAddUser();
+        }
+        closeModal();
+    };
+
+    // Pagination logic
     const indexOfLastUser = currentPage * usersPerPage;
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
     const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
@@ -116,8 +153,12 @@ function Users() {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
-    // Calculate the number of pages
     const totalPages = Math.ceil(users.length / usersPerPage);
+
+    const handleOpenAddUserModal = (e) => {
+        e.preventDefault();
+        openModal('add', null, 'Add User', 'Are you sure you want to add this user?');
+    };
 
     return (
         <div>
@@ -138,7 +179,7 @@ function Users() {
             </div>
 
             {showAddForm && (
-                <form className="add-user-form" onSubmit={handleAddUser}>
+                <form className="add-user-form" onSubmit={handleOpenAddUserModal}>
                     <input
                         type="text"
                         placeholder="Username"
@@ -214,6 +255,7 @@ function Users() {
                                     <button onClick={() => handleEdit(user.userId)}>Edit</button>
                                     <button onClick={() => handleBlock(user.userId)}>Block</button>
                                     <button onClick={() => handleDelete(user.userId)}>Delete</button>
+                                    <button onClick={() => handleReport(user.userId)}>Report</button>
                                 </td>
                             </tr>
                         ))
@@ -226,7 +268,6 @@ function Users() {
                 </table>
             </div>
 
-            {/* Pagination directly below the user list */}
             <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -236,7 +277,17 @@ function Users() {
                     activeBgColor: '#388E3C',
                     borderColor: '#4CAF50',
                     textColor: 'white',
-                }}            />
+                }}
+            />
+
+            {/* Reusable Modal for confirming actions */}
+            <Modal
+                isOpen={showModal}
+                onClose={closeModal}
+                onConfirm={confirmAction}
+                title={modalTitle}
+                message={modalMessage}
+            />
         </div>
     );
 }
