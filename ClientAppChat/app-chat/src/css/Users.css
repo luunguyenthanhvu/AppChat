@@ -132,38 +132,34 @@ select {
     margin: 0 10px;
 }
 
-.add-user-button {
-    margin: 10px 0;
-    padding: 5px 15px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-.add-user-form {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
 .add-user-form input,
 .add-user-form select {
-    padding: 5px;
-    border: 1px solid #ccc;
+    color: white; /* Text color */
+    background-color: #333; /* Background color matching your dark theme */
+    border: 1px solid #555; /* Border color */
+    padding: 10px;
+    margin: 5px 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.add-user-form input::placeholder {
+    color: #aaa; /* Placeholder color */
 }
 
 .add-user-form button {
-    padding: 5px 10px;
     background-color: #007bff;
     color: white;
     border: none;
+    padding: 10px 20px;
     cursor: pointer;
+    margin-top: 10px;
 }
 
 .add-user-form button:hover {
     background-color: #0056b3;
 }
+
 .user-avatar {
     width: 40px;
     height: 40px;
@@ -172,3 +168,11 @@ select {
     border: 2px solid #4CAF50; /* Optional: Add border for better visibility */
     margin-right: 10px;
 }
+
+
+
+
+
+
+
+
