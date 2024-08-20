@@ -100,31 +100,13 @@
     color: white;
 }
 
-.search-filter, .search-button {
+.search-filter {
     padding: 8px;
     border-radius: 4px;
     border: 1px solid #ccc;
     background-color: #2D3748;
     color: white;
     cursor: pointer;
-}
-
-.search-button {
-    background-color: #4CAF50;
-    color: white;
-}
-
-button {
-    margin: 0 5px;
-    padding: 5px 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
 }
 
 select {
@@ -168,11 +150,157 @@ select {
     border: 2px solid #4CAF50; /* Optional: Add border for better visibility */
     margin-right: 10px;
 }
+.user-list th, .user-list td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap; /* Prevent text wrapping */
+}
 
+/* Define fixed widths for each column */
+.user-list th:nth-child(1), .user-list td:nth-child(1) {
+    width: 100px; /* Width for Avatar column */
+}
 
+.user-list th:nth-child(2), .user-list td:nth-child(2) {
+    width: 80px; /* Width for User ID column */
+}
 
+.user-list th:nth-child(3), .user-list td:nth-child(3) {
+    width: 120px; /* Width for Username column */
+}
 
+.user-list th:nth-child(4), .user-list td:nth-child(4) {
+    width: 180px; /* Width for Email column */
+}
 
+.user-list th:nth-child(5), .user-list td:nth-child(5) {
+    width: 100px; /* Width for Status column */
+}
 
+.user-list th:nth-child(6), .user-list td:nth-child(6) {
+    width: 100px; /* Width for Role column */
+}
 
+.user-list th:nth-child(7), .user-list td:nth-child(7) {
+    width: 200px; /* Width for Actions column */
+}
 
+/* Fix the table layout to ensure the width stays consistent */
+.user-list {
+    table-layout: fixed;
+    width: 100%;
+}
+.reason-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    width: 300px;
+}
+
+.reason-popup-content h4 {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.reason-popup-content input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.reason-popup-content button {
+    padding: 8px 15px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #388E3C;
+    color: white;
+    margin-right: 10px;
+    transition: background-color 0.3s;
+}
+
+.reason-popup-content button:hover {
+    background-color: #4CAF50;
+}
+
+.reason-popup-content button:last-child {
+    background-color: #f44336;
+}
+
+.reason-popup-content button:last-child:hover {
+    background-color: #e53935;
+}
+.search-button {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.search-button:hover {
+    background-color: #007bff;
+}
+
+.add-user-button {
+    padding: 8px 12px;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.add-user-button:hover {
+    background-color: #007bff;
+}
+
+/* Users.css */
+.action-buttons {
+    display: flex;
+    gap: 10px; /* Add space between the buttons */
+}
+
+.action-buttons .block-button,
+.action-buttons .report-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.action-buttons .block-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.action-buttons .block-button:hover {
+    background-color: #c82333;
+}
+
+.action-buttons .report-button {
+    background-color: #ff9800;
+    color: white;
+}
+
+.action-buttons .report-button:hover {
+    background-color: #ff9800;
+}
+
+/* Adjust the popup and other elements as necessary */

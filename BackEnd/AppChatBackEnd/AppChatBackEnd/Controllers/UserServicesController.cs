@@ -80,7 +80,7 @@ namespace AppChatBackEnd.Controllers
                 await mailService.SendCodeEmailAsync(registerDto.Email, otpCode);
 
                 await _dataContext.AddAsync(userDetails);
-                await _dataContext.AddAsync(user);
+                await _dataContext.AddAsync(user);  
                 await _dataContext.SaveChangesAsync();
                 await MyUtil.CreateDefault(_dataContext, user);
 

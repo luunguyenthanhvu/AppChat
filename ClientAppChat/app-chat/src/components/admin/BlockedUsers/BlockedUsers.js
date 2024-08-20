@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Pagination from '../Pagination/Pagination'; // Importing the pagination component
-import '../../../css/BlockedUsers.css'; // Ensure you have the appropriate CSS file for styling
-import { BACKEND_URL_HTTP } from '../../../config.js'; // Importing the backend URL
+import Pagination from '../Pagination/Pagination';
+import Modal from '../Modal/Modal';
+import NotificationModal from '../Modal/NotificationModal';
+import '../../../css/BlockedUsers.css';
+import { BACKEND_URL_HTTP } from '../../../config.js';
 
 function BlockedUsers() {
     const [blockedUsers, setBlockedUsers] = useState([]);
@@ -10,7 +12,19 @@ function BlockedUsers() {
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const [usersPerPage] = useState(5); // Set users per page
+    const [usersPerPage] = useState(5);
+
+    // State for the modal
+    const [showModal, setShowModal] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState(null);
+    const [modalTitle, setModalTitle] = useState('');
+    const [modalMessage, setModalMessage] = useState('');
+    const [modalAction, setModalAction] = useState(null);
+
+    // State for the notification modal
+    const [notificationOpen, setNotificationOpen] = useState(false);
+    const [notificationMessage, setNotificationMessage] = useState('');
+    const [notificationType, setNotificationType] = useState(''); // 'success' or 'error'
 
     useEffect(() => {
         fetchBlockedUsers();
@@ -20,7 +34,6 @@ function BlockedUsers() {
         try {
             setLoading(true);
             const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/User/all-users`);
-            // Filter users with 'Blocked' status
             const blockedUsersList = response.data.filter(user => user.status === 'Blocked');
             setBlockedUsers(blockedUsersList);
         } catch (err) {
@@ -33,28 +46,116 @@ function BlockedUsers() {
 
     const handleSearch = async () => {
         if (!searchTerm) {
-            alert('Please enter a valid User ID.');
+            setNotificationType('error');
+            setNotificationMessage('Please enter a search term.');
+            setNotificationOpen(true);
             return;
         }
 
         try {
             setLoading(true);
-            const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/UserManagement/getUserById/${searchTerm}`);
-            if (response.data && response.data.status === 'Blocked') {
-                setBlockedUsers([response.data]); // Display only the found blocked user in the list
+            let responses = [];
+
+            // Call all three APIs in parallel
+            const idSearchPromise = axios.get(`http://${BACKEND_URL_HTTP}/api/User/get-user-by-id/${searchTerm}`);
+            const nameSearchPromise = axios.get(`http://${BACKEND_URL_HTTP}/api/User/get-users-by-name/${searchTerm}`);
+            const emailSearchPromise = axios.get(`http://${BACKEND_URL_HTTP}/api/User/get-users-by-email/${searchTerm}`);
+
+            // Wait for all promises to complete
+            const [idResponse, nameResponse, emailResponse] = await Promise.allSettled([
+                idSearchPromise,
+                nameSearchPromise,
+                emailSearchPromise
+            ]);
+
+            // Collect results from successful responses
+            if (idResponse.status === 'fulfilled' && idResponse.value.data) {
+                responses.push(idResponse.value.data);
+            }
+            if (nameResponse.status === 'fulfilled' && nameResponse.value.data.length > 0) {
+                responses = responses.concat(nameResponse.value.data);
+            }
+            if (emailResponse.status === 'fulfilled' && emailResponse.value.data.length > 0) {
+                responses = responses.concat(emailResponse.value.data);
+            }
+
+            // Deduplicate results based on user ID
+            const uniqueUsers = Array.from(new Map(responses.map(user => [user.userId, user])).values());
+
+            // Filter users with status "Blocked"
+            const filteredUsers = uniqueUsers.filter(user => user.status === 'Blocked');
+
+            if (filteredUsers.length > 0) {
+                setBlockedUsers(filteredUsers);
+                setNotificationType('success');
+                setNotificationMessage('Blocked users found.');
             } else {
-                setBlockedUsers([]); // Clear users if no match
-                alert('Blocked user not found.');
+                setBlockedUsers([]);
+                setNotificationType('error');
+                setNotificationMessage('No blocked users found.');
             }
         } catch (error) {
-            console.error('Error fetching user:', error);
-            alert('Blocked user not found.');
+            console.error('Error during search:', error);
+            setNotificationType('error');
+            setNotificationMessage('Error during search.');
         } finally {
             setLoading(false);
+            setNotificationOpen(true);
         }
     };
 
-    // Pagination logic: determine current users
+
+
+    const openModal = (userId, action) => {
+        setSelectedUserId(userId);
+        setModalAction(action);
+        if (action === 'unblock') {
+            setModalTitle('Unblock User');
+            setModalMessage('Are you sure you want to unblock this user?');
+        } else if (action === 'delete') {
+            setModalTitle('Delete User');
+            setModalMessage('Are you sure you want to delete this user? This action cannot be undone.');
+        }
+        setShowModal(true);
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+        setSelectedUserId(null);
+        setModalAction(null);
+    };
+
+    const confirmAction = async () => {
+        try {
+            if (modalAction === 'unblock') {
+                await axios.put(`http://${BACKEND_URL_HTTP}/api/User/unblock-user/${selectedUserId}`);
+                setBlockedUsers(blockedUsers.filter(user => user.userId !== selectedUserId));
+                setNotificationType('success');
+                setNotificationMessage('User unblocked successfully.');
+            } else if (modalAction === 'delete') {
+                await axios.delete(`http://${BACKEND_URL_HTTP}/api/User/remove-user/${selectedUserId}`);
+                setBlockedUsers(blockedUsers.filter(user => user.userId !== selectedUserId));
+                setNotificationType('success');
+                setNotificationMessage('User deleted successfully.');
+            }
+        } catch (error) {
+            console.error(`Error performing ${modalAction}:`, error);
+            setNotificationType('error');
+            setNotificationMessage(`Failed to ${modalAction} user. Please try again.`);
+        } finally {
+            closeModal();
+            setNotificationOpen(true);
+        }
+    };
+
+    const handleUnblock = (userId) => {
+        openModal(userId, 'unblock');
+    };
+
+    const handleDelete = (userId) => {
+        openModal(userId, 'delete');
+    };
+
     const indexOfLastUser = currentPage * usersPerPage;
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
     const currentUsers = blockedUsers.slice(indexOfFirstUser, indexOfLastUser);
@@ -64,7 +165,6 @@ function BlockedUsers() {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
-    // Calculate the number of pages
     const totalPages = Math.ceil(blockedUsers.length / usersPerPage);
 
     return (
@@ -79,7 +179,7 @@ function BlockedUsers() {
                     onChange={e => setSearchTerm(e.target.value)}
                     className="search-input"
                 />
-                <button onClick={handleSearch}>Search</button>
+                <button onClick={handleSearch} className="search-button">Search</button>
             </div>
 
             <div className="user-list-wrapper">
@@ -101,7 +201,7 @@ function BlockedUsers() {
                             <tr key={user.userId}>
                                 <td>
                                     <img
-                                        src={user.img} // Assuming your API provides the avatar URL in this field
+                                        src={user.img}
                                         alt={`${user.userName}'s avatar`}
                                         className="blocked-user-avatar"
                                     />
@@ -120,8 +220,16 @@ function BlockedUsers() {
                                     </span>
                                 </td>
                                 <td>
-                                    <button onClick={() => console.log(`Edit user with ID: ${user.userId}`)}>Edit</button>
+                                    <div className="action-buttons">
+                                        <button className="unblock-button"
+                                                onClick={() => handleUnblock(user.userId)}>Unblock
+                                        </button>
+                                        <button className="delete-button"
+                                                onClick={() => handleDelete(user.userId)}>Delete
+                                        </button>
+                                    </div>
                                 </td>
+
                             </tr>
                         ))
                     ) : (
@@ -133,7 +241,6 @@ function BlockedUsers() {
                 </table>
             </div>
 
-            {/* Pagination directly below the blocked user list */}
             <Pagination
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -143,7 +250,25 @@ function BlockedUsers() {
                     activeBgColor: '#FF4500',
                     borderColor: '#FF6347',
                     textColor: 'white',
-                }}            />
+                }}
+            />
+
+            {/* Modal confirm for unblock or delete actions */}
+            <Modal
+                isOpen={showModal}
+                onClose={closeModal}
+                onConfirm={confirmAction}
+                title={modalTitle}
+                message={modalMessage}
+            />
+
+            {/* Notification modal for success/error messages */}
+            <NotificationModal
+                isOpen={notificationOpen}
+                onClose={() => setNotificationOpen(false)}
+                message={notificationMessage}
+                type={notificationType}
+            />
         </div>
     );
 }

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Pagination from '../Pagination/Pagination'; // Importing the pagination component
-import Modal from '../Modal/Modal'; // Importing the reusable modal component
-import '../../../css/Users.css'; // Ensure the path is correct
-import { BACKEND_URL_HTTP } from '../../../config.js'; // Importing the backend URL
+import Pagination from '../Pagination/Pagination';
+import Modal from '../Modal/Modal';
+import NotificationModal from '../Modal/NotificationModal';
+import '../../../css/Users.css';
+import { BACKEND_URL_HTTP } from '../../../config.js';
 
 function Users() {
     const [users, setUsers] = useState([]);
@@ -25,6 +26,13 @@ function Users() {
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [modalTitle, setModalTitle] = useState('');
     const [modalMessage, setModalMessage] = useState('');
+    const [reportReason, setReportReason] = useState(''); // Store the reason entered
+    const [showReasonInput, setShowReasonInput] = useState(false); // Track when to show reason input
+
+    // Notification modal states
+    const [notificationOpen, setNotificationOpen] = useState(false);
+    const [notificationMessage, setNotificationMessage] = useState('');
+    const [notificationType, setNotificationType] = useState(''); // 'success' or 'error'
 
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
@@ -40,8 +48,8 @@ function Users() {
             const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/User/all-users`, {
                 params: { searchTerm, page: currentPage, limit: usersPerPage },
             });
-            const activeUsers = response.data.filter(user => user.status === 'Active');
-            setUsers(activeUsers);
+            const filteredUsers = response.data.filter(user => user.status === 'Active' || user.status === 'Reported');
+            setUsers(filteredUsers);
         } catch (err) {
             setError(err.message);
             console.error("Error fetching users:", err);
@@ -52,41 +60,74 @@ function Users() {
 
     const handleSearch = async () => {
         if (!searchTerm) {
-            alert('User not found. Please enter a valid User ID.');
+            setNotificationType('error');
+            setNotificationMessage('Please enter a search term.');
+            setNotificationOpen(true);
             return;
         }
 
         try {
             setLoading(true);
-            const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/UserManagement/getUserById/${searchTerm}`);
-            if (response.data) {
-                setUsers([response.data]);
+            let responses = [];
+
+            // Call all three APIs in parallel
+            const idSearchPromise = axios.get(`http://${BACKEND_URL_HTTP}/api/User/get-user-by-id/${searchTerm}`);
+            const nameSearchPromise = axios.get(`http://${BACKEND_URL_HTTP}/api/User/get-users-by-name/${searchTerm}`);
+            const emailSearchPromise = axios.get(`http://${BACKEND_URL_HTTP}/api/User/get-users-by-email/${searchTerm}`);
+
+            // Wait for all promises to complete
+            const [idResponse, nameResponse, emailResponse] = await Promise.allSettled([
+                idSearchPromise,
+                nameSearchPromise,
+                emailSearchPromise
+            ]);
+
+            // Collect results from successful responses
+            if (idResponse.status === 'fulfilled' && idResponse.value.data) {
+                responses.push(idResponse.value.data);
+            }
+            if (nameResponse.status === 'fulfilled' && nameResponse.value.data.length > 0) {
+                responses = responses.concat(nameResponse.value.data);
+            }
+            if (emailResponse.status === 'fulfilled' && emailResponse.value.data.length > 0) {
+                responses = responses.concat(emailResponse.value.data);
+            }
+
+            // Deduplicate results based on user ID
+            const uniqueUsers = Array.from(new Map(responses.map(user => [user.userId, user])).values());
+
+            // Filter users with status "Active" or "Reported"
+            const filteredUsers = uniqueUsers.filter(user => user.status === 'Active' || user.status === 'Reported');
+
+            if (filteredUsers.length > 0) {
+                setUsers(filteredUsers);
+                setNotificationType('success');
+                setNotificationMessage('Search results found.');
             } else {
                 setUsers([]);
-                alert('User not found.');
+                setNotificationType('error');
+                setNotificationMessage('No results found.');
             }
         } catch (error) {
-            console.error('Error fetching user:', error);
-            alert('User not found.');
+            console.error('Error during search:', error);
+            setNotificationType('error');
+            setNotificationMessage('Error during search.');
         } finally {
             setLoading(false);
+            setNotificationOpen(true);
         }
     };
 
-    const handleEdit = (userId) => {
-        console.log(`Edit user with ID: ${userId}`);
-    };
+
 
     const handleBlock = (userId) => {
         openModal('block', userId, 'Block User', 'Are you sure you want to block this user?');
     };
 
-    const handleDelete = (userId) => {
-        openModal('delete', userId, 'Delete User', 'Are you sure you want to delete this user?');
-    };
-
     const handleReport = (userId) => {
-        openModal('report', userId, 'Report User', 'Are you sure you want to report this user?');
+        setReportReason(''); // Reset the reason input
+        setShowReasonInput(true); // Show reason input popup
+        setSelectedUserId(userId);
     };
 
     const handleAddUser = async () => {
@@ -102,9 +143,14 @@ function Users() {
                 img: '',
                 roleId: 2
             });
+            setNotificationType('success');
+            setNotificationMessage('User added successfully.');
+            setNotificationOpen(true);
         } catch (error) {
             console.error('Error adding user:', error);
-            alert('Failed to add user. Please try again.');
+            setNotificationType('error');
+            setNotificationMessage('Failed to add user. Please try again.');
+            setNotificationOpen(true);
         }
     };
 
@@ -120,30 +166,40 @@ function Users() {
         setShowModal(false);
         setSelectedUserId(null);
         setModalAction(null);
+        setReportReason(''); // Reset the reason
+        setShowReasonInput(false); // Hide the reason input popup
     };
 
     const confirmAction = async () => {
-        if (modalAction === 'delete') {
-            try {
-                await axios.delete(`http://${BACKEND_URL_HTTP}/api/User/remove-user/${selectedUserId}`);
-                setUsers(users.filter(user => user.userId !== selectedUserId));
-            } catch (error) {
-                console.error('Error deleting user:', error);
-                alert('Failed to delete user. Please try again.');
+        try {
+            if (modalAction === 'block') {
+                await axios.put(`http://${BACKEND_URL_HTTP}/api/User/block-user/${selectedUserId}`);
+                fetchUsers();
+                setNotificationType('success');
+                setNotificationMessage('User blocked successfully.');
+            } else if (modalAction === 'report') {
+                const reportPayload = {
+                    ReportingUserId: 1, // Replace with the ID of the logged-in user
+                    ReportedUserId: selectedUserId,
+                    Reason: reportReason, // Use the entered reason
+                };
+                await axios.put(`http://${BACKEND_URL_HTTP}/api/User/report-user`, reportPayload);
+                fetchUsers();
+                setNotificationType('success');
+                setNotificationMessage('User reported successfully.');
+            } else if (modalAction === 'add') {
+                handleAddUser();
             }
-        } else if (modalAction === 'block') {
-            // Implement block logic here
-            console.log(`User with ID ${selectedUserId} has been blocked.`);
-        } else if (modalAction === 'report') {
-            // Implement report logic here
-            console.log(`User with ID ${selectedUserId} has been reported.`);
-        } else if (modalAction === 'add') {
-            handleAddUser();
+        } catch (error) {
+            console.error(`Error performing ${modalAction}:`, error);
+            setNotificationType('error');
+            setNotificationMessage(`Failed to ${modalAction} user. Please try again.`);
+        } finally {
+            closeModal(); // Ensure modal is closed after all actions
+            setNotificationOpen(true); // Show the notification modal
         }
-        closeModal();
     };
 
-    // Pagination logic
     const indexOfLastUser = currentPage * usersPerPage;
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
     const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
@@ -161,7 +217,7 @@ function Users() {
     };
 
     return (
-        <div>
+        <div className="users-content">
             <h1>All Users</h1>
 
             <div className="user-search-bar">
@@ -172,8 +228,8 @@ function Users() {
                     onChange={e => setSearchTerm(e.target.value)}
                     className="search-input"
                 />
-                <button onClick={handleSearch}>Search</button>
-                <button onClick={() => setShowAddForm(!showAddForm)}>
+                <button onClick={handleSearch} className="search-button">Search</button>
+                <button onClick={() => setShowAddForm(!showAddForm)} className="add-user-button">
                     {showAddForm ? 'Cancel' : 'Add User'}
                 </button>
             </div>
@@ -214,7 +270,7 @@ function Users() {
                         <option value={2}>User</option>
                         <option value={1}>Admin</option>
                     </select>
-                    <button type="submit">Add</button>
+                    <button type="submit" className="add-user-button">Add</button>
                 </form>
             )}
 
@@ -236,7 +292,7 @@ function Users() {
                         currentUsers.map(user => (
                             <tr key={user.userId}>
                                 <td>
-                                    <img src={user.img} alt={user.userName} className="user-avatar" />
+                                    <img src={user.img} alt={user.userName} className="user-avatar"/>
                                 </td>
                                 <td>{user.userId}</td>
                                 <td>{user.userName}</td>
@@ -252,11 +308,16 @@ function Users() {
                                     </span>
                                 </td>
                                 <td>
-                                    <button onClick={() => handleEdit(user.userId)}>Edit</button>
-                                    <button onClick={() => handleBlock(user.userId)}>Block</button>
-                                    <button onClick={() => handleDelete(user.userId)}>Delete</button>
-                                    <button onClick={() => handleReport(user.userId)}>Report</button>
+                                    <div className="action-buttons">
+                                        <button onClick={() => handleBlock(user.userId)}
+                                                className="block-button">Block
+                                        </button>
+                                        <button onClick={() => handleReport(user.userId)}
+                                                className="report-button">Report
+                                        </button>
+                                    </div>
                                 </td>
+
                             </tr>
                         ))
                     ) : (
@@ -280,6 +341,26 @@ function Users() {
                 }}
             />
 
+            {/* Popup for entering the report reason */}
+            {showReasonInput && (
+                <div className="reason-popup">
+                    <div className="reason-popup-content">
+                        <h4>Enter Report Reason</h4>
+                        <input
+                            type="text"
+                            value={reportReason}
+                            onChange={(e) => setReportReason(e.target.value)}
+                            placeholder="Enter reason"
+                        />
+                        <button onClick={() => {
+                            setShowReasonInput(false);
+                            openModal('report', selectedUserId, 'Confirm Report', 'Are you sure you want to report this user?');
+                        }} className="submit-reason-button">Submit Reason</button>
+                        <button onClick={() => setShowReasonInput(false)} className="cancel-reason-button">Cancel</button>
+                    </div>
+                </div>
+            )}
+
             {/* Reusable Modal for confirming actions */}
             <Modal
                 isOpen={showModal}
@@ -287,6 +368,14 @@ function Users() {
                 onConfirm={confirmAction}
                 title={modalTitle}
                 message={modalMessage}
+            />
+
+            {/* Notification Modal for showing success or error messages */}
+            <NotificationModal
+                isOpen={notificationOpen}
+                onClose={() => setNotificationOpen(false)}
+                message={notificationMessage}
+                type={notificationType} // 'success' or 'error'
             />
         </div>
     );
