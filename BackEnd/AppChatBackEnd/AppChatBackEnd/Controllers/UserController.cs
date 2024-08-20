@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
 using AppChatBackEnd.Models.Entities;
-using System.IdentityModel.Tokens.Jwt;
 
 
 namespace AppChatBackEnd.Controllers
@@ -312,42 +311,6 @@ namespace AppChatBackEnd.Controllers
             await _context.SaveChangesAsync();
             return Ok(new { message = "User reportAmount updated successfully." });
         }
-
-        [HttpPost("decodeJWT")]
-        public async Task<IActionResult> DecodeJwt([FromBody] string token)
-        {
-            if (string.IsNullOrEmpty(token))
-            {
-                return BadRequest("Token is required");
-            }
-
-            try
-            {
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadJwtToken(token);
-
-                // Trích xuất email từ claims
-                var emailClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "email");
-                if (emailClaim != null)
-                {
-                    return Ok(new { email = emailClaim.Value });
-                }
-                else
-                {
-                    return BadRequest("Email not found in token");
-                }
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Failed to decode JWT: {ex.Message}");
-            }
-        }
-
-        //[HttpPost("google-login")]
-        //public async Task<IActionResult> Get(string email)
-        //{
-            
-        //}
 
 
     }
