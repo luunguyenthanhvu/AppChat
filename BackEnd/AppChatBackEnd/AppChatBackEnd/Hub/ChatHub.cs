@@ -3,10 +3,12 @@ using AppChatBackEnd.Connection.WebSocketConnection;
 using AppChatBackEnd.DTO.Response.ChatResponse;
 using AppChatBackEnd.Repositories;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.IO;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AppChatBackEnd.ChatHub
 {
@@ -14,11 +16,12 @@ namespace AppChatBackEnd.ChatHub
     {
         private readonly UserSessionManager _userSessionManager;
         private readonly IChatRepository _chatRepository;
-
-        public ChatHub(UserSessionManager userSessionManager, IChatRepository chatRepository)
+        private readonly IVuLuuMarkUpRepository _remarkRepository;
+        public ChatHub(UserSessionManager userSessionManager, IChatRepository chatRepository, IVuLuuMarkUpRepository remarkRepository)
         {
             _userSessionManager = userSessionManager;
             _chatRepository = chatRepository;
+            _remarkRepository = remarkRepository;
         }
 
         public override async Task OnConnectedAsync()
@@ -41,6 +44,7 @@ namespace AppChatBackEnd.ChatHub
                     var email = parts[2];
 
                     Context.Items["UserId"] = userId;
+                    Context.Items["UserEmail"] = email;
                     login = " long cac connection" + Context.ConnectionId;
                     Console.WriteLine(login);
                     _userSessionManager.AddConnection(userId, Context.ConnectionId);
@@ -129,6 +133,22 @@ namespace AppChatBackEnd.ChatHub
 
             }
            // await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", messageResponse);
+        }
+        public async Task UpdateProfile(string email, bool isUpdateImage, bool isUpdatePass)
+        {
+            var userEmail = Context.Items["UserEmail"] + "";
+            var user = await _chatRepository.GetUsersByEmail(email);
+            var response = new LoginResponseDTO
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Img = user.Img
+            };
+            var connectionsConnect = _userSessionManager.GetConnections(user.UserId + "");
+            foreach (var connectionId in connectionsConnect)
+            {
+                await Clients.Client(connectionId).SendAsync("UserInfoUpdate", response);
+            }
         }
     }
 }

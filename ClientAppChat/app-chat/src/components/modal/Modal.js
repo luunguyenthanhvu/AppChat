@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import './Modal.css'; // Import custom CSS
-const Modal = ({ show, onClose, header, children, footer }) => {
+const Modal = ({ show, header, children, footer }) => {
     const modalOverlayRef = useRef(null);
     const modalContentRef = useRef(null);
 
@@ -17,7 +17,7 @@ const Modal = ({ show, onClose, header, children, footer }) => {
     if (!show) return null;
 
     return (
-        <div className="modal-overlay" ref={modalOverlayRef} onClick={onClose}>
+        <div className="modal-overlay" ref={modalOverlayRef}>
             <div className="modal-content" ref={modalContentRef} onClick={(e) => e.stopPropagation()}>
                 {header}
                 <div className="modal-body">

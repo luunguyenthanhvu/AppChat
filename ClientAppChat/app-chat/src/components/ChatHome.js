@@ -25,14 +25,14 @@ function Home() {
     const [chattingContent, setChattingContent] = useState('');
 
     // chatting 
-    const { newListChat ,messages, sendMessage } = useChat(); 
+    const { newListChat ,messages, userInfo,sendMessage, updateProfile } = useChat(); 
 
-    const user = {
+    const [user, setUser] = useState({
         userName: localStorage.getItem('userName'),
         email: localStorage.getItem('email'),
         img: localStorage.getItem('img'),
         token: localStorage.getItem('token')
-    };
+    });
 
     const getLastTenMessages = () => {
         if (chattingContent.length > 0) {
@@ -44,7 +44,6 @@ function Home() {
     useEffect(() => {
         const fetchChatList = async () => {
             try {
-
                 const fetchPromise = await axios.get(`http://${BACKEND_URL_HTTP}/api/chat/user-chat-list`, {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -118,10 +117,20 @@ function Home() {
         setChatList(newListChat)
     }, [newListChat])
 
+    useEffect(() => {
+        setUser(({
+            userName: localStorage.getItem('userName'),
+            email: localStorage.getItem('email'),
+            img: localStorage.getItem('img'),
+            token: localStorage.getItem('token')
+        }));
+    }, [userInfo])
+
 
     const handleChatClick = (user) => {
         setChattingWith(user);
     };
+
     return (
         <div className="background-image">
         <div className='overlay'>
@@ -130,8 +139,9 @@ function Home() {
                         userInfo={user}
                         chatList={chatList}
                         loading={loading}
-                        onChatClick={handleChatClick}>
-                        
+                        onChatClick={handleChatClick}
+                        updateProfile ={updateProfile}
+                    >
                     </List>
                     
                     <Chat

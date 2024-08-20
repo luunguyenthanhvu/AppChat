@@ -314,10 +314,14 @@
     color: white;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Add transition */
 }
 
 .save-button:hover {
     background-color: #0056b3;
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
 }
 
 .my-form-group select {
@@ -327,4 +331,25 @@
     border-radius: 4px;
     /* Thêm các thuộc tính cần thiết để đồng bộ với các ô input */
     box-sizing: border-box;
+}
+
+.my-switch-button,
+.modal-footer-content button {
+    padding: 10px 20px;
+    border: 1px solid #000;
+    background-color: #fff;
+    color: #000;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Add transition */
+}
+
+.my-switch-button:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.my-switch-button .update-icon {
+    margin-right: 6px;
 }

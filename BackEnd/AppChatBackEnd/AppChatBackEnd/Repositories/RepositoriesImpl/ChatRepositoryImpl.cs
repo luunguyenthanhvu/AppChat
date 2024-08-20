@@ -2,6 +2,7 @@
 using AppChat.Models.Entities;
 using AppChat.Models.Enums;
 using AppChatBackEnd.DTO.Response.ChatResponse;
+using AppChatBackEnd.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -59,6 +60,35 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
             await dbContext.Users.AddRangeAsync(friendUsers);
             await dbContext.SaveChangesAsync();
 
+            // Add UserDetails for the main user
+            var mainUserDetails = new UserDetails
+            {
+                UserId = mainUser.UserId,
+                FirstName = "Vuluu",
+                LastName = "User",
+                Dob = new DateTime(2000, 1, 1),  // Example date
+                PhoneNumber = "1234567890",
+                Gender = "Male"
+            };
+            await dbContext.UserDetails.AddAsync(mainUserDetails);
+
+            // Add UserDetails for friend users
+            foreach (var friendUser in friendUsers)
+            {
+                var friendUserDetails = new UserDetails
+                {
+                    UserId = friendUser.UserId,
+                    FirstName = friendUser.UserName,
+                    LastName = "Friend",
+                    Dob = new DateTime(2000, 1, 1),  // Example date
+                    PhoneNumber = "0987654321",
+                    Gender = "Female"
+                };
+                await dbContext.UserDetails.AddAsync(friendUserDetails);
+            }
+
+            await dbContext.SaveChangesAsync();
+
             // Update friend relationships after users are saved and have IDs
             var friendRelations = friendUsers.Select(friendUser => new Friend
             {
@@ -105,6 +135,8 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
 
             return mainUser;
         }
+
+
 
         public async Task<Users?> GetUsersByEmail(string email)
         {

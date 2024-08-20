@@ -12,6 +12,14 @@ const UserInfo = ({ userInfo, onCameraClick }) => (
             <h2>Personal information</h2>
             <ul className='user-details'>
                 <li>
+                    <span className='label'>First Name:</span> 
+                    <span className='value'>Vu</span>
+                </li>
+                <li>
+                    <span className='label'>Last Name:</span> 
+                    <span className='value'>Luu</span>
+                </li>
+                <li>
                     <span className='label'>Gender:</span> 
                     <span className='value'>Male</span>
                 </li>
