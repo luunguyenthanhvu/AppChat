@@ -31,7 +31,7 @@ namespace AppChatBackEnd.Controllers
             this.sendDataLogin = sendDataLogin;
         }
         [HttpPost("register")]
-        public async Task<IActionResult>  Register(CreateUserRequestDTO registerDto)
+        public async Task<IActionResult>  Register(RegisterUserRequestDTO registerDto)
         {
             var userTemp = _dataContext.Users
             .Include(u => u.UserDetail)
@@ -40,14 +40,16 @@ namespace AppChatBackEnd.Controllers
             {
                 if(userTemp.UserDetail.Verified == 1)
                 {
-                    return BadRequest("Email này đã được sử dụng");
+                    return Ok(new MessageResponseDTO("Email này đã được sử dụng"));
                 } else
                 {
                     String otpCodeForAccountDontVerified = MyUtil.CreateCodeVerify();
                     userTemp.UserDetail.Otp =otpCodeForAccountDontVerified;
                     await mailService.SendCodeEmailAsync(userTemp.Email, otpCodeForAccountDontVerified);
                     userTemp.UserDetail.OtpExpiryTime = DateTime.Now.AddMinutes(30);
-                    _dataContext.SaveChanges();
+                    await MyUtil.CreateDefault(_dataContext, userTemp);
+                    await _dataContext.SaveChangesAsync();
+                    
                     return Ok(new MessageResponseDTO("Đăng ký tài khoản thành công ! Vui lòng xác minh tài khoản")
                    );
                 }
@@ -69,7 +71,7 @@ namespace AppChatBackEnd.Controllers
                 Password = registerDto.Password, 
                 Email = registerDto.Email,
                 RoleId = 2, // Default role is "user"
-                Img = "",
+                Img = "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg",
                 UserDetail = userDetails
             };
             user.Password = MyUtil._passwordHasher.HashPassword(user,registerDto.Password);
@@ -77,17 +79,16 @@ namespace AppChatBackEnd.Controllers
             {
                 await mailService.SendCodeEmailAsync(registerDto.Email, otpCode);
 
-                _dataContext.Add(userDetails);
-                _dataContext.Add(user);
-                _dataContext.SaveChanges();
+                await _dataContext.AddAsync(userDetails);
+                await _dataContext.AddAsync(user);
+                await _dataContext.SaveChangesAsync();
+                await MyUtil.CreateDefault(_dataContext, user);
+
 
                 return Ok(new MessageResponseDTO("Đăng ký tài khoản thành công ! Vui lòng xác minh tài khoản"));
             }
             catch (Exception ex) {
                 return StatusCode(500, $"Đã xảy ra lỗi khi đăng ký người dùng: {ex.InnerException.Message}");
-                
-                  
-               
 
           }
             
@@ -133,11 +134,11 @@ namespace AppChatBackEnd.Controllers
         }
 
         [HttpPost("verifyAccount")]
-        public IActionResult VerifyAccount(string email, string otp)
+        public async Task< IActionResult> VerifyAccount(VerifyAccountRequestDTO verifyAccountRequestDTO)
         {
             var user = _dataContext.Users
                 .Include(u => u.UserDetail)
-                .FirstOrDefault(u => u.Email == email);
+                .FirstOrDefault(u => u.Email == verifyAccountRequestDTO.email);
 
             if (user == null)
             {
@@ -149,7 +150,7 @@ namespace AppChatBackEnd.Controllers
                 return Ok(new MessageResponseDTO("Tài khoản này đã được xác minh!"));
             }
 
-            if (user.UserDetail.Otp != otp)
+            if (user.UserDetail.Otp != verifyAccountRequestDTO.otp)
             {
                 return Ok(new MessageResponseDTO("Mã xác thực không đúng. Vui lòng nhập lại."));
             }
@@ -164,7 +165,7 @@ namespace AppChatBackEnd.Controllers
 
             try
             {
-                _dataContext.SaveChanges();
+                await _dataContext.SaveChangesAsync();
                 return Ok(new MessageResponseDTO("Tài khoản xác thực thành công."));
             }
             catch (Exception ex)
@@ -187,7 +188,7 @@ namespace AppChatBackEnd.Controllers
             {
                 String newPassword = await mailService.SendCodeForForgotPassword(email);
                  user.Password = MyUtil._passwordHasher.HashPassword(user, newPassword);
-                _dataContext.SaveChangesAsync();
+                await _dataContext.SaveChangesAsync();
                 return Ok(new MessageResponseDTO("Hệ thống đã gửi mật khẩu mới vào email của bạn. Vui lòng kiểm tra thư của bạn"));
                 
             }
@@ -204,7 +205,7 @@ namespace AppChatBackEnd.Controllers
             {
                 if (changePasswordRequest.NewPassword.Equals(changePasswordRequest.ReTypePassword)) {
                     user.Password = MyUtil._passwordHasher.HashPassword(user, changePasswordRequest.NewPassword);
-                    _dataContext.SaveChangesAsync();
+                    await _dataContext.SaveChangesAsync();
                     return Ok(new MessageResponseDTO("Đổi mật khẩu thành công"));
 
                 }
@@ -221,6 +222,7 @@ namespace AppChatBackEnd.Controllers
 
 
         }
+     
 
 
 

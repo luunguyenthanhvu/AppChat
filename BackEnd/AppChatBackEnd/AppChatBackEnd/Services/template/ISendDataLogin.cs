@@ -7,5 +7,7 @@ namespace AppChatBackEnd.Services.template
     public interface ISendDataLogin
     {
         public  Task<LoginResponseDTO> sendDataLogin(Users users);
+        
+
     }
 }

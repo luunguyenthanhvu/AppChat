@@ -3,6 +3,21 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+/BackEnd/AppChatBackEnd/.vs/AppChatBackEnd/FileContentIndex
+=======
+/BackEnd/AppChatBackEnd/.vs/AppChatBackEnd/FileContentIndex/4c615d9e-f8c8-4370-8fef-b5beaf30b170.vsidx
+<<<<<<< HEAD
+/BackEnd/AppChatBackEnd/.vs/AppChatBackEnd/FileContentIndex
+/.gitignore
+/.gitignore
+=======
+>>>>>>> d7b6623d019373a4a69a1ebbc1d716bf24f6af45
+<<<<<<< HEAD
+>>>>>>> main
+=======
+=======
 # User-specific files
 *.rsuser
 *.suo
@@ -396,3 +411,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+>>>>>>> 9a988ac34d0ad16b87300acb6cf2e13044b55b6c
+>>>>>>> main
