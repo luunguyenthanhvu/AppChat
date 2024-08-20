@@ -3,6 +3,7 @@ using AppChat.Models.Entities;
 using AppChat.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AppChatBackEnd.utils
 {
@@ -79,6 +80,28 @@ namespace AppChatBackEnd.utils
             await dbContext.SaveChangesAsync();
 
            
+        }
+        public static string DecodeJwtToken(string token)
+        {
+            var jwtHandler = new JwtSecurityTokenHandler();
+
+            if (jwtHandler.CanReadToken(token))
+            {
+                var jwtToken = jwtHandler.ReadJwtToken(token);
+
+                // Lấy giá trị của claim Email và Role
+                var email = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "email")?.Value;
+                var role = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Role")?.Value;
+
+               
+                String result = email;
+
+                return result;
+            }
+            else
+            {
+                return "Token không hợp lệ";
+            }
         }
     }
 }

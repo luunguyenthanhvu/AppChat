@@ -222,19 +222,7 @@ namespace AppChatBackEnd.Controllers
 
 
         }
-        [HttpGet("DecodeToken")]
-        public async Task<IActionResult> DecodeToken(String token)
-        {
-            
-            String result = await sendDataLogin.DecodeJwtToken(token);
-            if(result.Equals("Token không hợp lệ"))
-            {
-                return Ok(new MessageResponseDTO("Token không hợp lệ"));
-            }else
-            {
-                return Ok(new MessageResponseDTO(result));
-            }
-        }
+     
 
 
 

@@ -58,28 +58,7 @@ namespace AppChatBackEnd.Services.imp
            
 
         }
-        public async Task<string> DecodeJwtToken(string token)
-        {
-            var jwtHandler = new JwtSecurityTokenHandler();
-
-            if (jwtHandler.CanReadToken(token))
-            {
-                var jwtToken = jwtHandler.ReadJwtToken(token);
-
-                // Lấy giá trị của claim Email và Role
-                var email = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "email")?.Value;
-                var role = jwtToken.Claims.FirstOrDefault(claim => claim.Type == "Role")?.Value;
-
-                // Tạo đối tượng ẩn danh và chuyển đổi nó thành chuỗi JSON
-               String result = email;
-
-                return result;
-            }
-            else
-            {
-                return "Token không hợp lệ";
-            }
-        }
+       
        
 
     }
