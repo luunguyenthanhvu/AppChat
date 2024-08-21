@@ -23,8 +23,12 @@ namespace AppChatBackEnd.Models.Entities
         [DataType(DataType.DateTime)]
         public DateTime Timestamp { get; set; }
 
-        // Thiết lập quan hệ với User
+        // Quan hệ với User
+        [ForeignKey("ReportedUserId")]
+        public Users ReportedUser { get; set; }
+
         [ForeignKey("ReportingUserId")]
         public Users ReportingUser { get; set; }
     }
+
 }
