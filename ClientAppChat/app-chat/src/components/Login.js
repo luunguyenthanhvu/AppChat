@@ -13,8 +13,10 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 
 import {GoogleLogin} from '@react-oauth/google';
+import {NavigateFunction} from "react-router-dom";
 
-const handleLoginSuccess = (credentialResponse) => {
+const handleLoginSuccess = (credentialResponse,navigate) => {
+
     console.log(credentialResponse);
     // gửi token của gg đến api để lấy ra email và username
 
@@ -51,7 +53,23 @@ const handleLoginSuccess = (credentialResponse) => {
                 .then(response => response.json())
                 .then(data => {
                     console.log(data); // LoginResponseDTO
-                    // chuyển hướng vào app
+                    // Giả sử token và các thông tin khác nằm trong data
+                    const { userName, email, img, role, token } = data;
+
+                    localStorage.setItem('userName', userName);
+                    localStorage.setItem('email', email);
+                    localStorage.setItem('img', img);
+                    localStorage.setItem('token', token);
+                    localStorage.setItem('role',role)
+
+                    // chuyển hướng vào app dựa trên role
+                    if(localStorage.getItem('role') === 'admin'){
+                        navigate('/admin');
+                        console.log("đã chuyển hướng vô trang admin");
+                    }else {
+                        navigate('/chat');
+                        console.log("đã chuyển hướng vô trang chat");
+                    }
 
                 })
                 .catch((error) => {
@@ -232,7 +250,8 @@ function Login() {
                     </div>
 
                             <GoogleLogin
-                                onSuccess={handleLoginSuccess}
+                                // onSuccess={handleLoginSuccess}
+                                onSuccess={(response) => handleLoginSuccess(response, navigate)}
                                 onError={handleLoginFailure}
                             />
 
