@@ -28,8 +28,8 @@ namespace AppChatBackEnd.Controllers
 
 
         [HttpPost("add-user")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddUser([FromBody] CreateUserRequestDTO request)
+        [Authorize(Policy = "RoleBasedPolicy")]
+         public async Task<IActionResult> AddUser([FromBody] CreateUserRequestDTO request)
         {
             if (request == null)
             {

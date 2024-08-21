@@ -132,7 +132,14 @@ function Users() {
 
     const handleAddUser = async () => {
         try {
-            const response = await axios.post(`http://${BACKEND_URL_HTTP}/api/User/add-user`, newUser);
+            const token = localStorage.getItem('token'); // Lấy token từ localStorage
+            const config = {
+                headers: {
+                  'Authorization': `Bearer ${token}` // Thêm token vào header
+                }
+              };
+              const response = await axios.post(`http://${BACKEND_URL_HTTP}/api/User/add-user`, newUser, config);
+              console.log('User added successfully:', response.data);
             const createdUser = response.data;
             setUsers([...users, createdUser]);
             setShowAddForm(false);
