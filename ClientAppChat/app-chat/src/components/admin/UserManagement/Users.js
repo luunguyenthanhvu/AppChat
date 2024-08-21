@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'; // Import thư viện jwt-decode
 import Pagination from '../Pagination/Pagination';
 import Modal from '../Modal/Modal';
 import NotificationModal from '../Modal/NotificationModal';
@@ -20,23 +22,22 @@ function Users() {
         roleId: 2
     });
 
-    // States for handling modal
     const [showModal, setShowModal] = useState(false);
     const [modalAction, setModalAction] = useState(null);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [modalTitle, setModalTitle] = useState('');
     const [modalMessage, setModalMessage] = useState('');
-    const [reportReason, setReportReason] = useState(''); // Store the reason entered
-    const [showReasonInput, setShowReasonInput] = useState(false); // Track when to show reason input
+    const [reportReason, setReportReason] = useState('');
+    const [showReasonInput, setShowReasonInput] = useState(false);
 
-    // Notification modal states
     const [notificationOpen, setNotificationOpen] = useState(false);
     const [notificationMessage, setNotificationMessage] = useState('');
-    const [notificationType, setNotificationType] = useState(''); // 'success' or 'error'
+    const [notificationType, setNotificationType] = useState('');
 
-    // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
     const [usersPerPage] = useState(5);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchUsers();
@@ -51,10 +52,30 @@ function Users() {
             const filteredUsers = response.data.filter(user => user.status === 'Active' || user.status === 'Reported');
             setUsers(filteredUsers);
         } catch (err) {
-            setError(err.message);
-            console.error("Error fetching users:", err);
+            handleError(err);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleError = (error) => {
+        if (error.response) {
+            if (error.response.status === 401) {
+                navigate('/');
+            } else if (error.response.status === 403) {
+                setNotificationType('error');
+                setNotificationMessage('This feature is only accessible to admins.');
+                setNotificationOpen(true);
+            } else {
+                setNotificationType('error');
+                setNotificationMessage(`An error occurred: ${error.response.statusText}`);
+                setNotificationOpen(true);
+            }
+        } else {
+            console.error('Error:', error);
+            setNotificationType('error');
+            setNotificationMessage('An unexpected error occurred.');
+            setNotificationOpen(true);
         }
     };
 
@@ -70,19 +91,16 @@ function Users() {
             setLoading(true);
             let responses = [];
 
-            // Call all three APIs in parallel
             const idSearchPromise = axios.get(`http://${BACKEND_URL_HTTP}/api/User/get-user-by-id/${searchTerm}`);
             const nameSearchPromise = axios.get(`http://${BACKEND_URL_HTTP}/api/User/get-users-by-name/${searchTerm}`);
             const emailSearchPromise = axios.get(`http://${BACKEND_URL_HTTP}/api/User/get-users-by-email/${searchTerm}`);
 
-            // Wait for all promises to complete
             const [idResponse, nameResponse, emailResponse] = await Promise.allSettled([
                 idSearchPromise,
                 nameSearchPromise,
                 emailSearchPromise
             ]);
 
-            // Collect results from successful responses
             if (idResponse.status === 'fulfilled' && idResponse.value.data) {
                 responses.push(idResponse.value.data);
             }
@@ -93,10 +111,7 @@ function Users() {
                 responses = responses.concat(emailResponse.value.data);
             }
 
-            // Deduplicate results based on user ID
             const uniqueUsers = Array.from(new Map(responses.map(user => [user.userId, user])).values());
-
-            // Filter users with status "Active" or "Reported"
             const filteredUsers = uniqueUsers.filter(user => user.status === 'Active' || user.status === 'Reported');
 
             if (filteredUsers.length > 0) {
@@ -109,39 +124,35 @@ function Users() {
                 setNotificationMessage('No results found.');
             }
         } catch (error) {
-            console.error('Error during search:', error);
-            setNotificationType('error');
-            setNotificationMessage('Error during search.');
+            handleError(error);
         } finally {
             setLoading(false);
             setNotificationOpen(true);
         }
     };
 
-
-
     const handleBlock = (userId) => {
         openModal('block', userId, 'Block User', 'Are you sure you want to block this user?');
     };
 
     const handleReport = (userId) => {
-        setReportReason(''); // Reset the reason input
-        setShowReasonInput(true); // Show reason input popup
+        setReportReason('');
+        setShowReasonInput(true);
         setSelectedUserId(userId);
     };
 
     const handleAddUser = async () => {
         try {
-            const token = localStorage.getItem('token'); // Lấy token từ localStorage
+            const token = localStorage.getItem('token');
             const config = {
                 headers: {
-                  'Authorization': `Bearer ${token}` // Thêm token vào header
+                    'Authorization': `Bearer ${token}`
                 }
-              };
-              const response = await axios.post(`http://${BACKEND_URL_HTTP}/api/User/add-user`, newUser, config);
-              console.log('User added successfully:', response.data);
-            const createdUser = response.data;
-            setUsers([...users, createdUser]);
+            };
+            const response = await axios.post(`http://${BACKEND_URL_HTTP}/api/User/add-user`, newUser, config);
+            fetchUsers();
+            setCurrentPage(currentPage);
+            setUsers([...users, response.data]);
             setShowAddForm(false);
             setNewUser({
                 userName: '',
@@ -154,10 +165,7 @@ function Users() {
             setNotificationMessage('User added successfully.');
             setNotificationOpen(true);
         } catch (error) {
-            console.error('Error adding user:', error);
-            setNotificationType('error');
-            setNotificationMessage('Failed to add user. Please try again.');
-            setNotificationOpen(true);
+            handleError(error);
         }
     };
 
@@ -173,24 +181,39 @@ function Users() {
         setShowModal(false);
         setSelectedUserId(null);
         setModalAction(null);
-        setReportReason(''); // Reset the reason
-        setShowReasonInput(false); // Hide the reason input popup
+        setReportReason('');
+        setShowReasonInput(false);
     };
 
     const confirmAction = async () => {
         try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate('/');
+                return;
+            }
+
+            const decodedToken = jwtDecode(token); // Sử dụng jwt_decode
+            const reportingUserId = decodedToken.userId; // Lấy reportingUserId từ token
+
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            };
+
             if (modalAction === 'block') {
-                await axios.put(`http://${BACKEND_URL_HTTP}/api/User/block-user/${selectedUserId}`);
+                await axios.put(`http://${BACKEND_URL_HTTP}/api/User/block-user/${selectedUserId}`, [], config);
                 fetchUsers();
                 setNotificationType('success');
                 setNotificationMessage('User blocked successfully.');
             } else if (modalAction === 'report') {
                 const reportPayload = {
-                    ReportingUserId: 1, // Replace with the ID of the logged-in user
                     ReportedUserId: selectedUserId,
-                    Reason: reportReason, // Use the entered reason
+                    ReportingUserId: reportingUserId, // Sử dụng reportingUserId từ token
+                    Reason: reportReason,
                 };
-                await axios.put(`http://${BACKEND_URL_HTTP}/api/User/report-user`, reportPayload);
+                await axios.put(`http://${BACKEND_URL_HTTP}/api/User/report-user`, reportPayload, config);
                 fetchUsers();
                 setNotificationType('success');
                 setNotificationMessage('User reported successfully.');
@@ -198,12 +221,10 @@ function Users() {
                 handleAddUser();
             }
         } catch (error) {
-            console.error(`Error performing ${modalAction}:`, error);
-            setNotificationType('error');
-            setNotificationMessage(`Failed to ${modalAction} user. Please try again.`);
+            handleError(error);
         } finally {
-            closeModal(); // Ensure modal is closed after all actions
-            setNotificationOpen(true); // Show the notification modal
+            closeModal();
+            setNotificationOpen(true);
         }
     };
 
@@ -348,7 +369,6 @@ function Users() {
                 }}
             />
 
-            {/* Popup for entering the report reason */}
             {showReasonInput && (
                 <div className="reason-popup">
                     <div className="reason-popup-content">
@@ -368,7 +388,6 @@ function Users() {
                 </div>
             )}
 
-            {/* Reusable Modal for confirming actions */}
             <Modal
                 isOpen={showModal}
                 onClose={closeModal}
@@ -377,12 +396,11 @@ function Users() {
                 message={modalMessage}
             />
 
-            {/* Notification Modal for showing success or error messages */}
             <NotificationModal
                 isOpen={notificationOpen}
                 onClose={() => setNotificationOpen(false)}
                 message={notificationMessage}
-                type={notificationType} // 'success' or 'error'
+                type={notificationType}
             />
         </div>
     );

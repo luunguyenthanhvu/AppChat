@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 import Pagination from '../Pagination/Pagination';
 import Modal from '../Modal/Modal';
 import NotificationModal from '../Modal/NotificationModal';
@@ -26,6 +27,8 @@ function BlockedUsers() {
     const [notificationMessage, setNotificationMessage] = useState('');
     const [notificationType, setNotificationType] = useState(''); // 'success' or 'error'
 
+    const navigate = useNavigate(); // Initialize useNavigate for redirection
+
     useEffect(() => {
         fetchBlockedUsers();
     }, [currentPage]);
@@ -37,10 +40,32 @@ function BlockedUsers() {
             const blockedUsersList = response.data.filter(user => user.status === 'Blocked');
             setBlockedUsers(blockedUsersList);
         } catch (err) {
-            setError(err.message);
-            console.error("Error fetching blocked users:", err);
+            handleError(err);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleError = (error) => {
+        if (error.response) {
+            if (error.response.status === 401) {
+                // Redirect to login on a 401 error
+                navigate('/');
+            } else if (error.response.status === 403) {
+                // Show popup for 403 error indicating admin-only access
+                setNotificationType('error');
+                setNotificationMessage('This feature is only accessible to admins.');
+                setNotificationOpen(true);
+            } else {
+                setNotificationType('error');
+                setNotificationMessage(`An error occurred: ${error.response.statusText}`);
+                setNotificationOpen(true);
+            }
+        } else {
+            console.error('Error:', error);
+            setNotificationType('error');
+            setNotificationMessage('An unexpected error occurred.');
+            setNotificationOpen(true);
         }
     };
 
@@ -95,16 +120,12 @@ function BlockedUsers() {
                 setNotificationMessage('No blocked users found.');
             }
         } catch (error) {
-            console.error('Error during search:', error);
-            setNotificationType('error');
-            setNotificationMessage('Error during search.');
+            handleError(error);
         } finally {
             setLoading(false);
             setNotificationOpen(true);
         }
     };
-
-
 
     const openModal = (userId, action) => {
         setSelectedUserId(userId);
@@ -127,21 +148,26 @@ function BlockedUsers() {
 
     const confirmAction = async () => {
         try {
+            const token = localStorage.getItem('token'); // Lấy token từ localStorage
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}` // Thêm token vào header
+                }
+            };
+
             if (modalAction === 'unblock') {
-                await axios.put(`http://${BACKEND_URL_HTTP}/api/User/unblock-user/${selectedUserId}`);
+                await axios.put(`http://${BACKEND_URL_HTTP}/api/User/unblock-user/${selectedUserId}`, null, config);
                 setBlockedUsers(blockedUsers.filter(user => user.userId !== selectedUserId));
                 setNotificationType('success');
                 setNotificationMessage('User unblocked successfully.');
             } else if (modalAction === 'delete') {
-                await axios.delete(`http://${BACKEND_URL_HTTP}/api/User/remove-user/${selectedUserId}`);
+                await axios.delete(`http://${BACKEND_URL_HTTP}/api/User/remove-user/${selectedUserId}`, config);
                 setBlockedUsers(blockedUsers.filter(user => user.userId !== selectedUserId));
                 setNotificationType('success');
                 setNotificationMessage('User deleted successfully.');
             }
         } catch (error) {
-            console.error(`Error performing ${modalAction}:`, error);
-            setNotificationType('error');
-            setNotificationMessage(`Failed to ${modalAction} user. Please try again.`);
+            handleError(error);
         } finally {
             closeModal();
             setNotificationOpen(true);
