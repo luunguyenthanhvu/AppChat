@@ -76,6 +76,7 @@ namespace AppChatBackEnd.Controllers
         {
             var user = await _context.Users
             .Include(u => u.UserDetail)
+            .Include(u => u.Role)
             .FirstOrDefaultAsync(u => u.Email.Equals(request.Email));
 
             if (user == null)
@@ -110,6 +111,10 @@ namespace AppChatBackEnd.Controllers
                 }
             }
             var loginResponseDTO = await sendDataLogin.sendDataLogin(user);
+            //var loginResponseDTO = new LoginResponseDTO()
+            //{
+
+            //};
             return loginResponseDTO;
         }
     }
