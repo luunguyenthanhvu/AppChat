@@ -9,7 +9,8 @@ import iconFaceBook from '../img/facebook.png';
 import iconTwitter from '../img/twitter-logo.jpg';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-<<<<<<< HEAD
+
+import {Link} from 'react-router-dom';
 
 import {GoogleLogin} from '@react-oauth/google';
 
@@ -66,10 +67,6 @@ const handleLoginSuccess = (credentialResponse) => {
 const handleLoginFailure = (error) => {
     console.error('Login Failed:', error);
 };
-=======
-import { Link } from 'react-router-dom';
-
->>>>>>> main
 
 function Login() {
     const navigate = useNavigate();
@@ -111,7 +108,6 @@ function Login() {
                     email: username,
                     password: password
                 });
-<<<<<<< HEAD
 
                 // Giả sử token và các thông tin khác nằm trong response.data
                 const {userName, email, img, token} = response.data;
@@ -144,10 +140,9 @@ function Login() {
                     }
                 });
 
-=======
                 if (response.status === 200) {
-                  
-                    
+
+
                     if (response.data.message === "Tài khoản này chưa đăng ký hệ thống. Vui lòng nhập lại tài khoản email.") {
                         Swal.fire({
                             title: 'Login failed!',
@@ -171,13 +166,13 @@ function Login() {
                         });
                     } else {
                         // Giả sử token và các thông tin khác nằm trong response.data
-                        const { userName, email, img, role, token } = response.data;
-                
+                        const {userName, email, img, role, token} = response.data;
+
                         localStorage.setItem('userName', userName);
                         localStorage.setItem('email', email);
                         localStorage.setItem('img', img);
                         localStorage.setItem('token', token);
-                        localStorage.setItem('role',role)
+                        localStorage.setItem('role', role)
                         console.log(response.data);
                         // response OK
                         Swal.fire({
@@ -189,7 +184,7 @@ function Login() {
                                 Swal.showLoading();
                                 const timer = Swal.getPopup().querySelector("b");
                                 timerInterval = setInterval(() => {
-                                timer.textContent = `${Swal.getTimerLeft()}`;
+                                    timer.textContent = `${Swal.getTimerLeft()}`;
                                 }, 100);
                             },
                             willClose: () => {
@@ -198,22 +193,19 @@ function Login() {
                         }).then((result) => {
                             if (result.dismiss === Swal.DismissReason.timer) {
                                 console.log("I was closed by the timer");
-                                if(localStorage.getItem('role') === 'admin'){
+                                if (localStorage.getItem('role') === 'admin') {
                                     navigate('/admin');
-                                }else {
+                                } else {
                                     navigate('/chat');
                                 }
-                                
-                               
-                            }
-                        }); 
-                    }
-                } 
-                
 
-                  
-                
->>>>>>> main
+
+                            }
+                        });
+                    }
+                }
+
+
             } catch (error) {
                 console.error('Login error:', error);
                 // Xử lý lỗi khi đăng nhập
@@ -298,47 +290,45 @@ function Login() {
                             </div>
                         </form>
                     </div>
-<<<<<<< HEAD
                 </div>
-=======
 
-                    <button className='login-btn' type='submit'>
-                        LOGIN
-                    </button>
+                <button className='login-btn' type='submit'>
+                    LOGIN
+                </button>
 
-                    <div className='forget-pass'>
+                <div className='forget-pass'>
                     <Link to="/forgot-password">Forgot Password?</Link>
-                    </div>
+                </div>
 
-                    <div>
-                        hoặc đăng nhập bằng
-                    </div>
+                <div>
+                    hoặc đăng nhập bằng
+                </div>
 
-                    <div className='login-option'>
-                        <a href='' className='icon-login'>
-                            <img src={iconGoogle}></img>
-                        </a>
-                        <a href='' className='icon-login'>
-                            <img src={iconFaceBook}></img>
-                        </a>
-                        <a href='' className='icon-login'>
-                            <img src={iconTwitter}></img>
-                        </a>
-                    </div>
+                <div className='login-option'>
+                    <a href='' className='icon-login'>
+                        <img src={iconGoogle}></img>
+                    </a>
+                    <a href='' className='icon-login'>
+                        <img src={iconFaceBook}></img>
+                    </a>
+                    <a href='' className='icon-login'>
+                        <img src={iconTwitter}></img>
+                    </a>
+                </div>
 
-                    <div className='break-line'></div>
+                <div className='break-line'></div>
 
-                    <div className='register-here'>
-                        Don't have an account? 
-                          <Link to="/register">Register here</Link>
-                    </div>
-                </form>
+                <div className='register-here'>
+                    Don't have an account?
+                    <Link to="/register">Register here</Link>
+                </div>
+                {/*</form>*/}
             </div>
-            </div>
->>>>>>> main
-            </div>
+            {/*</div>*/}
+            {/*</div>*/}
         </div>
-    );
+    )
+        ;
 }
 
 export default Login;
