@@ -1,24 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Pagination from '../Pagination/Pagination';
-import Modal from 'react-modal';
+import Modal from '../Modal/Modal';
 import NotificationModal from '../Modal/NotificationModal';
 import '../../../css/Reports.css';
 import { BACKEND_URL_HTTP } from '../../../config.js';
-
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-        width: '60%',
-        maxHeight: '80%',
-        overflowY: 'auto',
-    },
-};
 
 function Reports() {
     const [reports, setReports] = useState([]);
@@ -31,6 +17,13 @@ function Reports() {
     // State for modal
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [selectedUserReports, setSelectedUserReports] = useState([]);
+
+    // State for block confirmation modal
+    const [showModal, setShowModal] = useState(false);
+    const [modalAction, setModalAction] = useState(null);
+    const [selectedUserId, setSelectedUserId] = useState(null);
+    const [modalTitle, setModalTitle] = useState('');
+    const [modalMessage, setModalMessage] = useState('');
 
     // Notification modal states
     const [notificationOpen, setNotificationOpen] = useState(false);
@@ -56,11 +49,41 @@ function Reports() {
             setLoading(false);
         }
     };
+
     const handleBlock = (userId) => {
-        // Logic to block the user
-        setNotificationType('success');
-        setNotificationMessage('User blocked successfully.');
-        setNotificationOpen(true);
+        openModal('block', userId, 'Block User', 'Are you sure you want to block this user?');
+    };
+
+    const openModal = (action, userId, title, message) => {
+        setModalAction(action);
+        setSelectedUserId(userId);
+        setModalTitle(title);
+        setModalMessage(message);
+        setShowModal(true);
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+        setSelectedUserId(null);
+        setModalAction(null);
+    };
+
+    const confirmAction = async () => {
+        try {
+            if (modalAction === 'block') {
+                await axios.put(`http://${BACKEND_URL_HTTP}/api/User/block-user/${selectedUserId}`);
+                setNotificationType('success');
+                setNotificationMessage('User blocked successfully.');
+                fetchReports(); // Refresh the reports after blocking
+            }
+        } catch (error) {
+            console.error(`Error performing ${modalAction}:`, error);
+            setNotificationType('error');
+            setNotificationMessage(`Failed to ${modalAction} user. Please try again.`);
+        } finally {
+            closeModal(); // Ensure modal is closed after all actions
+            setNotificationOpen(true); // Show the notification modal
+        }
     };
 
     const handleSearch = async () => {
@@ -97,9 +120,6 @@ function Reports() {
             setLoading(false);
         }
     };
-
-
-
 
     const handleViewDetails = async (reportedUserId) => {
         try {
@@ -142,7 +162,7 @@ function Reports() {
                     onChange={e => setSearchTerm(e.target.value)}
                     className="search-input"
                 />
-                <button onClick={handleSearch}  className="search-button">Search</button>
+                <button onClick={handleSearch} className="search-button">Search</button>
             </div>
 
             <div className="report-list-wrapper">
@@ -172,7 +192,6 @@ function Reports() {
                                         </button>
                                     </div>
                                 </td>
-
                             </tr>
                         ))
                     ) : (
@@ -200,7 +219,6 @@ function Reports() {
             <Modal
                 isOpen={showDetailModal}
                 onRequestClose={closeDetailModal}
-                style={customStyles}
                 contentLabel="Report Details"
             >
                 <h2>Report Details</h2>
@@ -230,6 +248,15 @@ function Reports() {
                 </table>
                 <button onClick={closeDetailModal} style={{ marginTop: '20px' }}>Close</button>
             </Modal>
+
+            {/* Reusable Modal for confirming actions */}
+            <Modal
+                isOpen={showModal}
+                onClose={closeModal}
+                onConfirm={confirmAction}
+                title={modalTitle}
+                message={modalMessage}
+            />
 
             {/* Notification Modal for success/error messages */}
             <NotificationModal
