@@ -150,5 +150,14 @@ namespace AppChatBackEnd.ChatHub
                 await Clients.Client(connectionId).SendAsync("UserInfoUpdate", response);
             }
         }
+        public async Task UpdatePassword(string email)
+        {
+            var user = await _chatRepository.GetUsersByEmail(email);
+            var connectionsConnect = _userSessionManager.GetConnections(user.UserId + "");
+            foreach (var connectionId in connectionsConnect)
+            {
+                await Clients.Client(connectionId).SendAsync("UpdatePasswordAccount", "password changed");
+            }
+        }
     }
 }

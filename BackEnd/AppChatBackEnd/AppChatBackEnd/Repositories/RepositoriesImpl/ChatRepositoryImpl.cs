@@ -225,7 +225,85 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
 
             return chatList;
         }
+        public async Task<List<UserListChatResponseDTO>> GetUsersFriendListChatByEmailAndUserName(string email, string username)
+        {
+            // Lấy thông tin người dùng theo email
+            var user = await dbContext.Users
+                .Include(u => u.Friends) // Bao gồm thông tin bạn bè
+                .ThenInclude(f => f.FriendUser) // Bao gồm thông tin người bạn
+                .FirstOrDefaultAsync(u => u.Email == email);
 
+            if (user == null || user.Friends == null)
+            {
+                return new List<UserListChatResponseDTO>();
+            }
+
+            var userFriends = user.Friends
+                .Select(f => f.FriendUser)
+                 .Where(f =>
+                    f.UserName != null &&
+                    (string.IsNullOrEmpty(username) || f.UserName.Contains(username)))
+                 .ToList();
+
+            if (!userFriends.Any())
+            {
+                return new List<UserListChatResponseDTO>();
+            }
+
+            // Lấy tất cả tin nhắn liên quan đến người dùng hiện tại và bạn bè
+            var friendUserIds = userFriends.Select(u => u.UserId).ToList();
+            var currentUserId = user.UserId;
+
+            var messages = await (from m in dbContext.Messages
+                                  where (friendUserIds.Contains(m.SenderId) && m.ReceiverId == currentUserId)
+                                     || (friendUserIds.Contains(m.ReceiverId) && m.SenderId == currentUserId)
+                                  select new
+                                  {
+                                      m.Content,
+                                      m.SenderId,
+                                      m.ReceiverId,
+                                      m.Timestamp,
+                                      m.isImage
+                                  }).ToListAsync();
+
+            // Tạo danh sách kết quả với tin nhắn cuối cùng cho mỗi bạn bè
+            var chatList = userFriends.Select(friend =>
+            {
+                // Lấy tin nhắn cuối cùng giữa người dùng và bạn
+                var lastMessage = messages.Where(m =>
+                                         (m.SenderId == friend.UserId && m.ReceiverId == currentUserId)
+                                      || (m.SenderId == currentUserId && m.ReceiverId == friend.UserId))
+                                          .OrderByDescending(m => m.Timestamp)
+                                          .FirstOrDefault();
+
+                var isMine = lastMessage?.SenderId == currentUserId;
+                var isImg = lastMessage.isImage;
+                var messageContent = "";
+                if (isImg)
+                {
+                    messageContent = isMine ? $"You: Image.png" : "Image.png" ?? string.Empty;
+                }
+                else
+                {
+                    messageContent = isMine ? $"You: {lastMessage?.Content}" : lastMessage?.Content ?? string.Empty;
+                }
+
+                return new UserListChatResponseDTO
+                {
+                    UserId = friend.UserId,
+                    UserName = friend.UserName,
+                    Img = friend.Img,
+                    MessageContent = messageContent,
+                    IsMine = isMine,
+                    Timestamp = lastMessage?.Timestamp ?? DateTime.Now,
+                    IsImage = lastMessage.isImage
+                };
+            })
+                .OrderByDescending(chat => chat.Timestamp)
+                .ToList();
+
+            return chatList;
+        }
         public async Task<List<UserListChatResponseDTO>> GetUsersListChatById(int id)
         {
             // Lấy thông tin người dùng theo email

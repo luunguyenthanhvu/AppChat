@@ -6,15 +6,19 @@ import '../css/chatHome.css';
 import Chat from './chat/chat.js';
 import Details from './details/details.js';
 import List from './list/list.js';
+import Swal from 'sweetalert2';
 import useChat from './hook/useChat.js';
 function Home() {
-    
+    const navigate = useNavigate();
     // list chat
     const [chatList, setChatList] = useState([]);
     const [loading, setLoading] = useState(true);
     const token =  localStorage.getItem('token');
     const email = localStorage.getItem('email');
     
+    // for user search for them friend
+    const [searchFriend, setSearchFriend] = useState('');
+
     // user chatting
     const [chattingWith, setChattingWith] = useState('');
     // user chat Loading
@@ -25,7 +29,7 @@ function Home() {
     const [chattingContent, setChattingContent] = useState('');
 
     // chatting 
-    const { newListChat ,messages, userInfo,sendMessage, updateProfile } = useChat(); 
+    const { newListChat ,messages, serverMessage, userInfo,sendMessage, updateProfile,updatePass } = useChat(); 
 
     const [user, setUser] = useState({
         userName: localStorage.getItem('userName'),
@@ -117,6 +121,69 @@ function Home() {
         setChatList(newListChat)
     }, [newListChat])
 
+    // get the server message send to user account
+    useEffect(() => {
+        if (serverMessage === "password changed") { 
+            let timerInterval;
+            Swal.fire({
+                title: "Log out of account",
+                html: "Account have new password please login again",
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                    timerInterval = setInterval(() => {
+                        const timer = Swal.getHtmlContainer().querySelector("b");
+                        if (timer) {
+                            timer.textContent = `${Swal.getTimerLeft()}`;
+                        }
+                    }, 100);
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                }
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    localStorage.clear();
+                    navigate('/login');
+                }
+            });
+        }
+    }, [serverMessage]);
+    
+    // user find them friend
+    useEffect(() => {
+        const fetchChatList = async () => {
+            setLoading(true);
+            try {
+                const fetchPromise = await axios.get(`http://${BACKEND_URL_HTTP}/api/chat/friend-chat-list`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                    params: {
+                        email: email,
+                        username: searchFriend
+                    }
+                });
+
+                const delayPromise = new Promise(resolve => setTimeout(resolve, 1500));
+
+                // Đợi cả hai Promise hoàn thành
+                const [response] = await Promise.all([fetchPromise, delayPromise]);
+                setChatList(response.data);
+            } catch (err) {
+                console.log(err);
+            } finally {
+                setLoading(false);
+                setChattingWithLoading(false);
+            }
+        };
+
+        if (email) {
+            fetchChatList();
+        }
+    }, [searchFriend])
+
     useEffect(() => {
         setUser(({
             userName: localStorage.getItem('userName'),
@@ -140,7 +207,10 @@ function Home() {
                         chatList={chatList}
                         loading={loading}
                         onChatClick={handleChatClick}
-                        updateProfile ={updateProfile}
+                        updateProfile={updateProfile}
+                        updatePassServer={updatePass}
+                        setSearchFriend={setSearchFriend}
+                        searchFriend={searchFriend}
                     >
                     </List>
                     

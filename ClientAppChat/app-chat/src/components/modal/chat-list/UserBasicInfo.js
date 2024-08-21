@@ -13,19 +13,19 @@ const UserInfo = ({ userInfo, onCameraClick }) => (
             <ul className='user-details'>
                 <li>
                     <span className='label'>First Name:</span> 
-                    <span className='value'>Vu</span>
+                    <span className='value'>{userInfo.firstName}</span>
                 </li>
                 <li>
                     <span className='label'>Last Name:</span> 
-                    <span className='value'>Luu</span>
+                    <span className='value'>{userInfo.lastName}</span>
                 </li>
                 <li>
                     <span className='label'>Gender:</span> 
-                    <span className='value'>Male</span>
+                    <span className='value'>{userInfo.gender}</span>
                 </li>
                 <li>
                     <span className='label'>Dob:</span> 
-                    <span className='value'>08/11/2003</span>
+                    <span className='value'>{userInfo.dob}</span>
                 </li>
             </ul>
             <p>Only people who are friends with you can see this information.</p>

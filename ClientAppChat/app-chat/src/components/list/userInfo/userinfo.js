@@ -14,10 +14,12 @@ import AddFriendModal from '../../modal/chat-list/AddFriendModal.js'
 import { BACKEND_URL_HTTP } from '../../../config.js';
 import axios from 'axios';
 
-function UserInfo({ userInfo, updateProfile }) {
+function UserInfo({ userInfo, updateProfile,updatePassServer }) {
     const [userSetting, setUserSetting] = useState(false);
     const token = localStorage.getItem('token');
     const email = localStorage.getItem('email');
+    const [currentUserInfo, setCurrentUserInfo] = useState('');
+    const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
     const [showModal, setShowModal] = useState(false);
@@ -58,6 +60,18 @@ function UserInfo({ userInfo, updateProfile }) {
     }, [])
 
     const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    const validatePasswords = (newPassword, confirmPassword) => {
+        if (newPassword !== confirmPassword) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Passwords do not match',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+            return false;
+        }
+        return true;
+    };
     const handleUpdateUserInfo = async () => {
         Swal.fire({
             title: 'Updating...',
@@ -71,29 +85,37 @@ function UserInfo({ userInfo, updateProfile }) {
                 Swal.showLoading();
             }
         });
-        if (currentTab === 'Update Image' && imageFile) {
+
+        if (currentTab === 'Update User Info' && viewType === 'password') {
             try {
                 await delay(2000);
+       
+                if (validatePasswords(password.newPassword, password.confirmPassword)) {
+                     // Prepare the updated user info
+                    const updatePass = {
+                        email: email,
+                        password: password.newPassword
+                    };
+                    
+                    // Send the PUT request to the backend
+                    const response = await axios.put(`http://${BACKEND_URL_HTTP}/api/mark-up/user-info/update-password`, updatePass, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
 
-                const response = await axios.put(`http://${BACKEND_URL_HTTP}/api/mark-up/user-info/update-image`, {
-                    email: email,
-                    imageUrl: imageFile
-                }, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-            
-                Swal.fire({
-                    title: 'Update successful!',
-                    text: response.data,
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                });
+                    Swal.fire({
+                        title: 'Update successful!',
+                        text: response.data,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                    await delay(2000);
+                    updatePassServer(email);
+                }
                 
-                setImageFile('');
-                updateProfile(email, false, false);
             } catch (error) {
+                console.log(error)
                 Swal.fire({
                     title: 'Error!',
                     text: 'Having error when update.',
@@ -101,10 +123,127 @@ function UserInfo({ userInfo, updateProfile }) {
                     confirmButtonText: 'OK'
                 });
             }
+
+
+        } else {
+            if (currentTab === 'Update Image' && imageFile) {
+                try {
+                    await delay(2000);
+    
+                    const response = await axios.put(`http://${BACKEND_URL_HTTP}/api/mark-up/user-info/update-image`, {
+                        email: email,
+                        imageUrl: imageFile
+                    }, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+                
+                    Swal.fire({
+                        title: 'Update successful!',
+                        text: response.data,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                    
+                    setImageFile('');
+                    updateProfile(email, true, false);
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Having error when update.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            }
+            if (currentTab === 'Update User Info' && viewType === 'personal') {
+                try {
+                    await delay(2000);
+           
+                   // Prepare the updated user info
+                    const userInfoToUpdate = {
+                        email: email,
+                        userName: currentUserInfo.userName,
+                        firstName: currentUserInfo.firstName,
+                        lastName: currentUserInfo.lastName,
+                        gender: currentUserInfo.gender,
+                        dob: currentUserInfo.dob
+                    };
+                    
+                    console.log("user update nè")
+                    console.log(JSON.stringify(userInfoToUpdate))
+                    // Send the PUT request to the backend
+                    const response = await axios.put(`http://${BACKEND_URL_HTTP}/api/mark-up/user-info/update-info`, userInfoToUpdate, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+
+                    Swal.fire({
+                        title: 'Update successful!',
+                        text: response.data,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                    
+                    updateProfile(email, false, false);
+                } catch (error) {
+                    console.log(error)
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Having error when update.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } 
+            setShowModal(false);
+            setCurrentTab('User Info');
         }
-        setShowModal(false);
-        setCurrentTab('User Info')
     }
+    
+    // fetch info user by email 
+    const fetchCurrentUserInfo = async () => {
+        try {
+            const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/mark-up/user-info/details-email`, {
+                params: {
+                    email: email
+               }
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            setCurrentUserInfo({
+                userName : response.data.userName,
+                img: response.data.img,
+                firstName: response.data.firstName,
+                lastName: response.data.lastName,
+                gender: response.data.gender,
+                dob: response.data.dob
+            })
+
+        }  catch (error) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Having error when update.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    }
+
+    useEffect(() => {
+        // Khi tab là 'User Info', fetch dữ liệu
+        if (currentTab === 'User Info') {
+            fetchCurrentUserInfo();
+        }
+    }, [currentTab]);
+
+    // for update user info / pass
+    const [viewType, setViewType] = useState('personal');
 
     const [modalContent, setModalContent] = useState('default');
     const handleLogout = () => {
@@ -240,7 +379,11 @@ function UserInfo({ userInfo, updateProfile }) {
                     >
                         <div className={`modal-content ${currentTab === 'update' ? 'slide-right' : ''}`}>
                             {currentTab === 'User Info' && (
-                                <UserBasicInfo userInfo={userInfo} onCameraClick={handleCameraClick} />
+                                <UserBasicInfo
+                                    userInfo={currentUserInfo}
+                                    onCameraClick={handleCameraClick}
+                                    setUserInfo={setCurrentUserInfo}
+                                />
                             )}
 
                             {currentTab === 'Update Image' && (
@@ -248,7 +391,14 @@ function UserInfo({ userInfo, updateProfile }) {
                             )}
 
                             {currentTab === 'Update User Info' && (
-                                <UpdateUserInfo />
+                                <UpdateUserInfo
+                                    userInfo={currentUserInfo}
+                                    setUserInfo={setCurrentUserInfo}
+                                    viewType={viewType}
+                                    setViewType={setViewType}
+                                    password={password}
+                                    setPassword={setPassword}
+                                />
                             )}
                         </div>
                     </CSSTransition>

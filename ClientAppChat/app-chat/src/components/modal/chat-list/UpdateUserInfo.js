@@ -1,77 +1,103 @@
-import React, { useState } from 'react';
-import { FaExchangeAlt  } from 'react-icons/fa';
-const UpdateUserInfo = ({ userInfo, onSave }) => {
-    // State to manage form data for personal information
+import React, { useState, useEffect } from 'react';
+import { FaExchangeAlt } from 'react-icons/fa';
+
+const UpdateUserInfo = ({ userInfo, setUserInfo, viewType, setViewType, password, setPassword }) => {
     const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
         userName: '',
         gender: '',
         dateOfBirth: ''
     });
 
-    // State to manage view type (personal or password update)
-    const [viewType, setViewType] = useState('personal'); // 'personal' or 'password'
-
-    // State to manage form data for password update
     const [passwordData, setPasswordData] = useState({
         newPassword: '',
         confirmPassword: ''
     });
 
-    // Handle change for personal information form
+    // Function to convert date from "dd/MM/yyyy" to "yyyy-MM-dd"
+    const convertDateToISO = (dob) => {
+        const [day, month, year] = dob.split('/');
+        return `${year}-${month}-${day}`;
+    };
+
+    // Function to convert date from "yyyy-MM-dd" to "dd/MM/yyyy"
+    const convertDateToCustomFormat = (isoDate) => {
+        const [year, month, day] = isoDate.split('-');
+        return `${day}/${month}/${year}`;
+    };
+
+    useEffect(() => {
+        if (userInfo) {
+            setFormData({
+                firstName: userInfo.firstName || '',
+                lastName: userInfo.lastName || '',
+                userName: userInfo.userName || '',
+                gender: userInfo.gender || '',
+                dateOfBirth: userInfo.dob ? convertDateToISO(userInfo.dob) : ''
+            });
+        }
+    }, [userInfo]);
+
     const handlePersonalChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
+        const updatedFormData = {
             ...formData,
             [name]: value
-        });
+        };
+
+        setFormData(updatedFormData);
+
+        // Update userInfo only after all fields have been processed
+        if (name === 'dateOfBirth') {
+            setUserInfo((prevUserInfo) => ({
+                ...prevUserInfo,
+                dob: convertDateToCustomFormat(value),
+            }));
+            console.log("ngay thang sau khi dc chon")
+            console.log(convertDateToCustomFormat(value))
+        } else {
+            setUserInfo((prevUserInfo) => ({
+                ...prevUserInfo,
+                [name]: value,
+            }));
+        }
     };
 
-    // Handle change for password update form
     const handlePasswordChange = (e) => {
         const { name, value } = e.target;
-        setPasswordData({
+        const passData = {
             ...passwordData,
             [name]: value
-        });
+        }
+        setPasswordData(passData);
+        setPassword(passData);
     };
-
-    // Handle save action
-    // const handleSave = () => {
-    //     if (viewType === 'personal') {
-    //         if (onSave) {
-    //             onSave(formData);
-    //         }
-    //     } else if (viewType === 'password') {
-    //         if (onSave) {
-    //             onSave(passwordData);
-    //         }
-    //     }
-    // };
 
     return (
         <div className='user-modal-info'>
             <div className='user-main-info'>
                 <h2>{viewType === 'personal' ? 'Update Personal Information' : 'Update Password'}</h2>
-                
+
                 {viewType === 'personal' ? (
                     <form>
                         <div className='my-form-group'>
-                            <label htmlFor='userFirstName'>First Name:</label>
+                            <label htmlFor='firstName'>First Name:</label>
                             <input
                                 type='text'
-                                id='userFirstName'
-                                name='userFirstName'
-                                value={formData.userName}
+                                id='firstName'
+                                name='firstName'
+                                value={formData.firstName}
                                 onChange={handlePersonalChange}
                             />
                         </div>
                         <div className='my-form-group'>
-                            <label htmlFor='userLastName'>Last Name:</label>
+                            <label htmlFor='lastName'>Last Name:</label>
                             <input
                                 type='text'
-                                id='userLastName'
-                                name='userLastName'
-                                value={formData.userName}
+                                id='lastName'
+                                name='lastName'
+                                value={formData.lastName}
                                 onChange={handlePersonalChange}
                             />
                         </div>
@@ -135,7 +161,7 @@ const UpdateUserInfo = ({ userInfo, onSave }) => {
                 )}
 
                 <button className='my-switch-button' onClick={() => setViewType(viewType === 'personal' ? 'password' : 'personal')}>
-                    <FaExchangeAlt  className='update-icon'/>
+                    <FaExchangeAlt className='update-icon'/>
                     {viewType === 'personal' ? 'Update Password' : 'Update Personal Information'}
                 </button>
             </div>

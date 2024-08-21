@@ -40,6 +40,7 @@ namespace AppChatBackEnd.Controllers
                 return StatusCode(500, result);
             }
         }
+
         [HttpGet("details-email")]
         public async Task<IActionResult> GetUserDetailsByEmail([FromQuery] string email)
         {
@@ -59,9 +60,8 @@ namespace AppChatBackEnd.Controllers
         }
 
         [HttpGet("details-id")]
-        public async Task<IActionResult> GetUserDetailsByEmail([FromQuery] int id)
+        public async Task<IActionResult> GetUserDetailsById([FromQuery] int id)
         {
-
             var userDetails = await markUpRepository.GetUserDetailsByIdAsync(id);
 
             if (userDetails == null)
@@ -70,6 +70,39 @@ namespace AppChatBackEnd.Controllers
             }
 
             return Ok(userDetails);
+        }
+
+        // New endpoint to update user information
+        [HttpPut("update-info")]
+        public async Task<IActionResult> UpdateUserInfo([FromBody] UpdateUserDetailsRequestDTO request)
+        {
+            if (request == null)
+            {
+                return BadRequest("Invalid input");
+            }
+
+            var result = await markUpRepository.UpdateUserInfoAsync(request);
+            if (result == "Update success")
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return StatusCode(500, result);
+            }
+        }
+        [HttpPut("update-password")]
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequestDTO request)
+        {
+            var result = await markUpRepository.UpdateUserPassword(request);
+            if (result == "Password updated successfully")
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
         }
     }
 }

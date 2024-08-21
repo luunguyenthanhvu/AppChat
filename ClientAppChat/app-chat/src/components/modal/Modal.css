@@ -18,25 +18,31 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
     position: relative;
-    transform: translateX(0);
+    max-height: 100%; /* Tùy chọn: điều chỉnh theo nhu cầu */
+    overflow: hidden; /* Ẩn các phần nội dung vượt quá chiều cao */
     transition: transform 0.5s ease-in-out;
-}
-
-.modal-content.slide-right {
-    transform: translateX(0);
 }
 
 .modal-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding-bottom: 10px; /* Khoảng cách giữa header và body */
+    border-bottom: 1px solid #ddd; /* Đường phân cách giữa header và body */
 }
+
+.modal-body {
+    margin: 20px 0;
+    overflow-y: auto; /* Cho phép cuộn dọc nếu nội dung vượt quá */
+    max-height: calc(80vh - 80px); /* Điều chỉnh dựa trên kích thước của header và footer */
+}
+
 .modal-footer {
     display: flex;
     align-items: center;
-}
-.modal-body {
-    margin: 20px 0;
+    justify-content: flex-end; /* Hoặc trung tâm, tùy theo nhu cầu */
+    padding-top: 10px; /* Khoảng cách giữa body và footer */
+    border-top: 1px solid #ddd; /* Đường phân cách giữa body và footer */
 }
 
 .modal-close {

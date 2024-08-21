@@ -7,6 +7,7 @@ const useChat = () => {
     const [connection, setConnection] = useState(null);
     const [messages, setMessages] = useState('');
     const [newListChat, setNewListChat] = useState('');
+    const [serverMessage, setServerMessage] = useState('');
     const [userInfo, setUserInfo] = useState({
         userName: '',
         email: '',
@@ -36,12 +37,17 @@ const useChat = () => {
                     userName: userInfo.userName,
                     email: userInfo.email,
                     img: userInfo.img
-                });
-
-                
+                });               
                 localStorage.setItem('userName', userInfo.userName);
                 localStorage.setItem('email', userInfo.email);
                 localStorage.setItem('img', userInfo.img);
+            });
+
+            
+            hubConnection.on("UpdatePasswordAccount", (message) => {     
+                console.log("update mat khau ne")
+                console.log(message)
+                setServerMessage(message);
             });
 
             try {
@@ -82,7 +88,17 @@ const useChat = () => {
         }
     }
 
-    return { newListChat,connection, messages, userInfo,sendMessage, updateProfile };
+    const updatePass = async (email) => {
+        if (connection) {
+            try {
+                await connection.invoke("UpdatePassword", email);
+            } catch (err) {
+                console.log("send fail: " + err);
+            }
+        }
+    }
+
+    return { newListChat,connection,serverMessage, messages, userInfo,sendMessage, updateProfile ,updatePass};
 }
 
 export default useChat;
