@@ -2,6 +2,7 @@
 using AppChat.Models.Entities;
 using AppChat.Models.Enums;
 using AppChatBackEnd.DTO.Response.ChatResponse;
+using AppChatBackEnd.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -36,10 +37,26 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
                 RoleId = defaultRole.RoleId // Set the role for the main user
             };
 
-            // List to hold friend users
-            var friendUsers = new List<Users>();
+            var mainUserDetail = new UserDetails
+            {
+                FirstName = "Vu",
+                LastName = "Luu",
+                Dob = new DateTime(1990, 1, 1),
+                PhoneNumber = "123456789",
+                Gender = "Male",
+                Status = "Active",
+                User = mainUser // Link the UserDetails to the main user
+            };
 
-            // Create 5 friend users
+            // Add the main user and their details to the database
+            await dbContext.Users.AddAsync(mainUser);
+            await dbContext.UserDetails.AddAsync(mainUserDetail);
+
+            // List to hold friend users and their details
+            var friendUsers = new List<Users>();
+            var friendUserDetails = new List<UserDetails>();
+
+            // Create 5 friend users and their details
             for (int i = 1; i <= 5; i++)
             {
                 var friendUser = new Users
@@ -51,12 +68,25 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
                     RoleId = defaultRole.RoleId // Set the role for each friend user
                 };
 
+                var friendUserDetail = new UserDetails
+                {
+                    FirstName = $"FirstName_{i}",
+                    LastName = $"LastName_{i}",
+                    Dob = new DateTime(1995, 1, 1).AddYears(i),
+                    PhoneNumber = $"123456789{i}",
+                    Gender = "Male",
+                    Status = "Active",
+                    User = friendUser // Link the UserDetails to the friend user
+                };
+
                 friendUsers.Add(friendUser);
+                friendUserDetails.Add(friendUserDetail);
             }
 
-            // Add the main user and friend users to the database
-            await dbContext.Users.AddAsync(mainUser);
+            // Add the friend users and their details to the database
             await dbContext.Users.AddRangeAsync(friendUsers);
+            await dbContext.UserDetails.AddRangeAsync(friendUserDetails);
+
             await dbContext.SaveChangesAsync();
 
             // Update friend relationships after users are saved and have IDs
