@@ -81,7 +81,7 @@ namespace AppChatBackEnd.Controllers
                 {
                     // Rollback transaction if something goes wrong
                     await transaction.RollbackAsync();
-                    return StatusCode(500, "Database error occurred while adding the user: " + (ex.InnerException?.Message ?? ex.Message));
+                    return StatusCode(500, "Database error occurred while adding        `the user: " + (ex.InnerException?.Message ?? ex.Message));
                 }
                 catch (Exception ex)
                 {
