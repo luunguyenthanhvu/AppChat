@@ -4,6 +4,7 @@ using AppChat.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppChatBackEnd.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240817164036_themTableReports")]
+    partial class themTableReports
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,17 +118,6 @@ namespace AppChatBackEnd.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 10000,
-                            Email = "0982407940ab@gmail.com",
-                            Img = "http://res.cloudinary.com/dter3mlpl/image/upload/v1724040235/nnb6lhbvdiiucwdskh5u.jpg",
-                            Password = "AQAAAAIAAYagAAAAENEeNsa8sIduybEdQfLho++5IqsiHuqdBEKwDjQ3ra8Fa1MTHRdMG+zlOPfr4/hO4Q==",
-                            RoleId = 1,
-                            UserName = "Yukihira"
-                        });
                 });
 
             modelBuilder.Entity("AppChatBackEnd.Models.Entities.Reports", b =>
@@ -218,9 +210,6 @@ namespace AppChatBackEnd.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("longtext");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -230,24 +219,15 @@ namespace AppChatBackEnd.Migrations
                     b.Property<int?>("reportAmount")
                         .HasColumnType("int");
 
+                    b.Property<int?>("status")
+                        .HasColumnType("int");
+
                     b.HasKey("UserDetailId");
 
                     b.HasIndex("UserId")
                         .IsUnique();
 
                     b.ToTable("UserDetails");
-
-                    b.HasData(
-                        new
-                        {
-                            UserDetailId = 10000,
-                            Dob = new DateTime(2003, 8, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FirstName = "Yukihira",
-                            LastName = "Yato",
-                            Status = "Active",
-                            UserId = 10000,
-                            Verified = 1
-                        });
                 });
 
             modelBuilder.Entity("AppChat.Models.Entities.Friend", b =>

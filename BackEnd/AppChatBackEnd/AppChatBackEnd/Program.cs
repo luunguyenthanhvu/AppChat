@@ -85,6 +85,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 });
 
+
 // add connection
 builder.Services.AddSingleton<UserSessionManager>();
 builder.Services.AddSignalR();
@@ -107,5 +108,6 @@ app.UseAuthentication(); // Thêm nếu bạn cần xác thực JWT
 
 app.MapControllers();
 app.MapHub<ChatHub>("/Chat"); // Đảm bảo endpoint khớp với client
+
 
 app.Run();

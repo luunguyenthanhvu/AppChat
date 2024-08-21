@@ -4,49 +4,85 @@
     color: white;
 }
 
-.report-search-bar {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.search-input {
-    width: 50%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.search-status {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.search-button {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
 .report-list {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 20px;
 }
 
 .report-list th, .report-list td {
     padding: 12px;
+    text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
 .report-list th {
-    background-color: #4CAF50;
+    background-color: #FFC107; /* Main color for Reports component */
     color: white;
 }
 
-.report-list tr:nth-child(even) {
-    background-color: #f2f2f2;
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.report-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    flex-grow: 2;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #2D3748;
+    color: white;
+}
+
+.search-filter, .search-button {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #2D3748;
+    color: white;
+    cursor: pointer;
+}
+
+.search-button {
+    background-color: #FFC107; /* Main color for Reports component */
+    color: white;
+}
+
+button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: #9348d8;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #b687e2;
+}
+
+/* Unified label styles for status and role */
+.reports-status-label {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    background-color: #FFC107; /* Main color for Reports component */
+}
+.reports-role-label {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    background-color: #FFC107; /* Main color for Reports component */
 }

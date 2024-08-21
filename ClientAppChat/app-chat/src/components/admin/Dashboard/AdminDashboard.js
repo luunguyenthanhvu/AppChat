@@ -12,10 +12,10 @@ const AdminDashboard = () => {
     const [activeContent, setActiveContent] = useState('users');
 
     const statCardData = [
-        { title: "Users", icon: "/icons/user-icon.png", bgColor: "#4CAF50", apiUrl: 'http://localhost:5133/api/User/count-users' },
-        { title: "Groups", icon: "/icons/groups-icon.png", bgColor: "#2196F3", apiUrl: 'http://localhost:5133/api/Group/count-groups' },
-        { title: "Reports", icon: "/icons/reports-icon.png", bgColor: "#FFC107", apiUrl: 'http://localhost:5133/api/Report/count-reports' },
-        { title: "Blocked Users", icon: "/icons/blocked-icon.png", bgColor: "#F44336", apiUrl: 'http://localhost:5133/api/User/count-blocked-users' }
+        { title: "Active Users", icon: "/icons/user-icon.png", bgColor: "#4CAF50", apiUrl: 'http://localhost:5133/api/User/count-active-users' },
+        { title: "Blocked Users", icon: "/icons/blocked-icon.png", bgColor: "#F44336", apiUrl: 'http://localhost:5133/api/User/count-blocked-users' },
+        { title: "Reported Users", icon: "/icons/reports-icon.png", bgColor: "#FFC107", apiUrl: 'http://localhost:5133/api/User/count-reported-users' },
+        { title: "Groups", icon: "/icons/groups-icon.png", bgColor: "#2196F3", apiUrl: 'http://localhost:5133/api/Group/count-groups' }
     ];
 
     const renderContent = () => {
