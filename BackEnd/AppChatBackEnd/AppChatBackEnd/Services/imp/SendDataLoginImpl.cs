@@ -31,7 +31,8 @@ namespace AppChatBackEnd.Services.imp
                 {
 
                    new Claim(ClaimTypes.Email, users.Email),
-                    new Claim("Role", users.Role.RoleName),
+                   new Claim("Role", users.Role.RoleName),
+
                     new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
                 }),
                 Expires = DateTime.UtcNow.AddHours(24),
@@ -50,7 +51,7 @@ namespace AppChatBackEnd.Services.imp
                     Email = users.Email,
                     UserName = users.UserName,
                     Img = users.Img,
-                    Role = users.Role.ToString(),
+                    Role = users.Role.RoleName.ToString(),
                     Token = accessToken
 
                 };

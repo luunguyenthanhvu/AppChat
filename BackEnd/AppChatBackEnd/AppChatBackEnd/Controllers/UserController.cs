@@ -28,8 +28,8 @@ namespace AppChatBackEnd.Controllers
 
 
         [HttpPost("add-user")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddUser([FromBody] CreateUserRequestDTO request)
+        [Authorize(Policy = "RoleBasedPolicy")]
+         public async Task<IActionResult> AddUser([FromBody] CreateUserRequestDTO request)
         {
             if (request == null)
             {
@@ -83,7 +83,7 @@ namespace AppChatBackEnd.Controllers
                 {
                     // Rollback transaction if something goes wrong
                     await transaction.RollbackAsync();
-                    return StatusCode(500, "Database error occurred while adding the user: " + (ex.InnerException?.Message ?? ex.Message));
+                    return StatusCode(500, "Database error occurred while adding        `the user: " + (ex.InnerException?.Message ?? ex.Message));
                 }
                 catch (Exception ex)
                 {
