@@ -9,6 +9,7 @@ import iconFaceBook from '../img/facebook.png';
 import iconTwitter from '../img/twitter-logo.jpg';
 import Swal from 'sweetalert2';
 import axios from 'axios';
+<<<<<<< HEAD
 
 import {GoogleLogin} from '@react-oauth/google';
 
@@ -65,6 +66,10 @@ const handleLoginSuccess = (credentialResponse) => {
 const handleLoginFailure = (error) => {
     console.error('Login Failed:', error);
 };
+=======
+import { Link } from 'react-router-dom';
+
+>>>>>>> main
 
 function Login() {
     const navigate = useNavigate();
@@ -102,10 +107,11 @@ function Login() {
         } else {
 
             try {
-                const response = await axios.post(`http://${BACKEND_URL_HTTP}/api/chat/login`, {
+                const response = await axios.post(`http://${BACKEND_URL_HTTP}/api/UserServices/login`, {
                     email: username,
                     password: password
                 });
+<<<<<<< HEAD
 
                 // Giả sử token và các thông tin khác nằm trong response.data
                 const {userName, email, img, token} = response.data;
@@ -138,6 +144,76 @@ function Login() {
                     }
                 });
 
+=======
+                if (response.status === 200) {
+                  
+                    
+                    if (response.data.message === "Tài khoản này chưa đăng ký hệ thống. Vui lòng nhập lại tài khoản email.") {
+                        Swal.fire({
+                            title: 'Login failed!',
+                            text: 'This account is not registered in the system. Please re-type your email account.',
+                            icon: 'error',
+                            confirmButtonColor: "#3085d6",
+                        });
+                    } else if (response.data.message === "Tài khoản hoặc mật khẩu không chính xác. Xin vui lòng nhập lại") {
+                        Swal.fire({
+                            title: 'Login failed!',
+                            text: 'Incorrect account or password. Please re-type.',
+                            icon: 'error',
+                            confirmButtonColor: "#3085d6",
+                        });
+                    } else if (response.data.message === "Tài khoản này chưa được xác minh. Xin vui lòng đăng ký lại để xác minh") {
+                        Swal.fire({
+                            title: 'Login failed!',
+                            text: 'This account is not verified. Please register again to verify.',
+                            icon: 'error',
+                            confirmButtonColor: "#3085d6",
+                        });
+                    } else {
+                        // Giả sử token và các thông tin khác nằm trong response.data
+                        const { userName, email, img, role, token } = response.data;
+                
+                        localStorage.setItem('userName', userName);
+                        localStorage.setItem('email', email);
+                        localStorage.setItem('img', img);
+                        localStorage.setItem('token', token);
+                        localStorage.setItem('role',role)
+                        console.log(response.data);
+                        // response OK
+                        Swal.fire({
+                            title: "Login into account",
+                            html: "I will close in <b></b> milliseconds.",
+                            timer: 2000,
+                            timerProgressBar: true,
+                            didOpen: () => {
+                                Swal.showLoading();
+                                const timer = Swal.getPopup().querySelector("b");
+                                timerInterval = setInterval(() => {
+                                timer.textContent = `${Swal.getTimerLeft()}`;
+                                }, 100);
+                            },
+                            willClose: () => {
+                                clearInterval(timerInterval);
+                            }
+                        }).then((result) => {
+                            if (result.dismiss === Swal.DismissReason.timer) {
+                                console.log("I was closed by the timer");
+                                if(localStorage.getItem('role') === 'admin'){
+                                    navigate('/admin');
+                                }else {
+                                    navigate('/chat');
+                                }
+                                
+                               
+                            }
+                        }); 
+                    }
+                } 
+                
+
+                  
+                
+>>>>>>> main
             } catch (error) {
                 console.error('Login error:', error);
                 // Xử lý lỗi khi đăng nhập
@@ -222,7 +298,44 @@ function Login() {
                             </div>
                         </form>
                     </div>
+<<<<<<< HEAD
                 </div>
+=======
+
+                    <button className='login-btn' type='submit'>
+                        LOGIN
+                    </button>
+
+                    <div className='forget-pass'>
+                    <Link to="/forgot-password">Forgot Password?</Link>
+                    </div>
+
+                    <div>
+                        hoặc đăng nhập bằng
+                    </div>
+
+                    <div className='login-option'>
+                        <a href='' className='icon-login'>
+                            <img src={iconGoogle}></img>
+                        </a>
+                        <a href='' className='icon-login'>
+                            <img src={iconFaceBook}></img>
+                        </a>
+                        <a href='' className='icon-login'>
+                            <img src={iconTwitter}></img>
+                        </a>
+                    </div>
+
+                    <div className='break-line'></div>
+
+                    <div className='register-here'>
+                        Don't have an account? 
+                          <Link to="/register">Register here</Link>
+                    </div>
+                </form>
+            </div>
+            </div>
+>>>>>>> main
             </div>
         </div>
     );

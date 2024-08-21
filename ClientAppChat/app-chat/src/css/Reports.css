@@ -44,31 +44,13 @@
     color: white;
 }
 
-.search-filter, .search-button {
+.search-filter {
     padding: 8px;
     border-radius: 4px;
     border: 1px solid #ccc;
     background-color: #2D3748;
     color: white;
     cursor: pointer;
-}
-
-.search-button {
-    background-color: #FFC107; /* Main color for Reports component */
-    color: white;
-}
-
-button {
-    margin: 0 5px;
-    padding: 5px 10px;
-    background-color: #9348d8;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #b687e2;
 }
 
 /* Unified label styles for status and role */
@@ -85,4 +67,83 @@ button:hover {
     color: white;
     font-weight: bold;
     background-color: #FFC107; /* Main color for Reports component */
+}
+.report-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #FFC107; /* Optional: Add border for better visibility */
+    margin-right: 10px;
+}
+.report-details-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.report-details-table th,
+.report-details-table td {
+    padding: 10px 15px; /* Thêm khoảng cách giữa các cột */
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Căn chỉnh đầu đề bảng */
+.report-details-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+/* Khoảng cách giữa các hàng */
+.report-details-table tr:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+/* Đổi màu cho các hàng để dễ đọc hơn */
+.report-details-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+/* Reports.css */
+.action-buttons {
+    display: flex;
+    gap: 10px; /* Add space between the buttons */
+}
+
+.action-buttons .details-button,
+.action-buttons .block-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.action-buttons .details-button {
+    background-color: #ff9800;
+    color: white;
+}
+
+.action-buttons .details-button:hover {
+    background-color: #ff9800;
+}
+
+.action-buttons .block-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.action-buttons .block-button:hover {
+    background-color: #c82333;
+}
+.buttonClose{
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ff9800; /* Default background color */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
 }
