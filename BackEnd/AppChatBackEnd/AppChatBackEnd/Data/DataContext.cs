@@ -147,6 +147,19 @@ namespace AppChat.Data
         .WithOne(ud => ud.User)
         .HasForeignKey<UserDetails>(ud => ud.UserId)
         .OnDelete(DeleteBehavior.Cascade);
+
+
+            modelBuilder.Entity<Reports>()
+        .HasOne(r => r.ReportingUser)
+        .WithMany(u => u.ReportsAsReporter)
+        .HasForeignKey(r => r.ReportingUserId)
+        .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Reports>()
+                .HasOne(r => r.ReportedUser)
+                .WithMany(u => u.ReportsAsReported)
+                .HasForeignKey(r => r.ReportedUserId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
 

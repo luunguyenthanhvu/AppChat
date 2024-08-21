@@ -44,31 +44,13 @@
     color: white;
 }
 
-.search-filter, .search-button {
+.search-filter {
     padding: 8px;
     border-radius: 4px;
     border: 1px solid #ccc;
     background-color: #2D3748;
     color: white;
     cursor: pointer;
-}
-
-.search-button {
-    background-color: #F44336; /* Main color for Blocked Users component */
-    color: white;
-}
-
-button {
-    margin: 0 5px;
-    padding: 5px 10px;
-    background-color: #9348d8;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #b687e2;
 }
 
 /* Unified label styles for status and role */
@@ -86,3 +68,95 @@ button:hover {
     font-weight: bold;
     background-color: #F44336; /* Main color for Blocked Users component */
 }
+.blocked-user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #F44336; /* Optional: Add border for better visibility */
+    margin-right: 10px;
+}
+
+.blocked-user-list-container {
+    padding: 20px;
+    background-color: #1E1E2F;
+    color: white;
+}
+
+.blocked-user-list {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    table-layout: fixed; /* Fix the table layout for consistent column widths */
+}
+
+.blocked-user-list th, .blocked-user-list td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+/* Define fixed widths for each column */
+.blocked-user-list th:nth-child(1), .blocked-user-list td:nth-child(1) {
+    width: 100px; /* Width for Avatar column */
+}
+
+.blocked-user-list th:nth-child(2), .blocked-user-list td:nth-child(2) {
+    width: 80px; /* Width for User ID column */
+}
+
+.blocked-user-list th:nth-child(3), .blocked-user-list td:nth-child(3) {
+    width: 120px; /* Width for Username column */
+}
+
+.blocked-user-list th:nth-child(4), .blocked-user-list td:nth-child(4) {
+    width: 180px; /* Width for Email column */
+}
+
+.blocked-user-list th:nth-child(5), .blocked-user-list td:nth-child(5) {
+    width: 100px; /* Width for Status column */
+}
+
+.blocked-user-list th:nth-child(6), .blocked-user-list td:nth-child(6) {
+    width: 100px; /* Width for Role column */
+}
+
+.blocked-user-list th:nth-child(7), .blocked-user-list td:nth-child(7) {
+    width: 200px; /* Width for Actions column */
+}
+
+/* BlockedUsers.css */
+.action-buttons {
+    display: flex;
+    gap: 10px; /* Add space between the buttons */
+}
+
+.action-buttons .unblock-button,
+.action-buttons .delete-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.action-buttons .unblock-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.action-buttons .unblock-button:hover {
+    background-color: #218838;
+}
+
+.action-buttons .delete-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.action-buttons .delete-button:hover {
+    background-color: #c82333;
+}
+
+
