@@ -50,7 +50,7 @@ namespace AppChatBackEnd.Services.imp
                     Email = users.Email,
                     UserName = users.UserName,
                     Img = users.Img,
-                    Role = users.Role.ToString(),
+                    Role = users.Role.RoleName.ToString(),
                     Token = accessToken
 
                 };
