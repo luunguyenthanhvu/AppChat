@@ -1,10 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Pagination from '../Pagination/Pagination';
-import Modal from '../Modal/Modal';
+import Modal from 'react-modal'; // Library modal for details
 import NotificationModal from '../Modal/NotificationModal';
+import CustomModal from '../Modal/Modal'; // Custom modal for block confirmation
 import '../../../css/Reports.css';
 import { BACKEND_URL_HTTP } from '../../../config.js';
+
+const customStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        width: '60%',
+        maxHeight: '80%',
+        overflowY: 'auto',
+    },
+};
 
 function Reports() {
     const [reports, setReports] = useState([]);
@@ -14,16 +29,13 @@ function Reports() {
     const [currentPage, setCurrentPage] = useState(1);
     const [usersPerPage] = useState(5);
 
-    // State for modal
+    // State for library modal (View Details)
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [selectedUserReports, setSelectedUserReports] = useState([]);
 
-    // State for block confirmation modal
-    const [showModal, setShowModal] = useState(false);
-    const [modalAction, setModalAction] = useState(null);
+    // State for block confirmation modal (Custom)
+    const [showConfirmBlockModal, setShowConfirmBlockModal] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState(null);
-    const [modalTitle, setModalTitle] = useState('');
-    const [modalMessage, setModalMessage] = useState('');
 
     // Notification modal states
     const [notificationOpen, setNotificationOpen] = useState(false);
@@ -51,38 +63,23 @@ function Reports() {
     };
 
     const handleBlock = (userId) => {
-        openModal('block', userId, 'Block User', 'Are you sure you want to block this user?');
-    };
-
-    const openModal = (action, userId, title, message) => {
-        setModalAction(action);
         setSelectedUserId(userId);
-        setModalTitle(title);
-        setModalMessage(message);
-        setShowModal(true);
+        setShowConfirmBlockModal(true);
     };
 
-    const closeModal = () => {
-        setShowModal(false);
-        setSelectedUserId(null);
-        setModalAction(null);
-    };
-
-    const confirmAction = async () => {
+    const confirmBlock = async () => {
         try {
-            if (modalAction === 'block') {
-                await axios.put(`http://${BACKEND_URL_HTTP}/api/User/block-user/${selectedUserId}`);
-                setNotificationType('success');
-                setNotificationMessage('User blocked successfully.');
-                fetchReports(); // Refresh the reports after blocking
-            }
+            await axios.put(`http://${BACKEND_URL_HTTP}/api/User/block-user/${selectedUserId}`);
+            setNotificationType('success');
+            setNotificationMessage('User blocked successfully.');
+            fetchReports(); // Refresh reports after blocking
         } catch (error) {
-            console.error(`Error performing ${modalAction}:`, error);
+            console.error('Error blocking user:', error);
             setNotificationType('error');
-            setNotificationMessage(`Failed to ${modalAction} user. Please try again.`);
+            setNotificationMessage('Failed to block user. Please try again.');
         } finally {
-            closeModal(); // Ensure modal is closed after all actions
-            setNotificationOpen(true); // Show the notification modal
+            setShowConfirmBlockModal(false);
+            setNotificationOpen(true);
         }
     };
 
@@ -137,6 +134,11 @@ function Reports() {
     const closeDetailModal = () => {
         setShowDetailModal(false);
         setSelectedUserReports([]);
+    };
+
+    const closeConfirmBlockModal = () => {
+        setShowConfirmBlockModal(false);
+        setSelectedUserId(null);
     };
 
     const indexOfLastReport = currentPage * usersPerPage;
@@ -215,10 +217,11 @@ function Reports() {
                 }}
             />
 
-            {/* Modal for showing report details */}
+            {/* Library Modal for showing report details */}
             <Modal
                 isOpen={showDetailModal}
                 onRequestClose={closeDetailModal}
+                style={customStyles}
                 contentLabel="Report Details"
             >
                 <h2>Report Details</h2>
@@ -246,16 +249,16 @@ function Reports() {
                     )}
                     </tbody>
                 </table>
-                <button onClick={closeDetailModal} style={{ marginTop: '20px' }}>Close</button>
+                <button onClick={closeDetailModal} className="buttonClose">Close</button>
             </Modal>
 
-            {/* Reusable Modal for confirming actions */}
-            <Modal
-                isOpen={showModal}
-                onClose={closeModal}
-                onConfirm={confirmAction}
-                title={modalTitle}
-                message={modalMessage}
+            {/* Custom Modal for blocking user */}
+            <CustomModal
+                isOpen={showConfirmBlockModal}
+                onClose={closeConfirmBlockModal}
+                onConfirm={confirmBlock}
+                title="Confirm Block"
+                message="Are you sure you want to block this user?"
             />
 
             {/* Notification Modal for success/error messages */}

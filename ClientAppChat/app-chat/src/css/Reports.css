@@ -136,3 +136,14 @@
 .action-buttons .block-button:hover {
     background-color: #c82333;
 }
+.buttonClose{
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ff9800; /* Default background color */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
