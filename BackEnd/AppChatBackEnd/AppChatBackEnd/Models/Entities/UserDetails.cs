@@ -17,9 +17,8 @@ namespace AppChatBackEnd.Models.Entities
         public string? Otp { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Gender { get; set; }
-        public int? status { get; set; }
-        public int? reportAmount { get; set; }
-        // Foreign Key to User
+        public string? Status { get; set; } = "Active";
+        public int reportAmount { get; set; } = 0;
         [ForeignKey("User")]
         public int UserId { get; set; }
         public Users User { get; set; }
