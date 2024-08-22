@@ -274,14 +274,25 @@ namespace AppChatBackEnd.Controllers
                     return Unauthorized("Invalid token.");
                 }
 
-                // Lấy ReportingUserId từ JWT token
-                var reportingUserIdClaim = identity.FindFirst("UserId");
-                if (reportingUserIdClaim == null)
+                // Lấy email từ JWT token
+                var emailClaim = identity.FindFirst(ClaimTypes.Email);
+                if (emailClaim == null)
                 {
-                    return Unauthorized("User ID not found in token.");
+                    return Unauthorized("Email not found in token.");
                 }
 
-                int reportingUserId = int.Parse(reportingUserIdClaim.Value);
+                string email = emailClaim.Value;
+
+                // Truy vấn UserId dựa trên email
+                var reportingUser = await _context.Users
+                    .FirstOrDefaultAsync(u => u.Email == email);
+
+                if (reportingUser == null)
+                {
+                    return Unauthorized("User not found.");
+                }
+
+                int reportingUserId = reportingUser.UserId;
 
                 // Tìm người dùng bị báo cáo
                 var userReported = await _context.Users
@@ -300,7 +311,7 @@ namespace AppChatBackEnd.Controllers
                 // Tạo một mục report mới
                 var newReport = new Reports
                 {
-                    ReportingUserId = reportingUserId, // Lấy từ token
+                    ReportingUserId = reportingUserId, // Lấy từ truy vấn
                     ReportedUserId = request.ReportedUserId,
                     Reason = request.Reason,
                     Timestamp = DateTime.UtcNow
@@ -316,6 +327,7 @@ namespace AppChatBackEnd.Controllers
                 return StatusCode(500, "An error occurred while reporting the user: " + ex.Message);
             }
         }
+
 
 
         [HttpPut("block-user/{id}")]
