@@ -1,16 +1,18 @@
-import React, {createContext, useState, useContext } from 'react';
-import { FaEnvelope, FaLock, FaSignInAlt } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import React, {createContext, useState, useContext} from 'react';
+import {FaEnvelope, FaLock, FaSignInAlt} from 'react-icons/fa';
+import {useNavigate} from 'react-router-dom';
 import '../css/login.css';
-import { BACKEND_URL_HTTP, BACKEND_URL_HTTPS } from '../config.js';
+import {BACKEND_URL_HTTP, BACKEND_URL_HTTPS} from '../config.js';
 import imgHolder from '../img/login-holder.jpg';
 import iconGoogle from '../img/google-icon.png';
 import iconFaceBook from '../img/facebook.png';
-import iconTwitter from '../img/twitter-logo.jpg'; 
+import iconTwitter from '../img/twitter-logo.jpg';
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 
+import {Link} from 'react-router-dom';
+
+import {useGoogleLogin} from '@react-oauth/google';
 
 function Login() {
     const navigate = useNavigate();
@@ -20,6 +22,74 @@ function Login() {
     const [isPasswordFocused, setIsPasswordFocused] = useState(false);
 
     const AuthContext = createContext();
+
+    const loginGoogle = useGoogleLogin({
+        onSuccess: async (response) => {
+            try {
+                const {access_token} = response;
+
+                // Gửi yêu cầu đến Google API để lấy thông tin người dùng
+                const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                    headers: {
+                        Authorization: `Bearer ${access_token}`,
+                    },
+                });
+
+                const userInfo = await userInfoResponse.json();
+
+                // Lấy thông tin từ phản hồi
+                console.log('Email:', userInfo.email);
+                console.log('Name:', userInfo.name);
+                console.log('Picture:', userInfo.picture); // Ảnh đại diện của người dùng
+                // gọi tiếp api: http://localhost:5133/api/LoginGoogle/google-login-response-dto
+                // và truyền vào dto gồm email và username
+                fetch('http://localhost:5133/api/LoginGoogle/google-login-response-dto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                            email: userInfo.email,
+                            username: userInfo.name
+                        }
+                    ),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data);
+                        console.log(JSON.stringify(data))
+                        console.log(data); // LoginResponseDTO
+                        // Giả sử token và các thông tin khác nằm trong data
+                        const {userName, email, img, role, token} = data;
+
+                        localStorage.setItem('userName', userName);
+                        localStorage.setItem('email', email);
+                        localStorage.setItem('img', img);
+                        localStorage.setItem('token', token);
+                        localStorage.setItem('role', role)
+
+                        // chuyển hướng vào app dựa trên role
+                        if (localStorage.getItem('role') === 'admin') {
+                            navigate('/admin');
+                            console.log("đã chuyển hướng vô trang admin");
+                        } else {
+                            navigate('/chat');
+                            console.log("đã chuyển hướng vô trang chat");
+                        }
+
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+
+            } catch (error) {
+                console.error('Failed to fetch user info:', error);
+            }
+        },
+        onError: (error) => {
+            console.error('Login Failed:', error);
+        },
+    });
 
     const validateEmail = (email) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -50,11 +120,11 @@ function Login() {
             try {
                 const response = await axios.post(`http://${BACKEND_URL_HTTP}/api/UserServices/login`, {
                     email: username,
-                    password : password
+                    password: password
                 });
                 if (response.status === 200) {
-                  
-                    
+
+
                     if (response.data.message === "Tài khoản này chưa đăng ký hệ thống. Vui lòng nhập lại tài khoản email.") {
                         Swal.fire({
                             title: 'Login failed!',
@@ -78,13 +148,13 @@ function Login() {
                         });
                     } else {
                         // Giả sử token và các thông tin khác nằm trong response.data
-                        const { userName, email, img, role, token } = response.data;
-                
+                        const {userName, email, img, role, token} = response.data;
+
                         localStorage.setItem('userName', userName);
                         localStorage.setItem('email', email);
                         localStorage.setItem('img', img);
                         localStorage.setItem('token', token);
-                        localStorage.setItem('role',role)
+                        localStorage.setItem('role', role)
                         console.log(response.data);
                         // response OK
                         Swal.fire({
@@ -96,7 +166,7 @@ function Login() {
                                 Swal.showLoading();
                                 const timer = Swal.getPopup().querySelector("b");
                                 timerInterval = setInterval(() => {
-                                timer.textContent = `${Swal.getTimerLeft()}`;
+                                    timer.textContent = `${Swal.getTimerLeft()}`;
                                 }, 100);
                             },
                             willClose: () => {
@@ -105,21 +175,19 @@ function Login() {
                         }).then((result) => {
                             if (result.dismiss === Swal.DismissReason.timer) {
                                 console.log("I was closed by the timer");
-                                if(localStorage.getItem('role') === 'admin'){
+                                if (localStorage.getItem('role') === 'admin') {
                                     navigate('/admin');
-                                }else {
+                                } else {
                                     navigate('/chat');
                                 }
-                                
-                               
-                            }
-                        }); 
-                    }
-                } 
-                
 
-                  
-                
+
+                            }
+                        });
+                    }
+                }
+
+
             } catch (error) {
                 console.error('Login error:', error);
                 // Xử lý lỗi khi đăng nhập
@@ -129,75 +197,81 @@ function Login() {
     return (
         <div className="background-image">
             <div className='overlay'>
-            <div className='main-container content'>
-            <div className='img-container'>
-                <img src={imgHolder} alt='Login img holder'></img>
-            </div>
-            <div className="login-container">
-                <h2>Login into account</h2>
-                <form onSubmit={loginHandler}>
-                    <div className={`form-group ${isUsernameFocused ? 'focused' : ''}`}>
-                        <label>
-                            <FaEnvelope/> 
-                        </label>
-                        <input
-                            type='text'
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            onFocus={() => setIsUsernameFocused(true)}
-                            onBlur={() => setIsUsernameFocused(false)}
-                            placeholder='Email address'
-                        />
+                <div className='main-container content'>
+                    <div className='img-container'>
+                        <img src={imgHolder} alt='Login img holder'></img>
                     </div>
-                    <div className={`form-group ${isPasswordFocused ? 'focused' : ''}`}>
-                        <label>
-                            <FaLock/>
-                        </label>
-                        <input
-                            type='password'
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            onFocus={() => setIsPasswordFocused(true)}
-                            onBlur={() => setIsPasswordFocused(false)}
-                            placeholder='Password'
-                        />
+                    <div className="login-container">
+                        <h2>Login into account</h2>
+                        <form onSubmit={loginHandler}>
+                            <div className={`form-group ${isUsernameFocused ? 'focused' : ''}`}>
+                                <label>
+                                    <FaEnvelope/>
+                                </label>
+                                <input
+                                    type='text'
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    onFocus={() => setIsUsernameFocused(true)}
+                                    onBlur={() => setIsUsernameFocused(false)}
+                                    placeholder='Email address'
+                                />
+                            </div>
+                            <div className={`form-group ${isPasswordFocused ? 'focused' : ''}`}>
+                                <label>
+                                    <FaLock/>
+                                </label>
+                                <input
+                                    type='password'
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    onFocus={() => setIsPasswordFocused(true)}
+                                    onBlur={() => setIsPasswordFocused(false)}
+                                    placeholder='Password'
+                                />
+                            </div>
+
+                            <button className='login-btn' type='submit'>
+                                LOGIN
+                            </button>
+
+                            <div className='forget-pass'>
+                                <Link to="/forgot-password">Forgot Password?</Link>
+                            </div>
+
+                            <div>
+                                hoặc đăng nhập bằng
+                            </div>
+
+                            <div className='login-option'>
+
+                                <a href='' onClick={(e) => {
+                                    e.preventDefault();
+                                    loginGoogle();
+                                }} className='icon-login'>
+                                    <img src={iconGoogle}></img>
+                                </a>
+
+                                <a href='' className='icon-login'>
+                                    <img src={iconFaceBook}></img>
+                                </a>
+                                <a href='' className='icon-login'>
+                                    <img src={iconTwitter}></img>
+                                </a>
+                            </div>
+
+                            <div className='break-line'></div>
+
+                            <div className='register-here'>
+                                Don't have an account?
+                                <Link to="/register">Register here</Link>
+                            </div>
+                        </form>
                     </div>
-
-                    <button className='login-btn' type='submit'>
-                        LOGIN
-                    </button>
-
-                    <div className='forget-pass'>
-                    <Link to="/forgot-password">Forgot Password?</Link>
-                    </div>
-
-                    <div>
-                        hoặc đăng nhập bằng
-                    </div>
-
-                    <div className='login-option'>
-                        <a href='' className='icon-login'>
-                            <img src={iconGoogle}></img>
-                        </a>
-                        <a href='' className='icon-login'>
-                            <img src={iconFaceBook}></img>
-                        </a>
-                        <a href='' className='icon-login'>
-                            <img src={iconTwitter}></img>
-                        </a>
-                    </div>
-
-                    <div className='break-line'></div>
-
-                    <div className='register-here'>
-                        Don't have an account? 
-                          <Link to="/register">Register here</Link>
-                    </div>
-                </form>
-            </div>
-            </div>
+                </div>
             </div>
         </div>
     );
 }
+
 export default Login;

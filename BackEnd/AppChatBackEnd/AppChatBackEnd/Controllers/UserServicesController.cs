@@ -5,7 +5,7 @@ using AppChat.Models.Entities;
 using AppChatBackEnd.DTO.Request;
 
 using AppChatBackEnd.DTO.Request.ChatRequest;
-
+using AppChatBackEnd.DTO.Response;
 using AppChatBackEnd.Models.Entities;
 using AppChatBackEnd.Services.imp;
 using AppChatBackEnd.Services.template;
@@ -14,6 +14,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace AppChatBackEnd.Controllers
 {
@@ -97,62 +101,50 @@ namespace AppChatBackEnd.Controllers
         public async Task<IActionResult> Login(LoginRequestDTO loginRequestDTO)
         {
             var user = _dataContext.Users
-                .Include(u => u.UserDetail)
-                .Include(u => u.Role)
-                .SingleOrDefault(u => u.Email.Equals(loginRequestDTO.Email));
+            .Include(u => u.UserDetail)
+            .Include(u => u.Role)
+            .SingleOrDefault(u => u.Email.Equals(loginRequestDTO.Email));
 
             if (user == null)
             {
                 return Ok(new MessageResponseDTO("Tài khoản này chưa đăng ký hệ thống. Vui lòng nhập lại tài khoản email."));
             }
-
-            var resultEqualEncodePass = MyUtil._passwordHasher.VerifyHashedPassword(user, user.Password, loginRequestDTO.Password);
-            if (resultEqualEncodePass != PasswordVerificationResult.Success)
+            else
             {
-                return Ok(new MessageResponseDTO("Tài khoản hoặc mật khẩu không chính xác. Xin vui lòng nhập lại"));
-            }
-
-            if (user.UserDetail.Verified != 1)
-            {
-                return Ok(new MessageResponseDTO("Tài khoản này chưa được xác minh. Xin vui lòng đăng ký lại để xác minh"));
-            }
-
-            // Tạo token và gửi về client
-            var jwtTokenHandler = new JwtSecurityTokenHandler();
-            var secretKeyBytes = Encoding.UTF8.GetBytes(_appSettings.SecretKey);
-            var tokenDescription = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
+                var resultEqualEncodePass = MyUtil._passwordHasher.VerifyHashedPassword(user, user.Password, loginRequestDTO.Password);
+                if (resultEqualEncodePass == PasswordVerificationResult.Success)
                 {
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role.RoleName),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        }),
-                Expires = DateTime.UtcNow.AddHours(24),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKeyBytes), SecurityAlgorithms.HmacSha256)
-            };
+                    if (user.UserDetail.Verified == 1)
+                    {
+                        var result = await sendDataLogin.sendDataLogin(user);
+                        return Ok(result);
 
-            var token = jwtTokenHandler.CreateToken(tokenDescription);
-            var accessToken = jwtTokenHandler.WriteToken(token);
 
-            // Trả về thông tin người dùng kèm token
-            return Ok(new LoginResponseDTO
-            {
-                Email = user.Email,
-                UserName = user.UserName,
-                Img = user.Img,
-                Role = user.Role.RoleName,
-                Token = accessToken
-            });
+
+                    }
+                    else
+                    {
+                        return Ok(new MessageResponseDTO("Tài khoản này chưa được xác minh. Xin vui lòng đăng ký lại để xác minh"));
+                    }
+                }
+                else
+                {
+                    return Ok(new MessageResponseDTO("Tài khoản hoặc mật khẩu không chính xác. Xin vui lòng nhập lại"));
+                }
+            }
+
+
+
+
         }
 
 
 
 
 
-    }
 
-    [HttpPost("verifyAccount")]
+
+        [HttpPost("verifyAccount")]
         public async Task< IActionResult> VerifyAccount(VerifyAccountRequestDTO verifyAccountRequestDTO)
         {
             var user = _dataContext.Users
