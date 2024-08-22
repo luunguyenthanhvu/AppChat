@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppChatBackEnd.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240822052420_Update database")]
-    partial class Updatedatabase
+    [Migration("20240822082338_ud1")]
+    partial class ud1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -125,7 +125,7 @@ namespace AppChatBackEnd.Migrations
                             UserId = 11,
                             Email = "0982407940ab@gmail.com",
                             Img = "http://res.cloudinary.com/dter3mlpl/image/upload/v1724040235/nnb6lhbvdiiucwdskh5u.jpg",
-                            Password = "AQAAAAIAAYagAAAAEP9kGzmUsd00Gxpa4ENTGD1cmaCwpi9s7TmqSXBBSzfpwnQIqsDLovnWpLDFspYO/Q==",
+                            Password = "AQAAAAIAAYagAAAAEDPIb9P1Y0EhmG7ziXHFN0XG+K2Xyiuk6zIVFlGiAKa4XHhpuiqY9H1qnPhtyt6lvQ==",
                             RoleId = 1,
                             UserName = "Yukihira"
                         });

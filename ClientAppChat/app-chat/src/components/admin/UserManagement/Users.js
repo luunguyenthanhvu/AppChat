@@ -281,12 +281,12 @@ function Users() {
                         onChange={e => setNewUser({ ...newUser, password: e.target.value })}
                         required
                     />
-                    <input
-                        type="text"
-                        placeholder="Avatar URL"
-                        value={newUser.img}
-                        onChange={e => setNewUser({ ...newUser, img: e.target.value })}
-                    />
+                    {/*<input*/}
+                    {/*    type="text"*/}
+                    {/*    placeholder="Avatar URL"*/}
+                    {/*    value={newUser.img}*/}
+                    {/*    onChange={e => setNewUser({ ...newUser, img: e.target.value })}*/}
+                    {/*/>*/}
                     <select
                         value={newUser.roleId}
                         onChange={e => setNewUser({ ...newUser, roleId: parseInt(e.target.value) })}

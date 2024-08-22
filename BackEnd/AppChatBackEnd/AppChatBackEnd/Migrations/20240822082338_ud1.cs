@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AppChatBackEnd.Migrations
 {
     /// <inheritdoc />
-    public partial class Updatedatabase : Migration
+    public partial class ud1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -197,7 +197,7 @@ namespace AppChatBackEnd.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "UserId", "Email", "Img", "Password", "RoleId", "UserName" },
-                values: new object[] { 11, "0982407940ab@gmail.com", "http://res.cloudinary.com/dter3mlpl/image/upload/v1724040235/nnb6lhbvdiiucwdskh5u.jpg", "AQAAAAIAAYagAAAAEP9kGzmUsd00Gxpa4ENTGD1cmaCwpi9s7TmqSXBBSzfpwnQIqsDLovnWpLDFspYO/Q==", 1, "Yukihira" });
+                values: new object[] { 11, "0982407940ab@gmail.com", "http://res.cloudinary.com/dter3mlpl/image/upload/v1724040235/nnb6lhbvdiiucwdskh5u.jpg", "AQAAAAIAAYagAAAAEDPIb9P1Y0EhmG7ziXHFN0XG+K2Xyiuk6zIVFlGiAKa4XHhpuiqY9H1qnPhtyt6lvQ==", 1, "Yukihira" });
 
             migrationBuilder.InsertData(
                 table: "UserDetails",
