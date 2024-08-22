@@ -172,7 +172,7 @@ function Login() {
                     </div>
 
                     <div>
-                        hoặc đăng nhập bằng
+                        or login with
                     </div>
 
                     <div className='login-option'>

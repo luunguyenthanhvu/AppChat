@@ -125,5 +125,28 @@ namespace AppChatBackEnd.ChatHub
                 await Clients.Client(connectionId).SendAsync("UpdatePasswordAccount", "password changed");
             }
         }
+
+        public async Task UpdateChat(string user1Email, string user2Email)
+        {
+            var user1 = await _chatRepository.GetUsersByEmail(user1Email);
+            var user2 = await _chatRepository.GetUsersByEmail(user2Email);
+            var listChatUserReceive = await _chatRepository.GetUsersListChatById(user1.UserId);
+            var listChatUserSender = await _chatRepository.GetUsersListChatById(user2.UserId);
+
+            var connectionsRecipents = _userSessionManager.GetConnections(user1.UserId + "");
+            var connectionsSenders = _userSessionManager.GetConnections(user2.UserId + "");
+            // Gửi tin nhắn đến tất cả các kết nối của người nhận
+            foreach (var connectionId in connectionsRecipents)
+            {
+                await Clients.Client(connectionId).SendAsync("NewListChatReceive", listChatUserReceive);
+            }
+
+            // Gửi tin nhắn đến tất cả các kết nối của người gửi
+            foreach (var connectionId in connectionsSenders)
+            {
+                await Clients.Client(connectionId).SendAsync("NewListChatReceive", listChatUserSender);
+
+            }
+        }
     }
 }

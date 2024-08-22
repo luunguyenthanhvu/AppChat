@@ -97,8 +97,17 @@ const useChat = () => {
             }
         }
     }
+    const updateChatList = async (email1, email2) => {
+        if (connection) {
+            try {
+                await connection.invoke("UpdateChat", email1,email2);
+            } catch (err) {
+                console.log("send fail: " + err);
+            }
+        }
+    }
 
-    return { newListChat,connection,serverMessage, messages, userInfo,sendMessage, updateProfile ,updatePass};
+    return { newListChat,connection,serverMessage, messages, userInfo,sendMessage, updateProfile ,updatePass,updateChatList};
 }
 
 export default useChat;

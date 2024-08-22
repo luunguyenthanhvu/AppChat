@@ -14,7 +14,7 @@ import AddFriendModal from '../../modal/chat-list/AddFriendModal.js'
 import { BACKEND_URL_HTTP } from '../../../config.js';
 import axios from 'axios';
 
-function UserInfo({ userInfo, updateProfile,updatePassServer }) {
+function UserInfo({ userInfo, updateProfile,updatePassServer ,updateChatList}) {
     const [userSetting, setUserSetting] = useState(false);
     const token = localStorage.getItem('token');
     const email = localStorage.getItem('email');
@@ -407,6 +407,7 @@ function UserInfo({ userInfo, updateProfile,updatePassServer }) {
 
             {addFriendModal && (
                 <AddFriendModal
+                    updateChatList={updateChatList}
                     addFriendModal={addFriendModal}
                     handleCloseAddFriendModal={handleCloseAddFriendModal}
                 />
