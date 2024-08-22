@@ -8,6 +8,7 @@ using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
 using AppChatBackEnd.Models.Entities;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 
 namespace AppChatBackEnd.Controllers
@@ -96,7 +97,7 @@ namespace AppChatBackEnd.Controllers
 
 
         [HttpDelete("remove-user/{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "RoleBasedPolicy")]
         public async Task<IActionResult> RemoveUser(int id)
         {
             try
@@ -262,50 +263,75 @@ namespace AppChatBackEnd.Controllers
 
         // report user
         [HttpPut("report-user")]
-        [Authorize]
         public async Task<IActionResult> ReportUser([FromBody] ReportUserRequestDTO request)
         {
-            var userReported = await _context.Users
-                .Include(u => u.UserDetail)
-                .FirstOrDefaultAsync(u => u.UserId == request.ReportedUserId);
-
-            if (userReported == null)
+            try
             {
-                return NotFound("User not found for reporting.");
+                // Lấy thông tin user từ token
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                if (identity == null)
+                {
+                    return Unauthorized("Invalid token.");
+                }
+
+                // Lấy email từ JWT token
+                var emailClaim = identity.FindFirst(ClaimTypes.Email);
+                if (emailClaim == null)
+                {
+                    return Unauthorized("Email not found in token.");
+                }
+
+                string email = emailClaim.Value;
+
+                // Truy vấn UserId dựa trên email
+                var reportingUser = await _context.Users
+                    .FirstOrDefaultAsync(u => u.Email == email);
+
+                if (reportingUser == null)
+                {
+                    return Unauthorized("User not found.");
+                }
+
+                int reportingUserId = reportingUser.UserId;
+
+                // Tìm người dùng bị báo cáo
+                var userReported = await _context.Users
+                    .Include(u => u.UserDetail)
+                    .FirstOrDefaultAsync(u => u.UserId == request.ReportedUserId);
+
+                if (userReported == null)
+                {
+                    return NotFound("User not found for reporting.");
+                }
+
+                // Tăng số lượng report và cập nhật trạng thái
+                userReported.UserDetail.reportAmount += 1;
+                userReported.UserDetail.Status = "Reported";
+
+                // Tạo một mục report mới
+                var newReport = new Reports
+                {
+                    ReportingUserId = reportingUserId, // Lấy từ truy vấn
+                    ReportedUserId = request.ReportedUserId,
+                    Reason = request.Reason,
+                    Timestamp = DateTime.UtcNow
+                };
+
+                await _context.Reports.AddAsync(newReport);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "User reported successfully, status and reportAmount updated." });
             }
-
-            var userReporting = await _context.Users
-                .Include(u => u.UserDetail)
-                .FirstOrDefaultAsync(u => u.UserId == request.ReportingUserId);
-
-            if (userReporting == null)
+            catch (Exception ex)
             {
-                return NotFound("Reporting user not found.");
+                return StatusCode(500, "An error occurred while reporting the user: " + ex.Message);
             }
-
-            var newReport = new Reports
-            {
-                ReportingUserId = request.ReportingUserId,
-                ReportedUserId = request.ReportedUserId,
-                Reason = request.Reason,
-                Timestamp = DateTime.UtcNow
-            };
-
-            await _context.Reports.AddAsync(newReport);
-
-            // Update the reported user's details
-            userReported.UserDetail.reportAmount += 1;
-            userReported.UserDetail.Status = "Reported";
-
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "User reported successfully, status and reportAmount updated." });
         }
 
 
 
         [HttpPut("block-user/{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "RoleBasedPolicy")]
         public async Task<IActionResult> BlockUser(int id)
         {
             try
@@ -339,7 +365,7 @@ namespace AppChatBackEnd.Controllers
         }
 
         [HttpPut("unblock-user/{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Policy = "RoleBasedPolicy")]
         public async Task<IActionResult> UnblockUser(int id)
         {
             try
