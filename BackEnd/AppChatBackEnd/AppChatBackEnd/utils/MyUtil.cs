@@ -81,7 +81,7 @@ namespace AppChatBackEnd.utils
 
            
         }
-        public static string DecodeJwtToken(string token)
+        public static string DecodeJwtTokenToEmail(string token)
         {
             var jwtHandler = new JwtSecurityTokenHandler();
 

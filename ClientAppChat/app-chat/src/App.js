@@ -21,7 +21,8 @@ function App() {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Login />} />
+                <Route path="/" element={<Navigate to="/login" />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/chat" element={<ChatHome />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/verify-register" element={<VerifyRegisterAccount />} />

@@ -44,6 +44,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 // inject repo
 builder.Services.AddScoped<IChatRepository, ChatRepositoryImpl>();
+builder.Services.AddScoped<IVuLuuMarkUpRepository, VuLuuMarkUpRepositoryImpl>();
 // accept cors
 builder.Services.AddCors(options =>
 {
