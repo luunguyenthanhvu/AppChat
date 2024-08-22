@@ -10,6 +10,7 @@ namespace AppChatBackEnd.Repositories
         Task<Users?> CreateDefault();
 
         Task<List<UserListChatResponseDTO>> GetUsersListChatByEmail(String email);
+        Task<List<UserListChatResponseDTO>> GetUsersFriendListChatByEmailAndUserName(String email, string username);
         Task<List<UserListChatResponseDTO>> GetUsersListChatById(int id);
         Task<List<ListMessageResponseDTO>> GetUserMessage(int userId, int userChattingId);
 

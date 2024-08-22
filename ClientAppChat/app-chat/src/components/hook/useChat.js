@@ -7,6 +7,12 @@ const useChat = () => {
     const [connection, setConnection] = useState(null);
     const [messages, setMessages] = useState('');
     const [newListChat, setNewListChat] = useState('');
+    const [serverMessage, setServerMessage] = useState('');
+    const [userInfo, setUserInfo] = useState({
+        userName: '',
+        email: '',
+        img: ''
+    });
     useEffect(() => {
         const createConnection = async () => {
             const hubConnection = new signalR.HubConnectionBuilder()
@@ -17,16 +23,33 @@ const useChat = () => {
                 .build();
             
             hubConnection.on("ReceiveMessage", (message) => {
-                console.log('this is message: ' + message);
                 setMessages(message);
             });
 
         
             hubConnection.on("NewListChatReceive", (listChat) => {
-                console.log('this is new list chat' + listChat);
                 setNewListChat(listChat);
-            })
+            });
+
+            hubConnection.on("UserInfoUpdate", (userInfo) => {
+                console.log("user info update" + JSON.stringify(userInfo))
+                setUserInfo({
+                    userName: userInfo.userName,
+                    email: userInfo.email,
+                    img: userInfo.img
+                });               
+                localStorage.setItem('userName', userInfo.userName);
+                localStorage.setItem('email', userInfo.email);
+                localStorage.setItem('img', userInfo.img);
+            });
+
             
+            hubConnection.on("UpdatePasswordAccount", (message) => {     
+                console.log("update mat khau ne")
+                console.log(message)
+                setServerMessage(message);
+            });
+
             try {
                 await hubConnection.start();
                 console.log("Connection to hub");
@@ -48,7 +71,6 @@ const useChat = () => {
     const sendMessage = async (recipientUserId, message, isImage) => {
         if (connection) {
             try {
-                console.log(recipientUserId, message)
                 await connection.invoke("SendMessage", recipientUserId.toString(), message.toString(), isImage);
             } catch (err) {
                 console.log("send fail: " + err);
@@ -56,7 +78,27 @@ const useChat = () => {
         }
     }
 
-    return { newListChat,connection, messages, sendMessage };
+    const updateProfile = async (email, isUpdateImage, isUpdatePass) => {
+        if (connection) {
+            try {
+                await connection.invoke("UpdateProfile", email, isUpdateImage, isUpdatePass);
+            } catch (err) {
+                console.log("send fail: " + err);
+            }
+        }
+    }
+
+    const updatePass = async (email) => {
+        if (connection) {
+            try {
+                await connection.invoke("UpdatePassword", email);
+            } catch (err) {
+                console.log("send fail: " + err);
+            }
+        }
+    }
+
+    return { newListChat,connection,serverMessage, messages, userInfo,sendMessage, updateProfile ,updatePass};
 }
 
 export default useChat;

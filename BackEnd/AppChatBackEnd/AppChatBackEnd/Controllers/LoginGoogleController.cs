@@ -6,6 +6,7 @@ using AppChatBackEnd.DTO.Response;
 using AppChatBackEnd.Models.Entities;
 using AppChatBackEnd.Models.SecretKeyModel;
 using AppChatBackEnd.Services.template;
+using AppChatBackEnd.utils;
 using AutoMapper;
 using MailKit;
 using Microsoft.AspNetCore.Http;
@@ -36,6 +37,7 @@ namespace AppChatBackEnd.Controllers
         [HttpPost("google-login-response-dto")]
         public async Task<LoginResponseDTO> GetLoginResponseDTOByEmailAndUserName([FromBody] EmailAndUsernameFromGoogleRequestDTO request)
         {
+            var defaultRole = await _context.Roles.FirstOrDefaultAsync(r => r.RoleId == 2);
             var user = await _context.Users
             .Include(u => u.UserDetail)
             .Include(u => u.Role)
@@ -47,20 +49,26 @@ namespace AppChatBackEnd.Controllers
                 // các thuộc tính khác ngoài username và email trong LoginResponseDTO cho null hết
 
                 UserDetails userDetails = new UserDetails();
+
                 var newUser = new Users
                 {
+
                     UserName = request.Username,
                     Password="",
                     Email = request.Email,
-                    RoleId = 2, // Default role is "user"
-                    Img = "",
+                    RoleId = defaultRole.RoleId,
+                    Role = defaultRole, // Default role is "user"
+                    Img = "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg",
                     UserDetail = userDetails
+                   
                 };
                 try
                 {
-                    await _context.UserDetails.AddAsync(userDetails);
-                    await _context.Users.AddAsync(newUser);
+                    await _context.AddAsync(userDetails);
+                    await _context.AddAsync(newUser);
                     await _context.SaveChangesAsync();
+
+                    await MyUtil.CreateDefault(_context, newUser);
 
                     var loginResponseDTOForNewEmail = await sendDataLogin.sendDataLogin(newUser);
                     return loginResponseDTOForNewEmail;
@@ -75,7 +83,6 @@ namespace AppChatBackEnd.Controllers
             var loginResponseDTO = await sendDataLogin.sendDataLogin(user);
             //var loginResponseDTO = new LoginResponseDTO()
             //{
-
             //};
             return loginResponseDTO;
         }

@@ -5,7 +5,7 @@ using AppChat.Models.Entities;
 using AppChatBackEnd.DTO.Request;
 
 using AppChatBackEnd.DTO.Request.ChatRequest;
-
+using AppChatBackEnd.DTO.Response;
 using AppChatBackEnd.Models.Entities;
 using AppChatBackEnd.Services.imp;
 using AppChatBackEnd.Services.template;
@@ -14,6 +14,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace AppChatBackEnd.Controllers
 {
@@ -117,21 +121,28 @@ namespace AppChatBackEnd.Controllers
 
 
 
-                   }
+                    }
                     else
                     {
                         return Ok(new MessageResponseDTO("Tài khoản này chưa được xác minh. Xin vui lòng đăng ký lại để xác minh"));
                     }
-                } else
+                }
+                else
                 {
                     return Ok(new MessageResponseDTO("Tài khoản hoặc mật khẩu không chính xác. Xin vui lòng nhập lại"));
                 }
             }
-            
-                
-            
+
+
+
 
         }
+
+
+
+
+
+
 
         [HttpPost("verifyAccount")]
         public async Task< IActionResult> VerifyAccount(VerifyAccountRequestDTO verifyAccountRequestDTO)

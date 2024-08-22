@@ -119,10 +119,10 @@ namespace AppChatBackEnd.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = 10000,
+                            UserId = 11,
                             Email = "0982407940ab@gmail.com",
                             Img = "http://res.cloudinary.com/dter3mlpl/image/upload/v1724040235/nnb6lhbvdiiucwdskh5u.jpg",
-                            Password = "AQAAAAIAAYagAAAAEH2+VJqqsyDSDqIpgeWqBNXcSf3MMoFUoLubMZ/heUCqbPtzy5wH64dLossjhyDvuw==",
+                            Password = "AQAAAAIAAYagAAAAEKFzhoBwp6kpmnRDB96CIplbVD4BLY9W62hOEovkzoAWmoEwrL0Rbc1tRl15EMW6Iw==",
                             RoleId = 1,
                             UserName = "Yukihira"
                         });
@@ -205,9 +205,6 @@ namespace AppChatBackEnd.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Img")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("LastName")
                         .HasColumnType("longtext");
 
@@ -243,12 +240,12 @@ namespace AppChatBackEnd.Migrations
                     b.HasData(
                         new
                         {
-                            UserDetailId = 10000,
+                            UserDetailId = 11,
                             Dob = new DateTime(2003, 8, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Yukihira",
                             LastName = "Yato",
                             Status = "Active",
-                            UserId = 10000,
+                            UserId = 11,
                             Verified = 1,
                             reportAmount = 0
                         });

@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { json, useNavigate } from 'react-router-dom';
 import { BACKEND_URL_HTTP, BACKEND_URL_HTTPS } from '../config.js';
 import axios from 'axios';
 import '../css/chatHome.css';
 import Chat from './chat/chat.js';
 import Details from './details/details.js';
 import List from './list/list.js';
+import Swal from 'sweetalert2';
 import useChat from './hook/useChat.js';
 function Home() {
-    
+    const navigate = useNavigate();
     // list chat
     const [chatList, setChatList] = useState([]);
     const [loading, setLoading] = useState(true);
     const token =  localStorage.getItem('token');
     const email = localStorage.getItem('email');
     
+    // for user search for them friend
+    const [searchFriend, setSearchFriend] = useState('');
+
     // user chatting
     const [chattingWith, setChattingWith] = useState('');
     // user chat Loading
@@ -25,14 +29,14 @@ function Home() {
     const [chattingContent, setChattingContent] = useState('');
 
     // chatting 
-    const { newListChat ,messages, sendMessage } = useChat(); 
+    const { newListChat ,messages, serverMessage, userInfo,sendMessage, updateProfile,updatePass } = useChat(); 
 
-    const user = {
+    const [user, setUser] = useState({
         userName: localStorage.getItem('userName'),
         email: localStorage.getItem('email'),
         img: localStorage.getItem('img'),
         token: localStorage.getItem('token')
-    };
+    });
 
     const getLastTenMessages = () => {
         if (chattingContent.length > 0) {
@@ -44,7 +48,6 @@ function Home() {
     useEffect(() => {
         const fetchChatList = async () => {
             try {
-
                 const fetchPromise = await axios.get(`http://${BACKEND_URL_HTTP}/api/chat/user-chat-list`, {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -61,7 +64,7 @@ function Home() {
                 setChatList(response.data);
                 if (response.data && !chattingWith) {
                     setChattingWith(response.data[0])
-                    console.log('dag chat voi ' + response.data[0])
+                    console.log('dag chat voi ' + JSON.stringify(response.data[0]))
                 }
             } catch (err) {
                 console.log(err);
@@ -118,10 +121,83 @@ function Home() {
         setChatList(newListChat)
     }, [newListChat])
 
+    // get the server message send to user account
+    useEffect(() => {
+        if (serverMessage === "password changed") { 
+            let timerInterval;
+            Swal.fire({
+                title: "Log out of account",
+                html: "Account have new password please login again",
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: () => {
+                    Swal.showLoading();
+                    timerInterval = setInterval(() => {
+                        const timer = Swal.getHtmlContainer().querySelector("b");
+                        if (timer) {
+                            timer.textContent = `${Swal.getTimerLeft()}`;
+                        }
+                    }, 100);
+                },
+                willClose: () => {
+                    clearInterval(timerInterval);
+                }
+            }).then((result) => {
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    localStorage.clear();
+                    navigate('/login');
+                }
+            });
+        }
+    }, [serverMessage]);
+    
+    // user find them friend
+    useEffect(() => {
+        const fetchChatList = async () => {
+            setLoading(true);
+            try {
+                const fetchPromise = await axios.get(`http://${BACKEND_URL_HTTP}/api/chat/friend-chat-list`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                    params: {
+                        email: email,
+                        username: searchFriend
+                    }
+                });
+
+                const delayPromise = new Promise(resolve => setTimeout(resolve, 1500));
+
+                // Đợi cả hai Promise hoàn thành
+                const [response] = await Promise.all([fetchPromise, delayPromise]);
+                setChatList(response.data);
+            } catch (err) {
+                console.log(err);
+            } finally {
+                setLoading(false);
+                setChattingWithLoading(false);
+            }
+        };
+
+        if (email) {
+            fetchChatList();
+        }
+    }, [searchFriend])
+
+    useEffect(() => {
+        setUser(({
+            userName: localStorage.getItem('userName'),
+            email: localStorage.getItem('email'),
+            img: localStorage.getItem('img'),
+            token: localStorage.getItem('token')
+        }));
+    }, [userInfo])
+
 
     const handleChatClick = (user) => {
         setChattingWith(user);
     };
+
     return (
         <div className="background-image">
         <div className='overlay'>
@@ -130,7 +206,14 @@ function Home() {
                         userInfo={user}
                         chatList={chatList}
                         loading={loading}
-                        onChatClick={handleChatClick}></List>
+                        onChatClick={handleChatClick}
+                        updateProfile={updateProfile}
+                        updatePassServer={updatePass}
+                        setSearchFriend={setSearchFriend}
+                        searchFriend={searchFriend}
+                    >
+                    </List>
+                    
                     <Chat
                         chattingWith={chattingWith}
                         loadingUser={chattingWithLoading}
@@ -138,8 +221,10 @@ function Home() {
                         chattingContent={chattingContent}
                         sendMessage={sendMessage}
                     ></Chat>
+                    
                     <Details
                         chattingWith={chattingWith}
+                        loadingUser={chattingWithLoading}
                     >
 
                     </Details>

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import Pagination from '../Pagination/Pagination';
-import Modal from 'react-modal'; // Library modal for details
+import Modal from 'react-modal';
 import NotificationModal from '../Modal/NotificationModal';
-import CustomModal from '../Modal/Modal'; // Custom modal for block confirmation
 import '../../../css/Reports.css';
 import { BACKEND_URL_HTTP } from '../../../config.js';
 
@@ -33,14 +33,12 @@ function Reports() {
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [selectedUserReports, setSelectedUserReports] = useState([]);
 
-    // State for block confirmation modal (Custom)
-    const [showConfirmBlockModal, setShowConfirmBlockModal] = useState(false);
-    const [selectedUserId, setSelectedUserId] = useState(null);
-
     // Notification modal states
     const [notificationOpen, setNotificationOpen] = useState(false);
     const [notificationMessage, setNotificationMessage] = useState('');
     const [notificationType, setNotificationType] = useState(''); // 'success' or 'error'
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchReports();
@@ -49,36 +47,38 @@ function Reports() {
     const fetchReports = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/User/all-reports`);
+            const token = localStorage.getItem('token');
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+            const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/User/all-reports`, config);
             setReports(response.data);
         } catch (err) {
-            setError(err.message);
-            setNotificationType('error');
-            setNotificationMessage('Failed to fetch reports. Please try again.');
-            setNotificationOpen(true);
-            console.error("Error fetching reports:", err);
+            handleError(err);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleBlock = (userId) => {
-        setSelectedUserId(userId);
-        setShowConfirmBlockModal(true);
-    };
-
-    const confirmBlock = async () => {
-        try {
-            await axios.put(`http://${BACKEND_URL_HTTP}/api/User/block-user/${selectedUserId}`);
-            setNotificationType('success');
-            setNotificationMessage('User blocked successfully.');
-            fetchReports(); // Refresh reports after blocking
-        } catch (error) {
-            console.error('Error blocking user:', error);
+    const handleError = (error) => {
+        if (error.response) {
+            if (error.response.status === 401) {
+                navigate('/login');
+            } else if (error.response.status === 403) {
+                setNotificationType('error');
+                setNotificationMessage('This feature is only accessible to admins.');
+                setNotificationOpen(true);
+            } else {
+                setNotificationType('error');
+                setNotificationMessage(`An error occurred: ${error.response.statusText}`);
+                setNotificationOpen(true);
+            }
+        } else {
+            console.error('Error:', error);
             setNotificationType('error');
-            setNotificationMessage('Failed to block user. Please try again.');
-        } finally {
-            setShowConfirmBlockModal(false);
+            setNotificationMessage('An unexpected error occurred.');
             setNotificationOpen(true);
         }
     };
@@ -93,12 +93,17 @@ function Reports() {
 
         try {
             setLoading(true);
+            const token = localStorage.getItem('token');
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
 
-            // Fetch reports by reported user ID
-            const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/User/get-reports-by-reported-user-id/${searchTerm}`);
+            const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/User/get-reports-by-reported-user-id/${searchTerm}`, config);
 
             if (response.data && response.data.length > 0) {
-                setReports(response.data); // Set the reports found for the reportedUserId
+                setReports(response.data);
                 setNotificationType('success');
                 setNotificationMessage('Reports found for this user.');
             } else {
@@ -109,10 +114,7 @@ function Reports() {
 
             setNotificationOpen(true);
         } catch (error) {
-            console.error('Error fetching reports:', error);
-            setNotificationType('error');
-            setNotificationMessage('No reports found for this user.');
-            setNotificationOpen(true);
+            handleError(error);
         } finally {
             setLoading(false);
         }
@@ -120,25 +122,24 @@ function Reports() {
 
     const handleViewDetails = async (reportedUserId) => {
         try {
-            const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/User/getReportsByUserId/${reportedUserId}`);
+            const token = localStorage.getItem('token');
+            const config = {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+
+            const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/User/getReportsByUserId/${reportedUserId}`, config);
             setSelectedUserReports(response.data);
             setShowDetailModal(true);
         } catch (error) {
-            console.error('Error fetching user reports:', error);
-            setNotificationType('error');
-            setNotificationMessage('Failed to load details. Please try again.');
-            setNotificationOpen(true);
+            handleError(error);
         }
     };
 
     const closeDetailModal = () => {
         setShowDetailModal(false);
         setSelectedUserReports([]);
-    };
-
-    const closeConfirmBlockModal = () => {
-        setShowConfirmBlockModal(false);
-        setSelectedUserId(null);
     };
 
     const indexOfLastReport = currentPage * usersPerPage;
@@ -188,9 +189,6 @@ function Reports() {
                                     <div className="action-buttons">
                                         <button onClick={() => handleViewDetails(report.reportedUserId)}
                                                 className="details-button">Details
-                                        </button>
-                                        <button onClick={() => handleBlock(report.reportedUserId)}
-                                                className="block-button">Block
                                         </button>
                                     </div>
                                 </td>
@@ -251,15 +249,6 @@ function Reports() {
                 </table>
                 <button onClick={closeDetailModal} className="buttonClose">Close</button>
             </Modal>
-
-            {/* Custom Modal for blocking user */}
-            <CustomModal
-                isOpen={showConfirmBlockModal}
-                onClose={closeConfirmBlockModal}
-                onConfirm={confirmBlock}
-                title="Confirm Block"
-                message="Are you sure you want to block this user?"
-            />
 
             {/* Notification Modal for success/error messages */}
             <NotificationModal

@@ -61,6 +61,14 @@ namespace AppChatBackEnd.Controllers
             return Ok(response);
         }
 
+        [HttpGet("friend-chat-list")]
+        public async Task<IActionResult> GetFriendListChat([FromQuery] string email, [FromQuery] string? username)
+        {
+            var response = await chatRepository.GetUsersFriendListChatByEmailAndUserName(email, username);  
+
+            return Ok(response);
+        }
+
         [HttpGet("messages/{email}/{userChattingId}")]
         public async Task<IActionResult> GetUserMessages(string email, int userChattingId)
         {
