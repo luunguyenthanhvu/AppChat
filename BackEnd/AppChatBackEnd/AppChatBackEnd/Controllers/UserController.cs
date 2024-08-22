@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
 using AppChatBackEnd.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 
 namespace AppChatBackEnd.Controllers
@@ -27,7 +29,8 @@ namespace AppChatBackEnd.Controllers
 
 
         [HttpPost("add-user")]
-        public async Task<IActionResult> AddUser([FromBody] CreateUserRequestDTO request)
+        [Authorize(Policy = "RoleBasedPolicy")]
+         public async Task<IActionResult> AddUser([FromBody] CreateUserRequestDTO request)
         {
             if (request == null)
             {
@@ -81,7 +84,7 @@ namespace AppChatBackEnd.Controllers
                 {
                     // Rollback transaction if something goes wrong
                     await transaction.RollbackAsync();
-                    return StatusCode(500, "Database error occurred while adding the user: " + (ex.InnerException?.Message ?? ex.Message));
+                    return StatusCode(500, "Database error occurred while adding        `the user: " + (ex.InnerException?.Message ?? ex.Message));
                 }
                 catch (Exception ex)
                 {
@@ -94,6 +97,7 @@ namespace AppChatBackEnd.Controllers
 
 
         [HttpDelete("remove-user/{id}")]
+        [Authorize(Policy = "RoleBasedPolicy")]
         public async Task<IActionResult> RemoveUser(int id)
         {
             try
@@ -101,6 +105,10 @@ namespace AppChatBackEnd.Controllers
                 var user = await _context.Users.FindAsync(id);
                 if (user == null)
                     return NotFound("User not found.");
+
+                // Remove associated reports
+                var reports = _context.Reports.Where(r => r.ReportedUserId == id || r.ReportingUserId == id);
+                _context.Reports.RemoveRange(reports);
 
                 _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
@@ -112,6 +120,7 @@ namespace AppChatBackEnd.Controllers
                 return StatusCode(500, "An error occurred while removing the user: " + ex.Message);
             }
         }
+
 
         // Helper method to hash passwords
         private string HashPassword(string password)
@@ -134,7 +143,8 @@ namespace AppChatBackEnd.Controllers
                         u.UserName,
                         u.Email,
                         Status = u.UserDetail.Status, // Lấy Status từ bảng UserDetails
-                        Role = u.Role.RoleName // Lấy tên Role từ bảng Role
+                        Role = u.Role.RoleName, // Lấy tên Role từ bảng Role
+                        u.Img
                     })
                     .ToListAsync();
 
@@ -149,21 +159,22 @@ namespace AppChatBackEnd.Controllers
 
 
         // API to count active users
-        [HttpGet("count-active-users")]
-        public async Task<IActionResult> CountActiveUsers()
+        [HttpGet("count-users")]
+        public async Task<IActionResult> CountUsers()
         {
             try
             {
-                var activeUserCount = await _context.Users
-                    .Where(u => u.UserDetail.Status == "Active")
+                var userCount = await _context.Users
+                    .Where(u => u.UserDetail.Status == "Active" || u.UserDetail.Status == "Reported")
                     .CountAsync();
-                return Ok(activeUserCount);
+                return Ok(userCount);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while counting active users: " + ex.Message);
+                return StatusCode(500, "An error occurred while counting users: " + ex.Message);
             }
         }
+
 
         // API to count blocked users
         [HttpGet("count-blocked-users")]
@@ -183,22 +194,20 @@ namespace AppChatBackEnd.Controllers
         }
 
         // API to count reported users
-        [HttpGet("count-reported-users")]
-        public async Task<IActionResult> CountReportedUsers()
+        [HttpGet("count-reports")]
+        public async Task<IActionResult> CountReports()
         {
             try
             {
-                var reportedUserCount = await _context.Users
-                    .Where(u => u.UserDetail.Status == "Reported")
-                    .CountAsync();
-                return Ok(reportedUserCount);
+                var totalReports = await _context.Users
+                    .SumAsync(u => u.UserDetail.reportAmount);
+                return Ok(totalReports);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while counting reported users: " + ex.Message);
+                return StatusCode(500, "An error occurred while counting reports: " + ex.Message);
             }
         }
-
 
 
         // cậo nhật user profile
@@ -256,61 +265,318 @@ namespace AppChatBackEnd.Controllers
         [HttpPut("report-user")]
         public async Task<IActionResult> ReportUser([FromBody] ReportUserRequestDTO request)
         {
-            var userReported = await _context.Users
-             .Include(u => u.UserDetail)
-             .FirstOrDefaultAsync(u => u.UserId == request.ReportedUserId);
-
-            if (userReported == null)
+            try
             {
-              return NotFound("Hệ thống không tìm thấy user bị report với ID này, đảm bảo bạn đã report đúng ID");
-            }
-
-            var userReporting = await _context.Users
-              .Include(u => u.UserDetail)
-              .FirstOrDefaultAsync(u => u.UserId == request.ReportingUserId);
-
-            if (userReporting == null)
-            {
-              return NotFound("Hệ thống không tìm thấy user đang report với ID này");
-            }
-
-            if (userReporting.UserId == userReported.UserId)
-            {
-                return BadRequest("Bạn không được tự report bản thân");
-            }
-
-            // tìm dòng gần nhất mà id người A report id người B trong bảng reports
-            var report = await _context.Reports
-            .Where(r => r.ReportingUserId == request.ReportingUserId && r.ReportedUserId == request.ReportedUserId)
-            .OrderByDescending(r => r.Timestamp)
-            .FirstOrDefaultAsync();
-
-            if (report != null)
-            {
-                // check xem người A có report người B trong 1 time ngắn ko?
-                DateTime nearestReportingUtcTime = report.Timestamp;
-                DateTime nowUtcTime = DateTime.UtcNow;
-                TimeSpan timeDifference = nowUtcTime - nearestReportingUtcTime;
-                // Kiểm tra nếu thời gian chênh lệch nhỏ hơn hoặc bằng 1 phút
-                if (timeDifference <= TimeSpan.FromMinutes(1))
+                // Lấy thông tin user từ token
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                if (identity == null)
                 {
-                    return BadRequest($"Bạn không được spam report, hãy chờ {60-timeDifference.TotalSeconds} giây");
+                    return Unauthorized("Invalid token.");
                 }
+
+                // Lấy email từ JWT token
+                var emailClaim = identity.FindFirst(ClaimTypes.Email);
+                if (emailClaim == null)
+                {
+                    return Unauthorized("Email not found in token.");
+                }
+
+                string email = emailClaim.Value;
+
+                // Truy vấn UserId dựa trên email
+                var reportingUser = await _context.Users
+                    .FirstOrDefaultAsync(u => u.Email == email);
+
+                if (reportingUser == null)
+                {
+                    return Unauthorized("User not found.");
+                }
+
+                int reportingUserId = reportingUser.UserId;
+
+                // Tìm người dùng bị báo cáo
+                var userReported = await _context.Users
+                    .Include(u => u.UserDetail)
+                    .FirstOrDefaultAsync(u => u.UserId == request.ReportedUserId);
+
+                if (userReported == null)
+                {
+                    return NotFound("User not found for reporting.");
+                }
+
+                // Tăng số lượng report và cập nhật trạng thái
+                userReported.UserDetail.reportAmount += 1;
+                userReported.UserDetail.Status = "Reported";
+
+                // Tạo một mục report mới
+                var newReport = new Reports
+                {
+                    ReportingUserId = reportingUserId, // Lấy từ truy vấn
+                    ReportedUserId = request.ReportedUserId,
+                    Reason = request.Reason,
+                    Timestamp = DateTime.UtcNow
+                };
+
+                await _context.Reports.AddAsync(newReport);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "User reported successfully, status and reportAmount updated." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while reporting the user: " + ex.Message);
+            }
+        }
+
+
+
+        [HttpPut("block-user/{id}")]
+        [Authorize(Policy = "RoleBasedPolicy")]
+        public async Task<IActionResult> BlockUser(int id)
+        {
+            try
+            {
+                var user = await _context.Users
+                    .Include(u => u.UserDetail)
+                    .FirstOrDefaultAsync(u => u.UserId == id);
+
+                if (user == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                // Kiểm tra nếu người dùng đã bị block
+                if (user.UserDetail.Status == "Blocked")
+                {
+                    return BadRequest("User is already blocked.");
+                }
+
+                // Cập nhật trạng thái thành "Blocked"
+                user.UserDetail.Status = "Blocked";
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "User blocked successfully." });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details here
+                return StatusCode(500, "An error occurred while blocking the user: " + ex.Message);
+            }
+        }
+
+        [HttpPut("unblock-user/{id}")]
+        [Authorize(Policy = "RoleBasedPolicy")]
+        public async Task<IActionResult> UnblockUser(int id)
+        {
+            try
+            {
+                var user = await _context.Users
+                    .Include(u => u.UserDetail)
+                    .FirstOrDefaultAsync(u => u.UserId == id);
+
+                if (user == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                // Kiểm tra nếu người dùng chưa bị block
+                if (user.UserDetail.Status != "Blocked")
+                {
+                    return BadRequest("User is not blocked.");
+                }
+
+                // Cập nhật trạng thái thành "Active"
+                user.UserDetail.Status = "Active";
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "User unblocked successfully." });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details here
+                return StatusCode(500, "An error occurred while unblocking the user: " + ex.Message);
+            }
+        }
+
+        [HttpGet("all-reports")]
+        public async Task<IActionResult> GetAllReports()
+        {
+            try
+            {
+                var reports = await _context.Reports
+                    .Include(r => r.ReportedUser)
+                    .ThenInclude(u => u.UserDetail)
+                    .Select(r => new
+                    {
+                        r.ReportId,
+                        r.ReportedUserId,
+                        r.ReportingUserId,
+                        r.Reason,
+                        r.Timestamp,
+                        ReportedUserReportAmount = r.ReportedUser.UserDetail.reportAmount
+                    })
+                    .ToListAsync();
+
+                return Ok(reports);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while fetching reports: " + ex.Message);
+            }
+        }
+
+        [HttpGet("getReportsByUserId/{userId}")]
+        public async Task<IActionResult> GetReportsByUserId(int userId)
+        {
+            var userReports = await _context.Reports
+                .Where(r => r.ReportedUserId == userId)
+                .Select(r => new
+                {
+                    r.ReportId,
+                    r.ReportingUserId,
+                    r.Reason,
+                    r.Timestamp,
+                    ReportedUserName = r.ReportedUser.UserName, // Lấy UserName
+                    ReportedUserReportAmount = r.ReportedUser.UserDetail.reportAmount // Lấy reportAmount
+                })
+                .ToListAsync();
+
+            if (userReports == null || userReports.Count == 0)
+            {
+                return NotFound("No reports found for this user.");
             }
 
-            var newReport = new Reports
-            {
-                ReportingUserId = request.ReportingUserId,
-                ReportedUserId = request. ReportedUserId,
-                Reason = request.Reason,
-                Timestamp = DateTime.UtcNow
-            };
-
-            await _context.Reports.AddAsync(newReport);
-            userReported.UserDetail.reportAmount++;
-            await _context.SaveChangesAsync();
-            return Ok(new { message = "User reportAmount updated successfully." });
+            return Ok(userReports);
         }
+
+        // Get user by ID
+        [HttpGet("get-user-by-id/{id}")]
+        public async Task<IActionResult> GetUserById(int id)
+        {
+            try
+            {
+                var user = await _context.Users
+                    .Include(u => u.UserDetail)
+                    .Include(u => u.Role)
+                    .Where(u => u.UserId == id)
+                    .Select(u => new
+                    {
+                        u.UserId,
+                        u.UserName,
+                        u.Email,
+                        Status = u.UserDetail.Status,
+                        Role = u.Role.RoleName,
+                        u.Img
+                    })
+                    .FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while getting user by ID: " + ex.Message);
+            }
+        }
+
+        // Get users by Name
+        [HttpGet("get-users-by-name/{name}")]
+        public async Task<IActionResult> GetUsersByName(string name)
+        {
+            try
+            {
+                var users = await _context.Users
+                    .Include(u => u.UserDetail)
+                    .Include(u => u.Role)
+                    .Where(u => u.UserName.Contains(name))
+                    .Select(u => new
+                    {
+                        u.UserId,
+                        u.UserName,
+                        u.Email,
+                        Status = u.UserDetail.Status,
+                        Role = u.Role.RoleName,
+                        u.Img
+                    })
+                    .ToListAsync();
+
+                if (users == null || users.Count == 0)
+                {
+                    return NotFound("No users found with the given name.");
+                }
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while getting users by name: " + ex.Message);
+            }
+        }
+
+        // Get users by Email
+        [HttpGet("get-users-by-email/{email}")]
+        public async Task<IActionResult> GetUsersByEmail(string email)
+        {
+            try
+            {
+                var users = await _context.Users
+                    .Include(u => u.UserDetail)
+                    .Include(u => u.Role)
+                    .Where(u => u.Email.Contains(email))
+                    .Select(u => new
+                    {
+                        u.UserId,
+                        u.UserName,
+                        u.Email,
+                        Status = u.UserDetail.Status,
+                        Role = u.Role.RoleName,
+                        u.Img
+                    })
+                    .ToListAsync();
+
+                if (users == null || users.Count == 0)
+                {
+                    return NotFound("No users found with the given email.");
+                }
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while getting users by email: " + ex.Message);
+            }
+        }
+
+        [HttpGet("get-reports-by-reported-user-id/{reportedUserId}")]
+        public async Task<IActionResult> GetReportsByReportedUserId(int reportedUserId)
+        {
+            var reports = await _context.Reports
+                .Include(r => r.ReportedUser)
+                .ThenInclude(u => u.UserDetail)
+                .Where(r => r.ReportedUserId == reportedUserId)
+                .Select(r => new
+                {
+                    r.ReportId,
+                    r.ReportedUserId,
+                    r.ReportingUserId,
+                    r.Reason,
+                    r.Timestamp,
+                    ReportedUserReportAmount = r.ReportedUser.UserDetail.reportAmount
+                })
+                .ToListAsync();
+
+            if (reports == null || reports.Count == 0)
+            {
+                return NotFound("No reports found for this user.");
+            }
+
+            return Ok(reports);
+        }
+
 
     }
 }

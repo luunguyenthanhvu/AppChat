@@ -4,6 +4,7 @@ using AppChat.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppChatBackEnd.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240819043123_ThemAccountAdmin")]
+    partial class ThemAccountAdmin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,10 +122,10 @@ namespace AppChatBackEnd.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = 11,
+                            UserId = 10000,
                             Email = "0982407940ab@gmail.com",
                             Img = "http://res.cloudinary.com/dter3mlpl/image/upload/v1724040235/nnb6lhbvdiiucwdskh5u.jpg",
-                            Password = "AQAAAAIAAYagAAAAEP4CdBMBkOacCREeKIcu2BaiFsmD1JMXjlnqWRqbfr8v5nU+mAeasQat6cKUSqUNEQ==",
+                            Password = "AQAAAAIAAYagAAAAENEeNsa8sIduybEdQfLho++5IqsiHuqdBEKwDjQ3ra8Fa1MTHRdMG+zlOPfr4/hO4Q==",
                             RoleId = 1,
                             UserName = "Yukihira"
                         });
@@ -151,8 +154,6 @@ namespace AppChatBackEnd.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("ReportId");
-
-                    b.HasIndex("ReportedUserId");
 
                     b.HasIndex("ReportingUserId");
 
@@ -205,6 +206,9 @@ namespace AppChatBackEnd.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Img")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("LastName")
                         .HasColumnType("longtext");
 
@@ -221,13 +225,12 @@ namespace AppChatBackEnd.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<int?>("Verified")
                         .HasColumnType("int");
 
-                    b.Property<int>("reportAmount")
+                    b.Property<int?>("reportAmount")
                         .HasColumnType("int");
 
                     b.HasKey("UserDetailId");
@@ -240,14 +243,13 @@ namespace AppChatBackEnd.Migrations
                     b.HasData(
                         new
                         {
-                            UserDetailId = 11,
+                            UserDetailId = 10000,
                             Dob = new DateTime(2003, 8, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Yukihira",
                             LastName = "Yato",
                             Status = "Active",
-                            UserId = 11,
-                            Verified = 1,
-                            reportAmount = 0
+                            UserId = 10000,
+                            Verified = 1
                         });
                 });
 
@@ -302,19 +304,11 @@ namespace AppChatBackEnd.Migrations
 
             modelBuilder.Entity("AppChatBackEnd.Models.Entities.Reports", b =>
                 {
-                    b.HasOne("AppChat.Models.Entities.Users", "ReportedUser")
-                        .WithMany("ReportsAsReported")
-                        .HasForeignKey("ReportedUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("AppChat.Models.Entities.Users", "ReportingUser")
-                        .WithMany("ReportsAsReporter")
+                        .WithMany("Reports")
                         .HasForeignKey("ReportingUserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ReportedUser");
 
                     b.Navigation("ReportingUser");
                 });
@@ -338,9 +332,7 @@ namespace AppChatBackEnd.Migrations
 
                     b.Navigation("MessagesSent");
 
-                    b.Navigation("ReportsAsReported");
-
-                    b.Navigation("ReportsAsReporter");
+                    b.Navigation("Reports");
 
                     b.Navigation("UserDetail")
                         .IsRequired();

@@ -4,6 +4,7 @@ using AppChat.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppChatBackEnd.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240820114258_UpdateRP")]
+    partial class UpdateRP
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,10 +122,10 @@ namespace AppChatBackEnd.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = 11,
+                            UserId = 10000,
                             Email = "0982407940ab@gmail.com",
                             Img = "http://res.cloudinary.com/dter3mlpl/image/upload/v1724040235/nnb6lhbvdiiucwdskh5u.jpg",
-                            Password = "AQAAAAIAAYagAAAAEP4CdBMBkOacCREeKIcu2BaiFsmD1JMXjlnqWRqbfr8v5nU+mAeasQat6cKUSqUNEQ==",
+                            Password = "AQAAAAIAAYagAAAAEH2+VJqqsyDSDqIpgeWqBNXcSf3MMoFUoLubMZ/heUCqbPtzy5wH64dLossjhyDvuw==",
                             RoleId = 1,
                             UserName = "Yukihira"
                         });
@@ -205,6 +208,9 @@ namespace AppChatBackEnd.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Img")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("LastName")
                         .HasColumnType("longtext");
 
@@ -240,12 +246,12 @@ namespace AppChatBackEnd.Migrations
                     b.HasData(
                         new
                         {
-                            UserDetailId = 11,
+                            UserDetailId = 10000,
                             Dob = new DateTime(2003, 8, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             FirstName = "Yukihira",
                             LastName = "Yato",
                             Status = "Active",
-                            UserId = 11,
+                            UserId = 10000,
                             Verified = 1,
                             reportAmount = 0
                         });

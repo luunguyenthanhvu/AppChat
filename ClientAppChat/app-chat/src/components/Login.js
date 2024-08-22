@@ -9,6 +9,9 @@ import iconFaceBook from '../img/facebook.png';
 import iconTwitter from '../img/twitter-logo.jpg'; 
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
+
+
 function Login() {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
@@ -45,41 +48,77 @@ function Login() {
         } else {
 
             try {
-                const response = await axios.post(`http://${BACKEND_URL_HTTP}/api/chat/login`, {
+                const response = await axios.post(`http://${BACKEND_URL_HTTP}/api/UserServices/login`, {
                     email: username,
                     password : password
                 });
-
-                    // Giả sử token và các thông tin khác nằm trong response.data
-                const { userName, email, img, token } = response.data;
-
-                localStorage.setItem('userName', userName);
-                localStorage.setItem('email', email);
-                localStorage.setItem('img', img);
-                localStorage.setItem('token', token);
-                console.log(response.data);
-                // response OK
-                Swal.fire({
-                    title: "Login into account",
-                    html: "I will close in <b></b> milliseconds.",
-                    timer: 2000,
-                    timerProgressBar: true,
-                    didOpen: () => {
-                        Swal.showLoading();
-                        const timer = Swal.getPopup().querySelector("b");
-                        timerInterval = setInterval(() => {
-                        timer.textContent = `${Swal.getTimerLeft()}`;
-                        }, 100);
-                    },
-                    willClose: () => {
-                        clearInterval(timerInterval);
+                if (response.status === 200) {
+                  
+                    
+                    if (response.data.message === "Tài khoản này chưa đăng ký hệ thống. Vui lòng nhập lại tài khoản email.") {
+                        Swal.fire({
+                            title: 'Login failed!',
+                            text: 'This account is not registered in the system. Please re-type your email account.',
+                            icon: 'error',
+                            confirmButtonColor: "#3085d6",
+                        });
+                    } else if (response.data.message === "Tài khoản hoặc mật khẩu không chính xác. Xin vui lòng nhập lại") {
+                        Swal.fire({
+                            title: 'Login failed!',
+                            text: 'Incorrect account or password. Please re-type.',
+                            icon: 'error',
+                            confirmButtonColor: "#3085d6",
+                        });
+                    } else if (response.data.message === "Tài khoản này chưa được xác minh. Xin vui lòng đăng ký lại để xác minh") {
+                        Swal.fire({
+                            title: 'Login failed!',
+                            text: 'This account is not verified. Please register again to verify.',
+                            icon: 'error',
+                            confirmButtonColor: "#3085d6",
+                        });
+                    } else {
+                        // Giả sử token và các thông tin khác nằm trong response.data
+                        const { userName, email, img, role, token } = response.data;
+                
+                        localStorage.setItem('userName', userName);
+                        localStorage.setItem('email', email);
+                        localStorage.setItem('img', img);
+                        localStorage.setItem('token', token);
+                        localStorage.setItem('role',role)
+                        console.log(response.data);
+                        // response OK
+                        Swal.fire({
+                            title: "Login into account",
+                            html: "I will close in <b></b> milliseconds.",
+                            timer: 2000,
+                            timerProgressBar: true,
+                            didOpen: () => {
+                                Swal.showLoading();
+                                const timer = Swal.getPopup().querySelector("b");
+                                timerInterval = setInterval(() => {
+                                timer.textContent = `${Swal.getTimerLeft()}`;
+                                }, 100);
+                            },
+                            willClose: () => {
+                                clearInterval(timerInterval);
+                            }
+                        }).then((result) => {
+                            if (result.dismiss === Swal.DismissReason.timer) {
+                                console.log("I was closed by the timer");
+                                if(localStorage.getItem('role') === 'admin'){
+                                    navigate('/admin');
+                                }else {
+                                    navigate('/chat');
+                                }
+                                
+                               
+                            }
+                        }); 
                     }
-                    }).then((result) => {
-                    if (result.dismiss === Swal.DismissReason.timer) {
-                        console.log("I was closed by the timer");
-                        navigate('/chat')
-                    }
-                    });
+                } 
+                
+
+                  
                 
             } catch (error) {
                 console.error('Login error:', error);
@@ -129,13 +168,11 @@ function Login() {
                     </button>
 
                     <div className='forget-pass'>
-                        <a href=''>
-                            Forget Password?
-                        </a>
+                    <Link to="/forgot-password">Forgot Password?</Link>
                     </div>
 
                     <div>
-                        or login with
+                        hoặc đăng nhập bằng
                     </div>
 
                     <div className='login-option'>
@@ -154,9 +191,7 @@ function Login() {
 
                     <div className='register-here'>
                         Don't have an account? 
-                        <a href=''>
-                            Register here
-                        </a>
+                          <Link to="/register">Register here</Link>
                     </div>
                 </form>
             </div>

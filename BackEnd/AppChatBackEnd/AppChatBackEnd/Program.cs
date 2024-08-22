@@ -85,6 +85,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 
 });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RoleBasedPolicy", policy =>
+    {
+        policy.RequireClaim("Role", "admin");
+    });
+});
+
 
 // add connection
 builder.Services.AddSingleton<UserSessionManager>();
@@ -105,8 +113,10 @@ app.UseWebSockets();
 app.UseCors("AllowAll");
 
 app.UseAuthentication(); // Thêm nếu bạn cần xác thực JWT
+app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<ChatHub>("/Chat"); // Đảm bảo endpoint khớp với client
+
 
 app.Run();
