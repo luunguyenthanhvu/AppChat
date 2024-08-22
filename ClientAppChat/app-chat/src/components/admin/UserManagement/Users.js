@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode'; // Import thư viện jwt-decode
 import Pagination from '../Pagination/Pagination';
 import Modal from '../Modal/Modal';
 import NotificationModal from '../Modal/NotificationModal';
@@ -193,9 +192,6 @@ function Users() {
                 return;
             }
 
-            const decodedToken = jwtDecode(token); // Sử dụng jwt_decode
-            const reportingUserId = decodedToken.userId; // Lấy reportingUserId từ token
-
             const config = {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -210,8 +206,7 @@ function Users() {
             } else if (modalAction === 'report') {
                 const reportPayload = {
                     ReportedUserId: selectedUserId,
-                    ReportingUserId: reportingUserId, // Sử dụng reportingUserId từ token
-                    Reason: reportReason,
+                    Reason: reportReason, // Lý do báo cáo
                 };
                 await axios.put(`http://${BACKEND_URL_HTTP}/api/User/report-user`, reportPayload, config);
                 fetchUsers();
@@ -227,6 +222,7 @@ function Users() {
             setNotificationOpen(true);
         }
     };
+
 
     const indexOfLastUser = currentPage * usersPerPage;
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
