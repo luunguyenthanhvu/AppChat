@@ -1,4 +1,6 @@
-﻿namespace AppChatBackEnd.DTO.Response
+﻿using AppChat.Models.Enums;
+
+namespace AppChatBackEnd.DTO.Response
 {
     public class UserDTO
     {
@@ -12,5 +14,6 @@
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
         public string RoleName { get; set; } // Assuming you want to display the role name
+        public FriendStatus? FriendStatus { get; set; }
     }
 }

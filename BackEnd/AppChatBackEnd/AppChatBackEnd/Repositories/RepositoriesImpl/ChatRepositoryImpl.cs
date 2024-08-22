@@ -191,6 +191,7 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
             }
 
             var userFriends = user.Friends
+                .Where(f => f.Status == FriendStatus.Accepted)
                 .Select(f => f.FriendUser)
                 .Where(f => f != null) // Loại bỏ các bạn bè null
                 .ToList();
@@ -268,6 +269,7 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
             }
 
             var userFriends = user.Friends
+                        .Where(f => f.Status == FriendStatus.Accepted)
                 .Select(f => f.FriendUser)
                  .Where(f =>
                     f.UserName != null &&
@@ -306,7 +308,11 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
                                           .FirstOrDefault();
 
                 var isMine = lastMessage?.SenderId == currentUserId;
-                var isImg = lastMessage.isImage;
+                var isImg = false;
+                if(lastMessage.isImage != null)
+                {
+                    isImg = lastMessage.isImage;
+                }
                 var messageContent = "";
                 if (isImg)
                 {
@@ -347,6 +353,7 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
             }
 
             var userFriends = user.Friends
+                        .Where(f => f.Status == FriendStatus.Accepted)
                 .Select(f => f.FriendUser)
                 .Where(f => f != null) // Loại bỏ các bạn bè null
                 .ToList();

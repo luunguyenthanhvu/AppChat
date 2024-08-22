@@ -19,7 +19,7 @@ const AddFriendModal = ({
     const [pendingRequests, setPendingRequests] = useState([]);
     const [searchUser, setSearchUser] = useState('');
     const [loading, setLoading] = useState(false);
-
+    const [fetchData, setFetchData] = useState(false);
     const handleAccept = () => {
         // handle accept logic
     };
@@ -27,6 +27,73 @@ const AddFriendModal = ({
     const handleDecline = () => {
         // handle decline logic
     };
+
+
+    // adding new friend
+    const handleAddFriend = (friendEmail) => {
+        if (mode === 'addFriend') {
+            const handleGetUserInfo = async () => {
+                
+                try {
+                    
+                    await axios.post(`http://${BACKEND_URL_HTTP}/api/friend-controller/send-friend-request`, null, {
+                        params: {
+                            senderEmail: email,
+                            recipientEmail: friendEmail
+                        },
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+        
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Having error when call api',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                } finally {
+                    setFetchData(prev => !prev);
+                }
+            };
+
+            handleGetUserInfo();
+        }
+    }
+
+    // cancel request 
+    const handleCancelRequest = async (friendEmail) => {
+        if (mode === 'addFriend') {
+            try {
+                // Gửi request tới API
+                await axios.post(`http://${BACKEND_URL_HTTP}/api/friend-controller/cancel-friend-request`, null, {
+                    params: {
+                        senderEmail: email,
+                        recipientEmail: friendEmail
+                    },
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
+            } catch (error) {
+                console.log("lpong cac" + error )
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while calling the API',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            } finally {
+                // Cập nhật dữ liệu sau khi gọi API
+                setFetchData(prev => !prev);
+            }
+        }
+    };
+    
 
     useEffect(() => {
         if (mode === 'addFriend') {
@@ -45,7 +112,7 @@ const AddFriendModal = ({
                             Authorization: `Bearer ${token}`
                         }
                     });
-        
+                    console.log(response.data)
                     setFriendList(response.data);
                 } catch (error) {
                     Swal.fire({
@@ -61,7 +128,7 @@ const AddFriendModal = ({
 
             handleGetUserInfo();
         }
-    }, [mode, searchUser, email, token]);
+    }, [fetchData,mode, searchUser, email, token]);
 
     return (
         <Modal
@@ -113,10 +180,25 @@ const AddFriendModal = ({
                                         <h4>{friend.username}</h4>
                                         <p>{friend.email}</p>
                                     </div>
-                                    <button className="add-friend-btn">
-                                        <FaUserPlus />
-                                        Add Friend
-                                    </button>
+                                    {friend.friendStatus === null && (
+                                        <button
+                                            className="add-friend-btn"
+                                            onClick={() => handleAddFriend(friend.email)}
+                                        >
+                                            <FaUserPlus />
+                                            Add Friend
+                                        </button>
+                                    )}
+                                    {friend.friendStatus === 0 && (
+                                        <button
+                                            className="add-friend-btn cancel-request-btn"
+                                            onClick={() => handleCancelRequest(friend.email)}
+                                        >
+                                            <FaUserTimes />
+                                            Cancel Request
+                                        </button>
+                                    )}
+
                                 </div>
                             ))}
                         </div>

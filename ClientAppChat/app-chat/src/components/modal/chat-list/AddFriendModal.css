@@ -23,6 +23,14 @@
     }
 }
 
+.add-friend-btn.cancel-request-btn {
+    background-color: #f44336; /* Đỏ cho nút Cancel Request */
+    color: white;
+}
+
+.add-friend-btn.cancel-request-btn:hover{
+    background-color: #b00c00;
+}
 
 .friend-item {
     display: flex;

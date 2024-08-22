@@ -25,7 +25,6 @@ namespace AppChatBackEnd.Controllers
             _mapper = mapper;
             _logger = logger;
         }
-
         [HttpGet("find-potential-friends")]
         public async Task<IActionResult> FindPotentialFriends([FromQuery] string email, [FromQuery] string? username)
         {
@@ -34,84 +33,112 @@ namespace AppChatBackEnd.Controllers
                 .Include(u => u.Friends) // Include the Friends relationship
                 .FirstOrDefaultAsync(u => u.Email == email);
 
-            // Get the list of IDs of the current user's friends
-            var friendUserIds = currentUser.Friends.Select(f => f.FriendUserId).ToList();
+            if (currentUser == null)
+            {
+                return NotFound("User not found");
+            }
 
-            // Search for potential friends based on username and not being in the current user's friend list
+            // Get the list of IDs of the current user's friends and pending requests
+            var friendStatuses = currentUser.Friends
+                .GroupBy(f => f.FriendUserId)
+                .Select(g => new
+                {
+                    FriendUserId = g.Key,
+                    Status = g.Max(f => f.Status) // Take the most recent status
+                })
+                .ToDictionary(x => x.FriendUserId, x => x.Status);
+
+            // Fetch potential friends from the database
             var potentialFriendsQuery = _context.Users
                 .Where(u =>
-                    u.UserId != currentUser.UserId && // Exclude the current user
-                    !friendUserIds.Contains(u.UserId) && // Exclude already friends
-                    (username == null || u.UserName.Contains(username)) // Optional username search
+                    u.UserId != currentUser.UserId // Exclude the current user
+                    && (username == null || u.UserName.Contains(username)) // Optional username search
                 );
 
-            // Project the result to a UserDTO or similar structure
-            var potentialFriends = await potentialFriendsQuery
+            var potentialFriends = await potentialFriendsQuery.ToListAsync();
+
+            // Filter the results to include users who are either not friends or have a pending request
+            var result = potentialFriends
                 .Select(u => new UserDTO
                 {
                     UserId = u.UserId,
                     Username = u.UserName,
                     Img = u.Img,
-                    Email = u.Email
+                    Email = u.Email,
+                    FriendStatus = friendStatuses.ContainsKey(u.UserId) ? friendStatuses[u.UserId] : (FriendStatus?)null
                 })
-                .ToListAsync();
+                .Where(dto => dto.FriendStatus == FriendStatus.Pending || dto.FriendStatus == null) // Include pending requests or users not in friendStatuses
+                .ToList();
 
             // Return the appropriate response based on the results
-            if (!potentialFriends.Any())
-            {
-                return Ok(new List<UserDTO>()); 
-            }
-
-            return Ok(potentialFriends); // Return the list of potential friends
+            return Ok(result);
         }
 
-
-        [HttpPost("add-friend")]
-        public async Task<IActionResult> AddFriend([FromBody] FriendRequestDTO requestDto)
+        [HttpPost("send-friend-request")]
+        public async Task<IActionResult> SendFriendRequest([FromBody] FriendRequestDTOVuLuu request)
         {
-            if (requestDto == null)
+            // Find the sender and recipient by their email addresses
+            var sender = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.SenderEmail);
+            var recipient = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.RecipientEmail);
+
+            if (sender == null || recipient == null)
             {
-                return BadRequest("Invalid request data.");
+                return NotFound("Sender or recipient not found");
             }
 
-            var user = await _context.Users.FindAsync(requestDto.UserId);
-            var friend = await _context.Users.FindAsync(requestDto.FriendUserId);
+            // Check if a pending or existing friend request already exists
+            var existingRequest = await _context.Friends
+                .FirstOrDefaultAsync(f => f.UserId == sender.UserId && f.FriendUserId == recipient.UserId);
 
-            if (user == null || friend == null)
+            if (existingRequest != null)
             {
-                return NotFound("User or friend not found.");
+                if (existingRequest.Status == FriendStatus.Pending)
+                {
+                    return Conflict("A pending friend request already exists");
+                }
+                // Optionally handle other cases like already friends
+                return Conflict("A friend request already exists");
             }
 
-            // Check if the friendship already exists in either direction
-            bool friendshipExists = await _context.Friends.AnyAsync(f =>
-                (f.UserId == requestDto.UserId && f.FriendUserId == requestDto.FriendUserId) ||
-                (f.UserId == requestDto.FriendUserId && f.FriendUserId == requestDto.UserId));
-
-            if (friendshipExists)
+            // Create a new friend request
+            var newFriendRequest = new Friend
             {
-                return BadRequest("Friendship already exists.");
-            }
-
-            // Create two friendship entries for both directions
-            var friendship1 = new Friend
-            {
-                UserId = requestDto.UserId,
-                FriendUserId = requestDto.FriendUserId,
-                Status = FriendStatus.Pending // Use enum instead of magic number
+                UserId = sender.UserId,
+                FriendUserId = recipient.UserId,
+                Status = FriendStatus.Pending
             };
 
-            var friendship2 = new Friend
-            {
-                UserId = requestDto.FriendUserId,
-                FriendUserId = requestDto.UserId,
-                Status = FriendStatus.Pending // Use enum instead of magic number
-            };
-
-            _context.Friends.Add(friendship1);
-            _context.Friends.Add(friendship2);
+            _context.Friends.Add(newFriendRequest);
             await _context.SaveChangesAsync();
 
-            return Ok("Friend request sent successfully.");
+            return Ok("Friend request sent successfully");
+        }
+        [HttpPost("cancel-friend-request")]
+        public async Task<IActionResult> CancelFriendRequest([FromBody] FriendRequestDTOVuLuu request)
+        {
+            // Find the sender and recipient by their email addresses
+            var sender = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.SenderEmail);
+            var recipient = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.RecipientEmail);
+
+            if (sender == null || recipient == null)
+            {
+                return NotFound("Sender or recipient not found");
+            }
+
+            // Find the pending friend request
+            var existingRequest = await _context.Friends
+                .FirstOrDefaultAsync(f => f.UserId == sender.UserId && f.FriendUserId == recipient.UserId && f.Status == FriendStatus.Pending);
+
+            if (existingRequest == null)
+            {
+                return NotFound("No pending friend request found to cancel");
+            }
+
+            // Remove the pending friend request
+            _context.Friends.Remove(existingRequest);
+            await _context.SaveChangesAsync();
+
+            return Ok("Friend request canceled successfully");
         }
 
         [HttpDelete("delete-friend")]
