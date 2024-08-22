@@ -56,6 +56,8 @@ function Login() {
                 })
                     .then(response => response.json())
                     .then(data => {
+                        console.log(data);
+                        console.log(JSON.stringify(data))
                         console.log(data); // LoginResponseDTO
                         // Giả sử token và các thông tin khác nằm trong data
                         const {userName, email, img, role, token} = data;

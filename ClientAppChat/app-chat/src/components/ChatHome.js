@@ -15,7 +15,7 @@ function Home() {
     const [loading, setLoading] = useState(true);
     const token =  localStorage.getItem('token');
     const email = localStorage.getItem('email');
-    
+    console.log("sau khi login " + token + email)
     // for user search for them friend
     const [searchFriend, setSearchFriend] = useState('');
 
