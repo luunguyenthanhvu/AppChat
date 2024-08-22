@@ -43,13 +43,27 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
         if (chatContainer) {
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
-    }, [chattingContent]);
+    }, [chattingContent,chattingWith]);
 
     const TEN_MINUTES = 10 * 60 * 1000;
-
     const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return formatDistanceToNow(date, { addSuffix: true });
+        try {
+            // Tạo đối tượng Date từ chuỗi thời gian
+            const date = new Date(dateString);
+    
+            // Kiểm tra xem đối tượng Date có hợp lệ không
+            if (isNaN(date.getTime())) {
+                // Trả về một giá trị mặc định nếu đối tượng Date không hợp lệ
+                console.error("Invalid date:", dateString);
+                return 'Invalid date';
+            }
+    
+            // Định dạng ngày
+            return formatDistanceToNow(date, { addSuffix: true });
+        } catch (error) {
+            console.error("Error formatting date:", error);
+            return 'Error formatting date';
+        }
     };
 
     const handleSendMessage = () => {
@@ -165,6 +179,7 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
     
         removeImage();
     };
+    
     const handleInputBlur = () => {
         setShowFilePond(false);
     }

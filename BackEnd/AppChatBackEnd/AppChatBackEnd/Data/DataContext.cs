@@ -47,6 +47,10 @@ namespace AppChat.Data
                 .Property(u => u.UserId)
                 .ValueGeneratedOnAdd(); // Auto-increment UserId
 
+            modelBuilder.Entity<UserDetails>()
+                .Property(u => u.UserDetailId)
+                .ValueGeneratedOnAdd(); // Auto-increment UserId
+
             modelBuilder.Entity<Users>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
@@ -82,13 +86,13 @@ namespace AppChat.Data
             modelBuilder.Entity<UserDetails>().HasData(
             new UserDetails
             {
-                UserDetailId = 10000,
+                UserDetailId = 11,
                 Dob = DateTime.Parse("2003-08-29"),
                 FirstName = "Yukihira",
                 LastName = "Yato",
                 Verified = 1,
                 Status = "Active",
-                UserId = 10000 
+                UserId = 11 
             }
         );
 
@@ -115,7 +119,7 @@ namespace AppChat.Data
                 .HasData(
                       new Users
                       {
-                          UserId = 10000,
+                          UserId = 11,
                           UserName = "Yukihira",
                           Password = passwordHash, 
                           Email = "0982407940ab@gmail.com",

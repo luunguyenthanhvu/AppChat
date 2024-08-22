@@ -6,7 +6,6 @@ import Modal from 'react-modal';
 import NotificationModal from '../Modal/NotificationModal';
 import '../../../css/Reports.css';
 import { BACKEND_URL_HTTP } from '../../../config.js';
-import { jwtDecode } from 'jwt-decode'; // Sử dụng đúng cú pháp import
 
 const customStyles = {
     content: {

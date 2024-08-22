@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './components/Login.js';
 import ChatHome from './components/ChatHome.js';
 import Register from './components/Register.js';
@@ -16,7 +16,8 @@ function App() {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<Login />} />
+                <Route path="/" element={<Navigate to="/login" />} />
+                <Route path="/login" element={<Login />} />
                 <Route path="/chat" element={<ChatHome />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/verify-register" element={<VerifyRegisterAccount />} />
