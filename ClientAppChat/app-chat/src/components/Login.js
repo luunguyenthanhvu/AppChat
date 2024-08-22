@@ -44,88 +44,109 @@ function Login() {
                 showCancelButton: true,
                 confirmButtonColor: "#3085d6",
                 cancelButtonColor: "#d33",
-            })
+            });
         } else {
-
             try {
                 const response = await axios.post(`http://${BACKEND_URL_HTTP}/api/UserServices/login`, {
                     email: username,
-                    password : password
+                    password: password
                 });
+
                 if (response.status === 200) {
-                  
-                    
-                    if (response.data.message === "Tài khoản này chưa đăng ký hệ thống. Vui lòng nhập lại tài khoản email.") {
+                    if (response.data.message) {
                         Swal.fire({
                             title: 'Login failed!',
-                            text: 'This account is not registered in the system. Please re-type your email account.',
-                            icon: 'error',
-                            confirmButtonColor: "#3085d6",
-                        });
-                    } else if (response.data.message === "Tài khoản hoặc mật khẩu không chính xác. Xin vui lòng nhập lại") {
-                        Swal.fire({
-                            title: 'Login failed!',
-                            text: 'Incorrect account or password. Please re-type.',
-                            icon: 'error',
-                            confirmButtonColor: "#3085d6",
-                        });
-                    } else if (response.data.message === "Tài khoản này chưa được xác minh. Xin vui lòng đăng ký lại để xác minh") {
-                        Swal.fire({
-                            title: 'Login failed!',
-                            text: 'This account is not verified. Please register again to verify.',
+                            text: response.data.message,
                             icon: 'error',
                             confirmButtonColor: "#3085d6",
                         });
                     } else {
-                        // Giả sử token và các thông tin khác nằm trong response.data
-                        const { userName, email, img, role, token } = response.data;
-                
-                        localStorage.setItem('userName', userName);
-                        localStorage.setItem('email', email);
-                        localStorage.setItem('img', img);
-                        localStorage.setItem('token', token);
-                        localStorage.setItem('role',role)
-                        console.log(response.data);
-                        // response OK
-                        Swal.fire({
-                            title: "Login into account",
-                            html: "I will close in <b></b> milliseconds.",
-                            timer: 2000,
-                            timerProgressBar: true,
-                            didOpen: () => {
-                                Swal.showLoading();
-                                const timer = Swal.getPopup().querySelector("b");
-                                timerInterval = setInterval(() => {
-                                timer.textContent = `${Swal.getTimerLeft()}`;
-                                }, 100);
-                            },
-                            willClose: () => {
-                                clearInterval(timerInterval);
-                            }
-                        }).then((result) => {
-                            if (result.dismiss === Swal.DismissReason.timer) {
-                                console.log("I was closed by the timer");
-                                if(localStorage.getItem('role') === 'admin'){
-                                    navigate('/admin');
-                                }else {
-                                    navigate('/chat');
-                                }
-                                
-                               
-                            }
-                        }); 
-                    }
-                } 
-                
+                        const { userName, email, img, role, token, isAdmin, status } = response.data;
 
-                  
-                
+                        if (status === "Blocked") {
+                            // Hiển thị thông báo tài khoản bị khóa với kiểu bạn mong muốn
+                            Swal.fire({
+                                title: "Custom width, padding, color, background.",
+                                width: 600,
+                                padding: "3em",
+                                color: "#716add",
+                                background: "#fff url(/images/trees.png)",
+                                backdrop: `
+                                rgba(0,0,123,0.4)
+                                url("/images/nyan-cat.gif")
+                                left top
+                                no-repeat
+                              `
+                            });
+                        } else {
+                            // Lưu thông tin vào localStorage và điều hướng dựa trên isAdmin
+                            localStorage.setItem('userName', userName);
+                            localStorage.setItem('email', email);
+                            localStorage.setItem('img', img);
+                            localStorage.setItem('token', token);
+
+                            Swal.fire({
+                                title: "Login into account",
+                                html: "I will close in <b></b> milliseconds.",
+                                timer: 2000,
+                                timerProgressBar: true,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                    const timer = Swal.getPopup().querySelector("b");
+                                    timerInterval = setInterval(() => {
+                                        timer.textContent = `${Swal.getTimerLeft()}`;
+                                    }, 100);
+                                },
+                                willClose: () => {
+                                    clearInterval(timerInterval);
+                                }
+                            }).then((result) => {
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    if (isAdmin) {
+                                        navigate('/admin');
+                                    } else {
+                                        navigate('/chat');
+                                    }
+                                }
+                            });
+                        }
+                    }
+                } else if (response.status === 400) {
+                    Swal.fire({
+                        title: "Custom width, padding, color, background.",
+                        width: 600,
+                        padding: "3em",
+                        color: "#716add",
+                        background: "#fff url(/images/trees.png)",
+                        backdrop: `
+                        rgba(0,0,123,0.4)
+                        url("/images/nyan-cat.gif")
+                        left top
+                        no-repeat
+                      `
+                    });
+                }
+
+
             } catch (error) {
                 console.error('Login error:', error);
-                // Xử lý lỗi khi đăng nhập
+                Swal.fire({
+                    title: "Your account has been blocked",
+                    width: 600,
+                    padding: "3em",
+                    color: "#716add",
+                    background: "#fff url(https://sweetalert2.github.io/images/trees.png)",
+                    backdrop: `
+                        rgba(0,0,123,0.4)
+                       url("https://sweetalert2.github.io/images/nyan-cat.gif")
+                        left top
+                        no-repeat
+                      `
+                });
             }
         }
-    }
+    };
+
     return (
         <div className="background-image">
             <div className='overlay'>
