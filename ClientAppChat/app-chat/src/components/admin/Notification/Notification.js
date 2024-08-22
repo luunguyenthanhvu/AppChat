@@ -1,22 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import axios from 'axios';
+import React, { useState } from 'react';
+import Swal from 'sweetalert2'; // Import SweetAlert2
 import '../../../css/Notifications.css';
+import useChat from '../../hook/useChat.js';
 
 function Notifications() {
+    const [notificationText, setNotificationText] = useState('');
+    const [sending, setSending] = useState(false); // Flag to handle sending state
+    const [lastMessage, setLastMessage] = useState(''); // State to store the last message
+    const { sendNotification } = useChat();
+
     const handleSend = async () => {
-        const editorData = window.editor.getData();
+        if (sending) return; // Prevent multiple sends
+        setSending(true);
 
         try {
-            const response = await axios.post('http://localhost:5133/api/Notification/send-notification', {
-                message: editorData
-            });
+            // Check if the new message is the same as the last one
+            if (notificationText.trim() === lastMessage) {
+                Swal.fire({
+                    title: 'Info',
+                    text: 'This notification has already been sent.',
+                    icon: 'info',
+                    confirmButtonText: 'OK'
+                });
+                setSending(false);
+                return;
+            }
 
-            alert(response.data.Success ? 'Notification sent successfully!' : 'Failed to send notification.');
+            if (notificationText.trim()) {
+                await sendNotification(notificationText);
+                
+                // Update the last message state
+                setLastMessage(notificationText.trim());
+
+                // Clear the textarea after sending
+                setNotificationText('');
+
+                // Show success message
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Notification sent successfully!',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            }
         } catch (error) {
             console.error('Error sending notification:', error);
-            alert('Error occurred while sending notification.');
+
+            // Show error message
+            Swal.fire({
+                title: 'Error!',
+                text: 'Error occurred while sending notification.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        } finally {
+            setSending(false); // Reset flag
         }
     };
 
@@ -24,42 +62,15 @@ function Notifications() {
         <div className="notifications-container">
             <div className="push-notifications">
                 <div className="form-group">
-                    <CKEditor
-                        editor={ClassicEditor}
-                        config={{
-                            toolbar: [
-                                'heading', '|',
-                                'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', '|',
-                                'fontSize', 'fontColor', 'fontBackgroundColor', '|',
-                                'alignment', 'outdent', 'indent', '|',
-                                'link', 'bulletedList', 'numberedList', 'blockQuote', '|',
-                                'insertTable', 'mediaEmbed', 'imageUpload', '|',
-                                'undo', 'redo', '|',
-                                'removeFormat', 'sourceEditing', '|',
-                                'specialCharacters', 'highlight', 'horizontalLine', 'codeBlock', '|',
-                                'findAndReplace'
-                            ],
-                            fontSize: {
-                                options: [
-                                    9,
-                                    11,
-                                    13,
-                                    'default',
-                                    17,
-                                    19,
-                                    21
-                                ]
-                            },
-                            alignment: {
-                                options: ['left', 'center', 'right', 'justify']
-                            }
-                        }}
-                        onReady={(editor) => {
-                            window.editor = editor;
-                        }}
+                    <textarea
+                        value={notificationText}
+                        onChange={(e) => setNotificationText(e.target.value)}
+                        rows="5"
+                        cols="40"
+                        placeholder="Enter your notification here..."
                     />
                 </div>
-                <button onClick={handleSend} className="send-button">
+                <button onClick={handleSend} className="send-button" disabled={sending}>
                     Send message
                 </button>
             </div>

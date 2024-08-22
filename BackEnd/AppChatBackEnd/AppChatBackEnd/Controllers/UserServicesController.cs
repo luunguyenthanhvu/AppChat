@@ -5,7 +5,7 @@ using AppChat.Models.Entities;
 using AppChatBackEnd.DTO.Request;
 
 using AppChatBackEnd.DTO.Request.ChatRequest;
-
+using AppChatBackEnd.DTO.Response;
 using AppChatBackEnd.Models.Entities;
 using AppChatBackEnd.Services.imp;
 using AppChatBackEnd.Services.template;
@@ -14,6 +14,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace AppChatBackEnd.Controllers
 {
@@ -105,32 +109,45 @@ namespace AppChatBackEnd.Controllers
             {
                 return Ok(new MessageResponseDTO("Tài khoản này chưa đăng ký hệ thống. Vui lòng nhập lại tài khoản email."));
             }
-            else
+
+            // Kiểm tra trạng thái của tài khoản trong UserDetails
+            if (user.UserDetail.Status == "Blocked")
             {
-                var resultEqualEncodePass = MyUtil._passwordHasher.VerifyHashedPassword(user, user.Password, loginRequestDTO.Password);
-                if (resultEqualEncodePass == PasswordVerificationResult.Success)
+                return BadRequest();
+            }
+
+            var resultEqualEncodePass = MyUtil._passwordHasher.VerifyHashedPassword(user, user.Password, loginRequestDTO.Password);
+            if (resultEqualEncodePass == PasswordVerificationResult.Success)
+            {
+                if (user.UserDetail.Verified == 1)
                 {
-                    if (user.UserDetail.Verified == 1)
+                    var result = await sendDataLogin.sendDataLogin(user);
+
+                    // Kiểm tra quyền Admin và trả về thông tin tương ứng
+                    var isAdmin = user.Role.RoleName.ToLower() == "admin";
+
+                    var loginResponse = new
                     {
-                        var result = await sendDataLogin.sendDataLogin(user);
-                        return Ok(result);
+                        result.Email,
+                        result.UserName,
+                        result.Img,
+                        result.Role,
+                        result.Token,
+                        IsAdmin = isAdmin,
+                        Status = user.UserDetail.Status // Trả về trạng thái của tài khoản
+                    };
 
-
-
-                   }
-                    else
-                    {
-                        return Ok(new MessageResponseDTO("Tài khoản này chưa được xác minh. Xin vui lòng đăng ký lại để xác minh"));
-                    }
-                } else
+                    return Ok(loginResponse);
+                }
+                else
                 {
-                    return Ok(new MessageResponseDTO("Tài khoản hoặc mật khẩu không chính xác. Xin vui lòng nhập lại"));
+                    return Ok(new MessageResponseDTO("Tài khoản này chưa được xác minh. Xin vui lòng đăng ký lại để xác minh"));
                 }
             }
-            
-                
-            
-
+            else
+            {
+                return Ok(new MessageResponseDTO("Tài khoản hoặc mật khẩu không chính xác. Xin vui lòng nhập lại"));
+            }
         }
 
         [HttpPost("verifyAccount")]

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AppChatBackEnd.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240813122025_CapNhapThemThuocTinhUserDetails")]
-    partial class CapNhapThemThuocTinhUserDetails
+    [Migration("20240822082338_ud1")]
+    partial class ud1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -72,6 +72,9 @@ namespace AppChatBackEnd.Migrations
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<bool>("isImage")
+                        .HasColumnType("tinyint(1)");
+
                     b.HasKey("MessageId");
 
                     b.HasIndex("ReceiverId");
@@ -115,6 +118,48 @@ namespace AppChatBackEnd.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 11,
+                            Email = "0982407940ab@gmail.com",
+                            Img = "http://res.cloudinary.com/dter3mlpl/image/upload/v1724040235/nnb6lhbvdiiucwdskh5u.jpg",
+                            Password = "AQAAAAIAAYagAAAAEDPIb9P1Y0EhmG7ziXHFN0XG+K2Xyiuk6zIVFlGiAKa4XHhpuiqY9H1qnPhtyt6lvQ==",
+                            RoleId = 1,
+                            UserName = "Yukihira"
+                        });
+                });
+
+            modelBuilder.Entity("AppChatBackEnd.Models.Entities.Reports", b =>
+                {
+                    b.Property<int>("ReportId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ReportId"));
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
+
+                    b.Property<int>("ReportedUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReportingUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("ReportId");
+
+                    b.HasIndex("ReportedUserId");
+
+                    b.HasIndex("ReportingUserId");
+
+                    b.ToTable("Reports");
                 });
 
             modelBuilder.Entity("AppChatBackEnd.Models.Entities.Role", b =>
@@ -163,9 +208,6 @@ namespace AppChatBackEnd.Migrations
                     b.Property<string>("Gender")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Img")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("LastName")
                         .HasColumnType("longtext");
 
@@ -178,16 +220,17 @@ namespace AppChatBackEnd.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("longtext");
+
                     b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<int?>("Verified")
                         .HasColumnType("int");
 
-                    b.Property<int?>("reportAmount")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("status")
+                    b.Property<int>("reportAmount")
                         .HasColumnType("int");
 
                     b.HasKey("UserDetailId");
@@ -196,6 +239,19 @@ namespace AppChatBackEnd.Migrations
                         .IsUnique();
 
                     b.ToTable("UserDetails");
+
+                    b.HasData(
+                        new
+                        {
+                            UserDetailId = 11,
+                            Dob = new DateTime(2003, 8, 29, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FirstName = "Yukihira",
+                            LastName = "Yato",
+                            Status = "Active",
+                            UserId = 11,
+                            Verified = 1,
+                            reportAmount = 0
+                        });
                 });
 
             modelBuilder.Entity("AppChat.Models.Entities.Friend", b =>
@@ -247,6 +303,25 @@ namespace AppChatBackEnd.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("AppChatBackEnd.Models.Entities.Reports", b =>
+                {
+                    b.HasOne("AppChat.Models.Entities.Users", "ReportedUser")
+                        .WithMany("ReportsAsReported")
+                        .HasForeignKey("ReportedUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("AppChat.Models.Entities.Users", "ReportingUser")
+                        .WithMany("ReportsAsReporter")
+                        .HasForeignKey("ReportingUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("ReportedUser");
+
+                    b.Navigation("ReportingUser");
+                });
+
             modelBuilder.Entity("AppChatBackEnd.Models.Entities.UserDetails", b =>
                 {
                     b.HasOne("AppChat.Models.Entities.Users", "User")
@@ -265,6 +340,10 @@ namespace AppChatBackEnd.Migrations
                     b.Navigation("MessagesReceived");
 
                     b.Navigation("MessagesSent");
+
+                    b.Navigation("ReportsAsReported");
+
+                    b.Navigation("ReportsAsReporter");
 
                     b.Navigation("UserDetail")
                         .IsRequired();

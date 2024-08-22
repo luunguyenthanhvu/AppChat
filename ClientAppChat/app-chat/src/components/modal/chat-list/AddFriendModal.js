@@ -30,7 +30,7 @@ const AddFriendModal = ({
                 recipientEmail: email
             });
             console.log(response.data);
-            
+            updateChatList(email, friendEmail)
             // Hiển thị thông báo thành công ở góc phải màn hình
             Swal.fire({
                 title: 'Success!',
@@ -46,7 +46,6 @@ const AddFriendModal = ({
                     toast.addEventListener('mouseleave', Swal.resumeTimer)
                 }
             });
-            updateChatList(email, friendEmail)
             // Optionally, trigger a re-fetch of your friend list here
         } catch (error) {
             console.error('Error sending friend request:', error);

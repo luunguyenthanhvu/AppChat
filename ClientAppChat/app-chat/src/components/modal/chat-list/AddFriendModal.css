@@ -297,5 +297,5 @@
     justify-content: center;
     align-items: center;
     height: 100%; /* Ensures the loader container takes up available height */
+    width: 500px;
 }
-

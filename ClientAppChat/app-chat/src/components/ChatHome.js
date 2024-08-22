@@ -15,7 +15,7 @@ function Home() {
     const [loading, setLoading] = useState(true);
     const token =  localStorage.getItem('token');
     const email = localStorage.getItem('email');
-    
+    console.log("sau khi login " + token + email)
     // for user search for them friend
     const [searchFriend, setSearchFriend] = useState('');
 
@@ -29,7 +29,7 @@ function Home() {
     const [chattingContent, setChattingContent] = useState('');
 
     // chatting 
-    const { newListChat ,messages, serverMessage, userInfo,sendMessage, updateProfile,updatePass, updateChatList } = useChat(); 
+    const { newListChat ,messages, serverMessage, userInfo,sendMessage, updateProfile,updatePass, updateChatList ,updateChatListWithId} = useChat(); 
 
     const [user, setUser] = useState({
         userName: localStorage.getItem('userName'),
@@ -226,6 +226,7 @@ function Home() {
                     <Details
                         chattingWith={chattingWith}
                         loadingUser={chattingWithLoading}
+                        updateChatListWithId={updateChatListWithId}
                     >
 
                     </Details>

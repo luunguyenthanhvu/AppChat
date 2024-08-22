@@ -116,17 +116,25 @@ namespace AppChatBackEnd.Controllers
         }
 
         [HttpDelete("delete-friend")]
-        public async Task<IActionResult> DeleteFriend([FromBody] FriendRequestDTO requestDto)
+        public async Task<IActionResult> DeleteFriend([FromQuery] string userEmail, [FromQuery] int friendId)
         {
-            if (requestDto == null)
+            if (string.IsNullOrEmpty(userEmail) || friendId <= 0)
             {
                 return BadRequest("Invalid request data.");
             }
 
-            // Find both friendship records
+            // Lấy người dùng hiện tại
+            var currentUser = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == userEmail);
+
+            if (currentUser == null)
+            {
+                return NotFound("Current user not found.");
+            }
+
             var friendships = await _context.Friends
-                .Where(f => (f.UserId == requestDto.UserId && f.FriendUserId == requestDto.FriendUserId) ||
-                            (f.UserId == requestDto.FriendUserId && f.FriendUserId == requestDto.UserId))
+                .Where(f => (f.UserId == currentUser.UserId && f.FriendUserId == friendId) ||
+                            (f.UserId == friendId && f.FriendUserId == currentUser.UserId))
                 .ToListAsync();
 
             if (!friendships.Any())
@@ -134,12 +142,13 @@ namespace AppChatBackEnd.Controllers
                 return NotFound("Friendship not found.");
             }
 
-            // Remove both entries
+
             _context.Friends.RemoveRange(friendships);
             await _context.SaveChangesAsync();
 
-            return Ok("Friendship deleted successfully.");
+            return NoContent(); 
         }
+
         [HttpGet("pending-friend-requests")]
         public async Task<IActionResult> GetPendingFriendRequests([FromQuery] string email)
         {
@@ -173,74 +182,74 @@ namespace AppChatBackEnd.Controllers
             return Ok(pendingRequests);
         }
 
-   [HttpPost("send-friend-request")]
-public async Task<IActionResult> SendFriendRequest([FromBody] FriendRequestDTOVuLuu request)
-{
-    var sender = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.SenderEmail);
-    var recipient = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.RecipientEmail);
-
-    if (sender == null || recipient == null)
-    {
-        return NotFound("Sender or recipient not found");
-    }
-
-    // Check for existing request from recipient to sender
-    var existingRequest = await _context.Friends
-        .FirstOrDefaultAsync(f => f.UserId == recipient.UserId && f.FriendUserId == sender.UserId);
-
-    if (existingRequest != null)
-    {
-        if (existingRequest.Status == FriendStatus.Pending)
+        [HttpPost("send-friend-request")]
+        public async Task<IActionResult> SendFriendRequest([FromBody] FriendRequestDTOVuLuu request)
         {
-            // Update existing request from recipient to sender to Accepted
-            existingRequest.Status = FriendStatus.Accepted;
-            _context.Friends.Update(existingRequest);
+            var sender = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.SenderEmail);
+            var recipient = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.RecipientEmail);
 
-            // Create reciprocal relationship
-            var reciprocalFriend = new Friend
+            if (sender == null || recipient == null)
+            {
+                return NotFound("Sender or recipient not found");
+            }
+
+            // Check for existing request from recipient to sender
+            var existingRequest = await _context.Friends
+                .FirstOrDefaultAsync(f => f.UserId == recipient.UserId && f.FriendUserId == sender.UserId);
+
+            if (existingRequest != null)
+            {
+                if (existingRequest.Status == FriendStatus.Pending)
+                {
+                    // Update existing request from recipient to sender to Accepted
+                    existingRequest.Status = FriendStatus.Accepted;
+                    _context.Friends.Update(existingRequest);
+
+                    // Create reciprocal relationship
+                    var reciprocalFriend = new Friend
+                    {
+                        UserId = sender.UserId,
+                        FriendUserId = recipient.UserId,
+                        Status = FriendStatus.Accepted
+                    };
+
+                    // Create a message to notify the sender
+                    var message = new Message
+                    {
+                        SenderId = recipient.UserId,
+                        ReceiverId = sender.UserId,
+                        Content = $"Hello {sender.UserName}, I have accepted your friend request <3.",
+                        Timestamp = DateTime.Now,
+                        isImage = false
+                    };
+
+                    // Add to the context
+                    _context.Friends.Add(reciprocalFriend);
+                    _context.Messages.Add(message);
+
+                    await _context.SaveChangesAsync();
+
+                    return Ok("Friend request accepted and notification sent");
+                }
+                else if (existingRequest.Status == FriendStatus.Accepted)
+                {
+                    return BadRequest("You are already friends");
+                }
+            }
+
+            // Create a new friend request if none exist
+            var newRequest = new Friend
             {
                 UserId = sender.UserId,
                 FriendUserId = recipient.UserId,
-                Status = FriendStatus.Accepted
+                Status = FriendStatus.Pending
             };
 
-            // Create a message to notify the sender
-            var message = new Message
-            {
-                SenderId = recipient.UserId,
-                ReceiverId = sender.UserId,
-                Content = $"Hello {sender.UserName}, I have accepted your friend request <3.",
-                Timestamp = DateTime.Now,
-                isImage = false
-            };
-
-            // Add to the context
-            _context.Friends.Add(reciprocalFriend);
-            _context.Messages.Add(message);
-
+            _context.Friends.Add(newRequest);
             await _context.SaveChangesAsync();
 
-            return Ok("Friend request accepted and notification sent");
+            return Ok("Friend request sent");
         }
-        else if (existingRequest.Status == FriendStatus.Accepted)
-        {
-            return BadRequest("You are already friends");
-        }
-    }
-
-    // Create a new friend request if none exist
-    var newRequest = new Friend
-    {
-        UserId = sender.UserId,
-        FriendUserId = recipient.UserId,
-        Status = FriendStatus.Pending
-    };
-
-    _context.Friends.Add(newRequest);
-    await _context.SaveChangesAsync();
-
-    return Ok("Friend request sent");
-}
 
 
         [HttpPost("accept-friend-request")]

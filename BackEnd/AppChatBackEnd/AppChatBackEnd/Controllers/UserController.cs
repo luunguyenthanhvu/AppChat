@@ -30,7 +30,7 @@ namespace AppChatBackEnd.Controllers
 
         [HttpPost("add-user")]
         [Authorize(Policy = "RoleBasedPolicy")]
-         public async Task<IActionResult> AddUser([FromBody] CreateUserRequestDTO request)
+        public async Task<IActionResult> AddUser([FromBody] CreateUserRequestDTO request)
         {
             if (request == null)
             {
@@ -57,6 +57,10 @@ namespace AppChatBackEnd.Controllers
                 {
                     // Map CreateUserRequestDTO to Users entity
                     var newUser = _mapper.Map<Users>(request);
+
+                    // Gán ảnh đại diện mặc định nếu không có Img được cung cấp
+                    newUser.Img = "https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg";
+
                     newUser.Password = HashPassword(request.Password); // Hash the password before saving
 
                     // Create UserDetails with default information and status
@@ -84,16 +88,18 @@ namespace AppChatBackEnd.Controllers
                 {
                     // Rollback transaction if something goes wrong
                     await transaction.RollbackAsync();
-                    return StatusCode(500, "Database error occurred while adding        `the user: " + (ex.InnerException?.Message ?? ex.Message));
+                    return StatusCode(500, "Database error occurred while adding the user: " + (ex.InnerException?.Message ?? ex.Message));
                 }
                 catch (Exception ex)
                 {
                     // Rollback transaction if something goes wrong
                     await transaction.RollbackAsync();
                     return StatusCode(500, "An unexpected error occurred while adding the user: " + ex.Message);
-}
+                }
             }
         }
+
+
 
 
         [HttpDelete("remove-user/{id}")]
