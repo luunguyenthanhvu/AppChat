@@ -33,44 +33,6 @@ namespace AppChatBackEnd.Controllers
             this.sendDataLogin = sendDataLogin;
         }
 
-        [HttpPost("decode-token-google")]
-        public async Task<IActionResult> DecodeTokenGoogle([FromBody] string token)
-        {
-            if (string.IsNullOrEmpty(token))
-            {
-                return BadRequest("Token is required");
-            }
-
-            try
-            {
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadJwtToken(token);
-
-                // Trích xuất email và username từ claims
-                var emailClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "email");
-                var usernameClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == "name");
-
-                if (emailClaim != null && usernameClaim != null)
-                {
-                    return Ok(new { email = emailClaim.Value, username = usernameClaim.Value });
-                }
-                else if (emailClaim != null)
-                {
-                    return Ok(new { email = emailClaim.Value, username = "Username not found" });
-                }
-                else
-                {
-                    return BadRequest("Email not found in token");
-                }
-
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Failed to decode JWT: {ex.Message}");
-            }
-        }
-
-
         [HttpPost("google-login-response-dto")]
         public async Task<LoginResponseDTO> GetLoginResponseDTOByEmailAndUserName([FromBody] EmailAndUsernameFromGoogleRequestDTO request)
         {
