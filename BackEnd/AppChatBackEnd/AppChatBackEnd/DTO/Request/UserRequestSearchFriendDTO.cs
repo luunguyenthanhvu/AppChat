@@ -1,8 +1,8 @@
 ﻿using AppChat.Models.Enums;
 
-namespace AppChatBackEnd.DTO.Response
+namespace AppChatBackEnd.DTO.Request
 {
-    public class UserDTO
+    public class UserRequestSearchFriendDTO
     {
         public int UserId { get; set; }
         public string Username { get; set; }
@@ -15,5 +15,6 @@ namespace AppChatBackEnd.DTO.Response
         public string PhoneNumber { get; set; }
         public string RoleName { get; set; } // Assuming you want to display the role name
         public FriendStatus? FriendStatus { get; set; }
+        public string RequestSender { get; set; }
     }
 }

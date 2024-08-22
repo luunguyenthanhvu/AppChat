@@ -172,7 +172,6 @@ namespace AppChatBackEnd.Controllers
 
                 user.UserName = userDTO.UserName;
                 user.Email = user.Email;
-                user.Img = userDTO.Img;
                 user.RoleId = userDTO.RoleId; // Update RoleId
 
                 _context.Users.Update(user);
