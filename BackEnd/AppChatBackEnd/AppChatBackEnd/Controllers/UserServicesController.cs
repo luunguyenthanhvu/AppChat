@@ -5,7 +5,7 @@ using AppChat.Models.Entities;
 using AppChatBackEnd.DTO.Request;
 
 using AppChatBackEnd.DTO.Request.ChatRequest;
-
+using AppChatBackEnd.DTO.Response;
 using AppChatBackEnd.Models.Entities;
 using AppChatBackEnd.Services.imp;
 using AppChatBackEnd.Services.template;
@@ -14,6 +14,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace AppChatBackEnd.Controllers
 {
@@ -97,9 +101,9 @@ namespace AppChatBackEnd.Controllers
         public async Task<IActionResult> Login(LoginRequestDTO loginRequestDTO)
         {
             var user = _dataContext.Users
-                .Include(u => u.UserDetail)
-                .Include(u => u.Role)
-                .SingleOrDefault(u => u.Email.Equals(loginRequestDTO.Email));
+            .Include(u => u.UserDetail)
+            .Include(u => u.Role)
+            .SingleOrDefault(u => u.Email.Equals(loginRequestDTO.Email));
 
             if (user == null)
             {
