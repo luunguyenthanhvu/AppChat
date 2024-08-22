@@ -122,7 +122,7 @@ namespace AppChatBackEnd.Migrations
                             UserId = 11,
                             Email = "0982407940ab@gmail.com",
                             Img = "http://res.cloudinary.com/dter3mlpl/image/upload/v1724040235/nnb6lhbvdiiucwdskh5u.jpg",
-                            Password = "AQAAAAIAAYagAAAAEP4CdBMBkOacCREeKIcu2BaiFsmD1JMXjlnqWRqbfr8v5nU+mAeasQat6cKUSqUNEQ==",
+                            Password = "AQAAAAIAAYagAAAAEP9kGzmUsd00Gxpa4ENTGD1cmaCwpi9s7TmqSXBBSzfpwnQIqsDLovnWpLDFspYO/Q==",
                             RoleId = 1,
                             UserName = "Yukihira"
                         });
