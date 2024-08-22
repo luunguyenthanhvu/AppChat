@@ -409,7 +409,6 @@ function UserInfo({ userInfo, updateProfile,updatePassServer }) {
                 <AddFriendModal
                     addFriendModal={addFriendModal}
                     handleCloseAddFriendModal={handleCloseAddFriendModal}
-                    friendList={mockFriendList}
                 />
             )}
         </div>

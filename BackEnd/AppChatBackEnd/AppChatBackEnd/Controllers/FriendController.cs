@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AppChatBackEnd.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/friend-controller")]
     [ApiController]
     public class FriendController : ControllerBase
     {
@@ -26,16 +26,45 @@ namespace AppChatBackEnd.Controllers
             _logger = logger;
         }
 
-        [HttpGet("find-friend/{username}")]
-        public async Task<IActionResult> FindFriend(string username)
+        [HttpGet("find-potential-friends")]
+        public async Task<IActionResult> FindPotentialFriends([FromQuery] string email, [FromQuery] string? username)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
-            if (user == null)
-                return NotFound("User not found.");
+            // Find the current user by their email
+            var currentUser = await _context.Users
+                .Include(u => u.Friends) // Include the Friends relationship
+                .FirstOrDefaultAsync(u => u.Email == email);
 
-            var userDTO = _mapper.Map<UserDTO>(user);
-            return Ok(userDTO);
+            // Get the list of IDs of the current user's friends
+            var friendUserIds = currentUser.Friends.Select(f => f.FriendUserId).ToList();
+
+            // Search for potential friends based on username and not being in the current user's friend list
+            var potentialFriendsQuery = _context.Users
+                .Where(u =>
+                    u.UserId != currentUser.UserId && // Exclude the current user
+                    !friendUserIds.Contains(u.UserId) && // Exclude already friends
+                    (username == null || u.UserName.Contains(username)) // Optional username search
+                );
+
+            // Project the result to a UserDTO or similar structure
+            var potentialFriends = await potentialFriendsQuery
+                .Select(u => new UserDTO
+                {
+                    UserId = u.UserId,
+                    Username = u.UserName,
+                    Img = u.Img,
+                    Email = u.Email
+                })
+                .ToListAsync();
+
+            // Return the appropriate response based on the results
+            if (!potentialFriends.Any())
+            {
+                return Ok(new List<UserDTO>()); 
+            }
+
+            return Ok(potentialFriends); // Return the list of potential friends
         }
+
 
         [HttpPost("add-friend")]
         public async Task<IActionResult> AddFriend([FromBody] FriendRequestDTO requestDto)

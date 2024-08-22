@@ -2,9 +2,60 @@ import React, { useState } from 'react';
 import './details.css';
 import { FaExclamationTriangle, FaUserMinus } from 'react-icons/fa';
 import Loader from "react-spinners/SyncLoader";
-function Details({loadingUser, chattingWith}) {
+import { BACKEND_URL_HTTP } from '../../config.js';
+import axios from 'axios';
+import Modal from '../modal/Modal.js';
+import ModalHeader from '../modal/ModalHeader.js'
+import ModalFooter from '../modal/ModalFooter.js'
+import UpdateImage from '../modal/chat-list/UpdateImage.js'
+import UserBasicInfo from '../modal/chat-list/UserBasicInfo.js';
+import Swal from 'sweetalert2';
 
-    console.log("chatting with ne" + JSON.stringify(chattingWith))
+function Details({ loadingUser, chattingWith }) {
+    const [userModal, setUserModal] = useState(false);
+    const [currentUserInfo, setCurrentUserInfo] = useState('');
+    const token = localStorage.getItem('token');
+    const email = localStorage.getItem('email');
+    const handcloseUserModal = () => {
+        setUserModal(false);
+    }
+
+    const handleOpenUserModal = () => {
+        setUserModal(true);
+        handleGetUserInfo();
+    }
+
+    const handleGetUserInfo = async () => {
+        try {
+            const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/mark-up/user-info/details-id`, {
+                params: {
+                    id: chattingWith.userId
+                }
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            setCurrentUserInfo({
+                userName: response.data.userName,
+                img: response.data.img,
+                firstName: response.data.firstName,
+                lastName: response.data.lastName,
+                gender: response.data.gender,
+                dob: response.data.dob
+            })
+
+        } catch (error) {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Having error when call api',
+                icon: 'error',
+                confirmButtonText: 'OK'
+            });
+        }
+    }
+
 
     if (loadingUser) {
         return (
@@ -27,7 +78,12 @@ function Details({loadingUser, chattingWith}) {
 
             <div className='user-chatting-details'>
                 <div className='icons'>
-                    <img className='add-group user' src='./profile-user.png' alt='User Info' />
+                    <img
+                        className='add-group user'
+                        src='./profile-user.png'
+                        alt='User Info'
+                        onClick={handleOpenUserModal}
+                    />
                     <img className='add-group' src='./add-group.png' alt='Add Group' />
                     <FaUserMinus className='delete-friend'></FaUserMinus>
                 </div>
@@ -39,6 +95,21 @@ function Details({loadingUser, chattingWith}) {
                     <FaExclamationTriangle/> Report This User
                 </div>
             </div>
+            {userModal && (
+                <Modal
+                    show={userModal}
+                    header={<ModalHeader
+                        title='User Info'
+                        onClose={handcloseUserModal} />}
+                >
+                        <div className={`modal-content update}`}>
+                        <UserBasicInfo
+                                    userInfo={currentUserInfo}
+                                    setUserInfo={setCurrentUserInfo}
+                                />
+                        </div>
+                </Modal>
+            )}
         </div>
     );
 }
