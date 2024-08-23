@@ -54,23 +54,19 @@ namespace AppChatBackEnd.utils
 
             // Create messages between the main user and friends
             var messages = new List<Message>();
+
             foreach (var friendUser in friendUsers)
             {
                 messages.Add(new Message
                 {
-                    SenderId = mainUser.UserId,
-                    ReceiverId = friendUser.UserId,
-                    Content = $"Hello {friendUser.UserName}, this is a message from {mainUser.UserName}.",
-                    Timestamp = DateTime.UtcNow,
-                    isImage = false
-                });
-
-                messages.Add(new Message
-                {
                     SenderId = friendUser.UserId,
                     ReceiverId = mainUser.UserId,
-                    Content = $"Hi {mainUser.UserName}, this is a reply from {friendUser.UserName}.",
-                    Timestamp = DateTime.UtcNow.AddMinutes(5),
+                    Content = $"Hello {mainUser.UserName},\n\n" +
+            "Welcome to our chat application! We are thrilled to have you here.\n\n" +
+            "If you have any questions or need assistance with anything, please do not hesitate to reach out to us. We are here to help and ensure you have the best experience possible.\n\n" +
+            "Best regards,🐧🐧🐧\n" +
+            $"{friendUser.UserName} .",
+                    Timestamp = DateTime.Now,
                     isImage = false
                 });
             }

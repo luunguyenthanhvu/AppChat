@@ -97,8 +97,37 @@ const useChat = () => {
             }
         }
     }
+    const updateChatList = async (email1, email2) => {
+        if (connection) {
+            try {
+                await connection.invoke("UpdateChat", email1,email2);
+            } catch (err) {
+                console.log("send fail: " + err);
+            }
+        }
+    }
 
-    return { newListChat,connection,serverMessage, messages, userInfo,sendMessage, updateProfile ,updatePass};
+    const updateChatListWithId = async (email1, id) => {
+        if (connection) {
+            try {
+                await connection.invoke("UpdateChatWithId", email1, id);
+            } catch (err) {
+                console.log("send fail: " + err);
+            }
+        }
+    }
+
+    const sendNotification = async (messages) => {
+        if (connection) {
+            try {
+                await connection.invoke("SendNotification", messages);
+            } catch (err) {
+                console.log("send fail: " + err);
+            }
+        }
+    }
+
+    return { newListChat,connection,serverMessage, messages, userInfo,sendMessage, updateProfile ,updatePass,updateChatList,updateChatListWithId,sendNotification};
 }
 
 export default useChat;

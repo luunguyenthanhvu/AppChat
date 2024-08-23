@@ -86,7 +86,6 @@
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 8px;
-    max-width: 500px;
     margin: 0 auto;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -138,4 +137,28 @@
 .submit-reason-button:hover,
 .cancel-reason-button:hover {
     opacity: 0.9;
+}
+.admin-text {
+    background-color: #989898; /* Light gray background */
+    border-radius: 8px;       /* Rounded corners */
+    padding: 20px;            /* Spacing inside the box */
+    margin: 10px 10px;           /* Space around the box */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    text-align: center;       /* Center align text */
+}
+
+.admin-text p {
+    margin: 10px 0;           /* Space between paragraphs */
+    font-size: 16px;          /* Font size */
+    color: #333;              /* Dark gray text color */
+}
+
+.admin-text p:first-of-type {
+    font-weight: bold;        /* Bold font for the first paragraph */
+    font-size: 18px;          /* Slightly larger font size */
+}
+
+.admin-text p:last-of-type {
+    font-size: 14px;          /* Slightly smaller font size */
+    color: #555;              /* Lighter gray text color */
 }

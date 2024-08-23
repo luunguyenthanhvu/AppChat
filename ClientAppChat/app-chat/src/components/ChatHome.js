@@ -29,7 +29,7 @@ function Home() {
     const [chattingContent, setChattingContent] = useState('');
 
     // chatting 
-    const { newListChat ,messages, serverMessage, userInfo,sendMessage, updateProfile,updatePass } = useChat(); 
+    const { newListChat ,messages, serverMessage, userInfo,sendMessage, updateProfile,updatePass, updateChatList ,updateChatListWithId} = useChat(); 
 
     const [user, setUser] = useState({
         userName: localStorage.getItem('userName'),
@@ -211,6 +211,7 @@ function Home() {
                         updatePassServer={updatePass}
                         setSearchFriend={setSearchFriend}
                         searchFriend={searchFriend}
+                        updateChatList={updateChatList}
                     >
                     </List>
                     
@@ -225,6 +226,7 @@ function Home() {
                     <Details
                         chattingWith={chattingWith}
                         loadingUser={chattingWithLoading}
+                        updateChatListWithId={updateChatListWithId}
                     >
 
                     </Details>

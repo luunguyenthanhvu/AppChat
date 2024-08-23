@@ -7,14 +7,15 @@ import axios from 'axios';
 import Modal from '../modal/Modal.js';
 import ModalHeader from '../modal/ModalHeader.js';
 import Swal from 'sweetalert2';
+import UserBasicInfo from '../modal/chat-list/UserBasicInfo.js';
 
-function Details({ loadingUser, chattingWith }) {
+function Details({ loadingUser, chattingWith, updateChatListWithId }) {
     const [userModal, setUserModal] = useState(false);
     const [currentUserInfo, setCurrentUserInfo] = useState('');
     const [reportModal, setReportModal] = useState(false); // State to manage report modal
     const [reportReason, setReportReason] = useState(''); // State to manage the report reason
     const token = localStorage.getItem('token');
-
+    const email = localStorage.getItem('email');
     const handcloseUserModal = () => {
         setUserModal(false);
     }
@@ -23,6 +24,47 @@ function Details({ loadingUser, chattingWith }) {
         setUserModal(true);
         handleGetUserInfo();
     }
+    console.log('usser u chat with')
+    console.log(JSON.stringify(chattingWith))
+    const deleteFriend = async () => {
+        try {
+          // Hiển thị cảnh báo xác nhận
+          const result = await Swal.fire({
+            title: 'Are you sure you want to delete this friend??',
+            text: "This action cannot be undone.!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete!',
+            cancelButtonText: 'Cancel'
+          });
+    
+          if (result.isConfirmed) {
+            // Gửi yêu cầu xóa đến API
+            await axios.delete(`http://${BACKEND_URL_HTTP}/api/friend-controller/delete-friend`, {
+                params: {
+                    userEmail: email,
+                    friendId: chattingWith.userId
+                }
+            });
+            
+            Swal.fire(
+              'Deleted!',
+              'You have successfully deleted this friend..',
+              'success'
+            );
+    
+            updateChatListWithId(email, chattingWith.userId)
+          }
+        } catch (error) {
+            console.log(error)
+          Swal.fire(
+            'Error!',
+            'error'
+          );
+        }
+      };
 
     const handleGetUserInfo = async () => {
         try {
@@ -116,47 +158,62 @@ function Details({ loadingUser, chattingWith }) {
             </div>
         );
     }
-
     return (
         <div className='details'>
             <div className='user-chatting-details'>
                 <img src={chattingWith.img} alt='User' />
             </div>
-
+    
             <div className='user-chatting-details'>
                 <h2>{chattingWith.userName}</h2>
             </div>
-
-            <div className='user-chatting-details'>
-                <div className='icons'>
-                    <img
-                        className='add-group user'
-                        src='./profile-user.png'
-                        alt='User Info'
-                        onClick={handleOpenUserModal}
-                    />
-                    <img className='add-group' src='./add-group.png' alt='Add Group' />
-                    <FaUserMinus className='delete-friend'></FaUserMinus>
+    
+            {chattingWith.userName === 'Yukihira' ? (
+                <div className='admin-text'>
+                    <p>This is an admin</p>
+                    <p>If you have any questions about our application, you can message the admin.</p>
                 </div>
-            </div>
-
-            <div className='user-chatting-details'>
-                <div className='report-content' onClick={handleOpenReportModal}>
-                    <FaExclamationTriangle /> Report This User
-                </div>
-            </div>
-
+            ) : (
+                <>
+                    <div className='user-chatting-details'>
+                        <div className='icons'>
+                            <img
+                                className='add-group user'
+                                src='./profile-user.png'
+                                alt='User Info'
+                                onClick={handleOpenUserModal}
+                            />
+                            <img className='add-group' src='./add-group.png' alt='Add Group' />
+                            <FaUserMinus
+                                className='delete-friend'
+                                onClick={deleteFriend}
+                            />
+                        </div>
+                    </div>
+    
+                    <div className='user-chatting-details'>
+                        <div className='report-content' onClick={handleOpenReportModal}>
+                            <FaExclamationTriangle /> Report This User
+                        </div>
+                    </div>
+                </>
+            )}
+    
             {userModal && (
                 <Modal
                     show={userModal}
-                    header={<ModalHeader title='User Info' onClose={handcloseUserModal} />}
+                    header={<ModalHeader
+                        title='User Info'
+                        onClose={handcloseUserModal} />}
                 >
-                    <div className="modal-content">
-                        {/* Your User Info content */}
+                    <div className={`modal-content update`}>
+                        <UserBasicInfo
+                            userInfo={currentUserInfo}
+                            setUserInfo={setCurrentUserInfo}
+                        />
                     </div>
                 </Modal>
             )}
-
             {/* Report Modal */}
             {reportModal && (
                 <Modal
@@ -186,6 +243,8 @@ function Details({ loadingUser, chattingWith }) {
             )}
         </div>
     );
+    
+    
 }
 
 export default Details;

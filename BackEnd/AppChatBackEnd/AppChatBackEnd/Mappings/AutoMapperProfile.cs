@@ -13,7 +13,6 @@ namespace AppChat.Mapping
         {
             // Mapping from CreateUserRequestDTO to Users entity
             CreateMap<CreateUserRequestDTO, Users>()
-     .ForMember(dest => dest.Img, opt => opt.MapFrom(src => src.Img))
      .ForMember(dest => dest.RoleId, opt => opt.MapFrom(src => src.RoleId))
      .ForMember(dest => dest.UserDetail, opt => opt.Ignore()) // Nếu bạn không cần ánh xạ UserDetail
      .ForMember(dest => dest.UserId, opt => opt.Ignore()); // Bỏ qua UserId vì nó được tự động sinh

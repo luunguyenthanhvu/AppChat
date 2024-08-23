@@ -49,3 +49,8 @@
     background-color: #0056b3;
     transform: scale(1.1);
 }
+
+textarea {
+    width: 500px;
+    height: 300px;
+}

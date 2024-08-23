@@ -191,6 +191,7 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
             }
 
             var userFriends = user.Friends
+                .Where(f => f.Status == FriendStatus.Accepted)
                 .Select(f => f.FriendUser)
                 .Where(f => f != null) // Loại bỏ các bạn bè null
                 .ToList();
@@ -268,6 +269,7 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
             }
 
             var userFriends = user.Friends
+                        .Where(f => f.Status == FriendStatus.Accepted)
                 .Select(f => f.FriendUser)
                  .Where(f =>
                     f.UserName != null &&
@@ -306,7 +308,11 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
                                           .FirstOrDefault();
 
                 var isMine = lastMessage?.SenderId == currentUserId;
-                var isImg = lastMessage.isImage;
+                var isImg = false;
+                if(lastMessage.isImage != null)
+                {
+                    isImg = lastMessage.isImage;
+                }
                 var messageContent = "";
                 if (isImg)
                 {
@@ -347,6 +353,7 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
             }
 
             var userFriends = user.Friends
+                        .Where(f => f.Status == FriendStatus.Accepted)
                 .Select(f => f.FriendUser)
                 .Where(f => f != null) // Loại bỏ các bạn bè null
                 .ToList();
@@ -437,6 +444,20 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
             }).ToList();
 
             return messageDtos;
+        }
+        public async Task<Users> GetUserById(int userId)
+        {
+            // Sử dụng Entity Framework Core để lấy người dùng theo ID
+            return await dbContext.Users
+                .Where(u => u.UserId == userId)
+                .FirstOrDefaultAsync();
+        }
+        public async Task<IEnumerable<Users>> GetFriendsByUserId(int userId)
+        {
+            return await dbContext.Friends
+                .Where(f => f.UserId == userId || f.FriendUserId == userId)
+                .Select(f => f.UserId == userId ? f.FriendUser : f.User)
+                .ToListAsync();
         }
     }
 }
