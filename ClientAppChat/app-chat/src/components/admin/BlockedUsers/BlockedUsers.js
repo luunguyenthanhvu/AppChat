@@ -161,7 +161,7 @@ function BlockedUsers() {
                 setNotificationType('success');
                 setNotificationMessage('User unblocked successfully.');
             } else if (modalAction === 'delete') {
-                await axios.delete(`http://${BACKEND_URL_HTTP}/api/User/remove-user/${selectedUserId}`, config);
+                await axios.delete(`http://${BACKEND_URL_HTTP}/api/UserManagement/DeleteUser/${selectedUserId}`, config);
                 setBlockedUsers(blockedUsers.filter(user => user.userId !== selectedUserId));
                 setNotificationType('success');
                 setNotificationMessage('User deleted successfully.');
