@@ -1,4 +1,4 @@
-﻿using AppChat.Data;
+using AppChat.Data;
 using AppChat.DTO.Request;
 using AppChat.Models.Entities;
 using AppChatBackEnd.DTO.Request;
@@ -76,7 +76,7 @@ namespace AppChatBackEnd.Controllers
                     return NotFound(new { message = "User not found!" });
                 }
 
-                return Ok(user);
+                return Ok(user); // Return the user data directly
             }
             catch (Exception ex)
             {
@@ -99,63 +99,58 @@ namespace AppChatBackEnd.Controllers
                     // Create UserDetails with default information and status
                     var userDetails = new UserDetails
                     {
-                        FirstName = newUser.UserName, // Assuming the username is the first name
-                        LastName = string.Empty, // Leave blank or use other information if available
-                        Status = "Active", // Default status is Active
-                        User = newUser // Link t        o the user
+                        FirstName = newUser.UserName, // Giả sử tên người dùng là tên đầu tiên
+                        LastName = string.Empty, // Để trống hoặc sử dụng thông tin khác nếu có
+                        Status = "Active", // Đặt trạng thái mặc định là Active
+                        User = newUser // Liên kết với người dùng
                     };
 
-                    // Assign UserDetails to the Users entity
+                    // Gán UserDetails vào đối tượng Users
                     newUser.UserDetail = userDetails;
 
-                    // Save both Users and UserDetails
+                    // Lưu cả Users và UserDetails
                     await _context.Users.AddAsync(newUser);
                     await _context.SaveChangesAsync();
 
                     // Commit transaction
                     await transaction.CommitAsync();
-
-                    return Ok(new { message = "User added successfully." });
+                    await transaction.RollbackAsync();
+                    return Ok(new { message = "User added successfully.", userId = newUser.UserId });
                 }
                 catch (DbUpdateException ex)
                 {
-                    // Rollback transaction if a database error occurs
+                    // Rollback transaction if something goes wrong
                     await transaction.RollbackAsync();
                     return StatusCode(500, "Database error occurred while adding the user: " + (ex.InnerException?.Message ?? ex.Message));
                 }
                 catch (Exception ex)
                 {
-                    // Rollback transaction if any other error occurs
+                    // Rollback transaction if something goes wrong
                     await transaction.RollbackAsync();
                     return StatusCode(500, "An unexpected error occurred while adding the user: " + ex.Message);
                 }
             }
         }
 
-
         [HttpDelete("DeleteUser/{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
+            try
             {
-                try
+                var user = await _context.Users.FindAsync(id);
+                if (user == null)
                 {
-                    var user = await _context.Users.FindAsync(id);
-                    if (user == null)
-                    {
-                        return NotFound(new { message = "User not found!" });
-                    }
-
-                    _context.Users.Remove(user);
-                    await transaction.RollbackAsync();
-                    await _context.SaveChangesAsync();
-
-                    return Ok(new { message = "Delelted user successfully." });
+                    return NotFound(new { message = "User not found!" });
                 }
-                catch (Exception ex)
-                {
-                    return BadRequest();
-                }
+
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while deleting the user: " + ex.Message);
             }
         }
 
@@ -177,7 +172,6 @@ namespace AppChatBackEnd.Controllers
 
                 user.UserName = userDTO.UserName;
                 user.Email = user.Email;
-                user.Img = userDTO.Img;
                 user.RoleId = userDTO.RoleId; // Update RoleId
 
                 _context.Users.Update(user);
@@ -192,7 +186,7 @@ namespace AppChatBackEnd.Controllers
         }
 
 
-        [HttpPost("ChangeUserRole/{id}")]
+        [HttpPatch("ChangeUserRole/{id}")]
         public async Task<IActionResult> ChangeUserRole(int id, [FromBody] int newRoleId)
         {
             try
@@ -208,7 +202,7 @@ namespace AppChatBackEnd.Controllers
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
 
-                return Ok();
+                return Ok(user);
             }
             catch (Exception ex)
             {

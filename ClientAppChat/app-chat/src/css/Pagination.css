@@ -1,0 +1,21 @@
+/* Pagination.css */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 8px 16px;
+    border: 1px solid transparent; /* Default transparent border */
+    cursor: pointer;
+}
+
+.pagination button.active {
+    font-weight: bold;
+}
+
+.pagination button:hover {
+    color: white;
+}

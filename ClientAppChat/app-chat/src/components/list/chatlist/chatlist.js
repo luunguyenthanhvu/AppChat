@@ -4,21 +4,23 @@ import './chatlist.css';
 import Loader from "react-spinners/SyncLoader";
 
 
-function ChatList({ chatList, loading, onChatClick }) {
-    const [addMode, setAddMode] = useState(false);
+function ChatList({ chatList, loading, onChatClick, searchFriend,setSearchFriend }) {
+
     if (loading) return (
         <div className='chatList'>
             <div className='search'>
                 <div className='searchBar'>
                     <img src='./search.png' alt='Search' />
-                    <input type='text' placeholder='Search' />
+                    <input
+                        type='text'
+                        placeholder='Search'
+                        value={searchFriend}
+                        onChange={(e) => {
+                            console.log(e);
+                            setSearchFriend(e.target.value)
+                        }}
+                    />
                 </div>
-                <img 
-                    src={addMode ? './minus.png' : './plus.png'}
-                    className='add'
-                    alt='Toggle add mode'
-                    onClick={() => setAddMode(prev => !prev)}
-                />
             </div>
             <div className="loading-container">
                 <Loader size={10} color={"#5183fe"} loading={loading} />
@@ -31,20 +33,22 @@ function ChatList({ chatList, loading, onChatClick }) {
             <div className='search'>
                 <div className='searchBar'>
                     <img src='./search.png' alt='Search' />
-                    <input type='text' placeholder='Search' />
+                    <input
+                        type='text'
+                        placeholder='Search'
+                        value={searchFriend}
+                        onChange={(e) => {
+                            console.log(e);
+                            setSearchFriend(e.target.value)
+                        }}
+                    />
                 </div>
-                <img 
-                    src={addMode ? './minus.png' : './plus.png'}
-                    className='add'
-                    alt='Toggle add mode'
-                    onClick={() => setAddMode(prev => !prev)}
-                />
             </div>
 
             
             {chatList.length === 0 ? (
                 <div className='no-friends-message'>
-                    <p>You have no friends</p>
+                    <p>You don't have any friends named like this</p>
                     <p>Let's go and add some new friend</p>
                     <img src='./nofriendImg.png' alt='meme for no friend'/>
                 </div>

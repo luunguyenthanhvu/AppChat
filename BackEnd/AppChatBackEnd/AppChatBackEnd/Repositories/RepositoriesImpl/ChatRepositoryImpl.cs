@@ -2,6 +2,7 @@
 using AppChat.Models.Entities;
 using AppChat.Models.Enums;
 using AppChatBackEnd.DTO.Response.ChatResponse;
+using AppChatBackEnd.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -36,10 +37,26 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
                 RoleId = defaultRole.RoleId // Set the role for the main user
             };
 
-            // List to hold friend users
-            var friendUsers = new List<Users>();
+            var mainUserDetail = new UserDetails
+            {
+                FirstName = "Vu",
+                LastName = "Luu",
+                Dob = new DateTime(1990, 1, 1),
+                PhoneNumber = "123456789",
+                Gender = "Male",
+                Status = "Active",
+                User = mainUser // Link the UserDetails to the main user
+            };
 
-            // Create 5 friend users
+            // Add the main user and their details to the database
+            await dbContext.Users.AddAsync(mainUser);
+            await dbContext.UserDetails.AddAsync(mainUserDetail);
+
+            // List to hold friend users and their details
+            var friendUsers = new List<Users>();
+            var friendUserDetails = new List<UserDetails>();
+
+            // Create 5 friend users and their details
             for (int i = 1; i <= 5; i++)
             {
                 var friendUser = new Users
@@ -51,12 +68,54 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
                     RoleId = defaultRole.RoleId // Set the role for each friend user
                 };
 
+                var friendUserDetail = new UserDetails
+                {
+                    FirstName = $"FirstName_{i}",
+                    LastName = $"LastName_{i}",
+                    Dob = new DateTime(1995, 1, 1).AddYears(i),
+                    PhoneNumber = $"123456789{i}",
+                    Gender = "Male",
+                    Status = "Active",
+                    User = friendUser // Link the UserDetails to the friend user
+                };
+
                 friendUsers.Add(friendUser);
+                friendUserDetails.Add(friendUserDetail);
             }
 
-            // Add the main user and friend users to the database
-            await dbContext.Users.AddAsync(mainUser);
+            // Add the friend users and their details to the database
             await dbContext.Users.AddRangeAsync(friendUsers);
+            await dbContext.UserDetails.AddRangeAsync(friendUserDetails);
+
+            await dbContext.SaveChangesAsync();
+
+            // Add UserDetails for the main user
+            var mainUserDetails = new UserDetails
+            {
+                UserId = mainUser.UserId,
+                FirstName = "Vuluu",
+                LastName = "User",
+                Dob = new DateTime(2000, 1, 1),  // Example date
+                PhoneNumber = "1234567890",
+                Gender = "Male"
+            };
+            await dbContext.UserDetails.AddAsync(mainUserDetails);
+
+            // Add UserDetails for friend users
+            foreach (var friendUser in friendUsers)
+            {
+                var friendUserDetails2 = new UserDetails
+                {
+                    UserId = friendUser.UserId,
+                    FirstName = friendUser.UserName,
+                    LastName = "Friend",
+                    Dob = new DateTime(2000, 1, 1),  // Example date
+                    PhoneNumber = "0987654321",
+                    Gender = "Female"
+                };
+                await dbContext.UserDetails.AddAsync(friendUserDetails2);
+            }
+
             await dbContext.SaveChangesAsync();
 
             // Update friend relationships after users are saved and have IDs
@@ -106,6 +165,8 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
             return mainUser;
         }
 
+
+
         public async Task<Users?> GetUsersByEmail(string email)
         {
             return await dbContext.Users.FirstOrDefaultAsync(x => x.Email.Equals(email));
@@ -130,6 +191,7 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
             }
 
             var userFriends = user.Friends
+                .Where(f => f.Status == FriendStatus.Accepted)
                 .Select(f => f.FriendUser)
                 .Where(f => f != null) // Loại bỏ các bạn bè null
                 .ToList();
@@ -193,7 +255,90 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
 
             return chatList;
         }
+        public async Task<List<UserListChatResponseDTO>> GetUsersFriendListChatByEmailAndUserName(string email, string username)
+        {
+            // Lấy thông tin người dùng theo email
+            var user = await dbContext.Users
+                .Include(u => u.Friends) // Bao gồm thông tin bạn bè
+                .ThenInclude(f => f.FriendUser) // Bao gồm thông tin người bạn
+                .FirstOrDefaultAsync(u => u.Email == email);
 
+            if (user == null || user.Friends == null)
+            {
+                return new List<UserListChatResponseDTO>();
+            }
+
+            var userFriends = user.Friends
+                        .Where(f => f.Status == FriendStatus.Accepted)
+                .Select(f => f.FriendUser)
+                 .Where(f =>
+                    f.UserName != null &&
+                    (string.IsNullOrEmpty(username) || f.UserName.Contains(username)))
+                 .ToList();
+
+            if (!userFriends.Any())
+            {
+                return new List<UserListChatResponseDTO>();
+            }
+
+            // Lấy tất cả tin nhắn liên quan đến người dùng hiện tại và bạn bè
+            var friendUserIds = userFriends.Select(u => u.UserId).ToList();
+            var currentUserId = user.UserId;
+
+            var messages = await (from m in dbContext.Messages
+                                  where (friendUserIds.Contains(m.SenderId) && m.ReceiverId == currentUserId)
+                                     || (friendUserIds.Contains(m.ReceiverId) && m.SenderId == currentUserId)
+                                  select new
+                                  {
+                                      m.Content,
+                                      m.SenderId,
+                                      m.ReceiverId,
+                                      m.Timestamp,
+                                      m.isImage
+                                  }).ToListAsync();
+
+            // Tạo danh sách kết quả với tin nhắn cuối cùng cho mỗi bạn bè
+            var chatList = userFriends.Select(friend =>
+            {
+                // Lấy tin nhắn cuối cùng giữa người dùng và bạn
+                var lastMessage = messages.Where(m =>
+                                         (m.SenderId == friend.UserId && m.ReceiverId == currentUserId)
+                                      || (m.SenderId == currentUserId && m.ReceiverId == friend.UserId))
+                                          .OrderByDescending(m => m.Timestamp)
+                                          .FirstOrDefault();
+
+                var isMine = lastMessage?.SenderId == currentUserId;
+                var isImg = false;
+                if(lastMessage.isImage != null)
+                {
+                    isImg = lastMessage.isImage;
+                }
+                var messageContent = "";
+                if (isImg)
+                {
+                    messageContent = isMine ? $"You: Image.png" : "Image.png" ?? string.Empty;
+                }
+                else
+                {
+                    messageContent = isMine ? $"You: {lastMessage?.Content}" : lastMessage?.Content ?? string.Empty;
+                }
+
+                return new UserListChatResponseDTO
+                {
+                    UserId = friend.UserId,
+                    UserName = friend.UserName,
+                    Img = friend.Img,
+                    MessageContent = messageContent,
+                    IsMine = isMine,
+                    Timestamp = lastMessage?.Timestamp ?? DateTime.Now,
+                    IsImage = lastMessage.isImage
+                };
+            })
+                .OrderByDescending(chat => chat.Timestamp)
+                .ToList();
+
+            return chatList;
+        }
         public async Task<List<UserListChatResponseDTO>> GetUsersListChatById(int id)
         {
             // Lấy thông tin người dùng theo email
@@ -208,6 +353,7 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
             }
 
             var userFriends = user.Friends
+                        .Where(f => f.Status == FriendStatus.Accepted)
                 .Select(f => f.FriendUser)
                 .Where(f => f != null) // Loại bỏ các bạn bè null
                 .ToList();
@@ -298,6 +444,20 @@ namespace AppChatBackEnd.Repositories.RepositoriesImpl
             }).ToList();
 
             return messageDtos;
+        }
+        public async Task<Users> GetUserById(int userId)
+        {
+            // Sử dụng Entity Framework Core để lấy người dùng theo ID
+            return await dbContext.Users
+                .Where(u => u.UserId == userId)
+                .FirstOrDefaultAsync();
+        }
+        public async Task<IEnumerable<Users>> GetFriendsByUserId(int userId)
+        {
+            return await dbContext.Friends
+                .Where(f => f.UserId == userId || f.FriendUserId == userId)
+                .Select(f => f.UserId == userId ? f.FriendUser : f.User)
+                .ToListAsync();
         }
     }
 }

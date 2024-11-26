@@ -44,6 +44,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 // inject repo
 builder.Services.AddScoped<IChatRepository, ChatRepositoryImpl>();
+builder.Services.AddScoped<IVuLuuMarkUpRepository, VuLuuMarkUpRepositoryImpl>();
 // accept cors
 builder.Services.AddCors(options =>
 {
@@ -84,6 +85,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 
 });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RoleBasedPolicy", policy =>
+    {
+        policy.RequireClaim("Role", "admin");
+    });
+});
+
 
 // add connection
 builder.Services.AddSingleton<UserSessionManager>();
@@ -104,8 +113,10 @@ app.UseWebSockets();
 app.UseCors("AllowAll");
 
 app.UseAuthentication(); // Thêm nếu bạn cần xác thực JWT
+app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<ChatHub>("/Chat"); // Đảm bảo endpoint khớp với client
+
 
 app.Run();

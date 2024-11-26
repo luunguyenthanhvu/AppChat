@@ -27,6 +27,329 @@
     label {
         width: 20px;
         height: 20px;
+        cursor: pointer;
     }
 }
 
+/* userinfo.css */
+
+.userInfo {
+    position: relative;
+}
+
+.my-modal {
+    position: absolute; 
+    top: 60% !important; 
+    left: 70% !important;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 10000; 
+    border-radius: 5px;
+    min-width: 300px !important;
+    max-width: 500px !important;
+}
+
+.header-my-modal-content h2 {
+    color:  rgba(9, 13, 21, 0.75);
+    font-weight: 500;
+    padding: 10px 20px;
+}
+.header-my-modal-content  {
+    border-bottom: 1px solid #000;
+    display: flex;
+}
+
+.header-my-modal-content .close-my-modal {
+    align-items: center;
+}
+
+.header-my-modal-content {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 5px 5px;
+}
+
+.header-my-modal-content h2 {
+    margin: 0; 
+}
+
+.close-my-modal {
+    cursor: pointer;
+    font-size: 2rem; 
+    font-weight: 100;
+    transform: scale(0.8);
+}
+
+.close-my-modal:hover {
+    color: rgba(100, 100, 100, 0.75);
+}
+
+.my-modal-content ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.my-modal-content li {
+    padding: 10px 0px;
+    cursor: pointer;
+}
+
+.my-modal-content li {
+    color: rgba(9, 13, 21, 0.75);
+    border-bottom: 1px solid rgba(193, 193, 193, 0.75);
+}
+
+.my-modal-content li:last-child {
+    border: none;
+}
+.my-modal-content li label {
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.my-modal-content li:hover {
+    background-color: rgba(236, 234, 234, 0.75);
+    border-radius: 5px;
+}
+.close-my-modal {
+    color:  rgba(9, 13, 21, 0.75);
+}
+
+.user-modal-info {
+
+    border-bottom: 5px solid rgb(199, 199, 199);
+
+    .user-basic-info {
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        
+        img {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        h2 {
+            margin-left: 5px;
+            font-weight: 600;
+        }
+    }
+}
+
+.user-main-info {
+    
+    h2 {
+        font-weight: 500;
+        padding: 10px 15px;
+    }
+
+    .user-details {
+        list-style: none;
+        padding: 5px 15px;
+
+        li {
+            margin-bottom: 10px;
+            font-size: 16px;
+
+            .label {
+                margin-right: 10px;
+                opacity: 0.6;
+            }
+        }
+    }
+    p {
+        padding: 0 15px 5px 15px;
+        opacity: 0.6;
+    }
+
+}
+
+.my-bottom-button button {
+    display: flex;
+    justify-self: center;
+    align-items: center;
+    color: #000;
+    background-color: #fff ;
+    border: 1px solid #000;
+    padding: 10px;
+
+    .icon {
+        font-size: 16px;
+        margin: 0 5px ;
+    }
+}
+
+.my-bottom-button button:hover {
+    background-color:#007bff;
+    color: #fff;
+    border:1px solid rgba(236, 234, 234, 0.75);;
+}
+
+/* Modal header, body, and footer styles */
+.modal-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    justify-content: space-between;
+    border-bottom: 1px solid #000;
+}
+
+.modal-header h2 {
+    font-weight: 700;
+}
+
+.user-basic-info {
+    position: relative;
+    display: inline-block;
+}
+
+.user-basic-info img {
+    border-radius: 50%;
+    display: block;
+}
+
+.camera-icon {
+    position: absolute;
+    bottom: 5px; 
+    left: 60px;
+    font-size: 1.5rem;
+    color: #007bff;
+    cursor: pointer;
+    background-color: #fff;
+    border-radius: 50%;
+    padding: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+
+.modal-close {
+    color: #000;
+}
+
+.modal-close:hover {
+    background-color: #fff;
+    color: rgba(193, 192, 192, 0.75);
+}
+
+.modal-footer-content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-footer button {
+    background-color: #fff;
+    padding: 10px;
+    border: 1px solid #000;
+    color: #000;
+}
+
+.modal-footer button:hover {
+    background-color: #007bff;
+    color: #fff;
+    border: 1px solid #007bff;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.update-image-userinfo {
+    width: 300px;
+    height: 200px;
+    .filepond--wrapper {
+        width: 100%;
+
+        .filepond--image-preview-wrapper {
+            width: 100%;
+        }
+    }
+}
+
+.modal-footer-content button .icon {
+   margin-right: 5px;
+}
+
+
+.user-modal-info {
+    padding: 20px;
+}
+
+.user-main-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.my-form-group {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.my-form-group label {
+    width: 150px;
+    margin-right: 10px;
+}
+
+.my-form-group input, 
+.my-form-group select {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 0;
+}
+
+.save-button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Add transition */
+}
+
+.save-button:hover {
+    background-color: #0056b3;
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.my-form-group select {
+    flex: 1; /* Đảm bảo rằng select có cùng chiều rộng như các ô input */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    /* Thêm các thuộc tính cần thiết để đồng bộ với các ô input */
+    box-sizing: border-box;
+}
+
+.my-switch-button,
+.modal-footer-content button {
+    padding: 10px 20px;
+    border: 1px solid #000;
+    background-color: #fff;
+    color: #000;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Add transition */
+}
+
+.my-switch-button:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+}
+
+.my-switch-button .update-icon {
+    margin-right: 6px;
+}

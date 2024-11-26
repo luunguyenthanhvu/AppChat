@@ -4,49 +4,146 @@
     color: white;
 }
 
-.report-search-bar {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.search-input {
-    width: 50%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.search-status {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.search-button {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
 .report-list {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 20px;
 }
 
 .report-list th, .report-list td {
     padding: 12px;
+    text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
 .report-list th {
-    background-color: #4CAF50;
+    background-color: #FFC107; /* Main color for Reports component */
     color: white;
 }
 
-.report-list tr:nth-child(even) {
-    background-color: #f2f2f2;
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.report-search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-input {
+    flex-grow: 2;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #2D3748;
+    color: white;
+}
+
+.search-filter {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #2D3748;
+    color: white;
+    cursor: pointer;
+}
+
+/* Unified label styles for status and role */
+.reports-status-label {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    background-color: #FFC107; /* Main color for Reports component */
+}
+.reports-role-label {
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    background-color: #FFC107; /* Main color for Reports component */
+}
+.report-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #FFC107; /* Optional: Add border for better visibility */
+    margin-right: 10px;
+}
+.report-details-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.report-details-table th,
+.report-details-table td {
+    padding: 10px 15px; /* Thêm khoảng cách giữa các cột */
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Căn chỉnh đầu đề bảng */
+.report-details-table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+/* Khoảng cách giữa các hàng */
+.report-details-table tr:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+/* Đổi màu cho các hàng để dễ đọc hơn */
+.report-details-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+/* Reports.css */
+.action-buttons {
+    display: flex;
+    gap: 10px; /* Add space between the buttons */
+}
+
+.action-buttons .details-button,
+.action-buttons .block-button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.action-buttons .details-button {
+    background-color: #ff9800;
+    color: white;
+}
+
+.action-buttons .details-button:hover {
+    background-color: #ff9800;
+}
+
+.action-buttons .block-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.action-buttons .block-button:hover {
+    background-color: #c82333;
+}
+.buttonClose{
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ff9800; /* Default background color */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
 }

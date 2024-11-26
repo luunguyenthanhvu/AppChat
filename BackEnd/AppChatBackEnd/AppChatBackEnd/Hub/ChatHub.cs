@@ -2,11 +2,15 @@
 using AppChatBackEnd.Connection.WebSocketConnection;
 using AppChatBackEnd.DTO.Response.ChatResponse;
 using AppChatBackEnd.Repositories;
+using AppChatBackEnd.utils;
 using Microsoft.AspNetCore.SignalR;
+using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.IO;
+using System.Runtime.Intrinsics.X86;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using static System.Net.Mime.MediaTypeNames;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AppChatBackEnd.ChatHub
 {
@@ -14,41 +18,25 @@ namespace AppChatBackEnd.ChatHub
     {
         private readonly UserSessionManager _userSessionManager;
         private readonly IChatRepository _chatRepository;
-
-        public ChatHub(UserSessionManager userSessionManager, IChatRepository chatRepository)
+        private readonly IVuLuuMarkUpRepository _remarkRepository;
+        private string _lastMessageSent = string.Empty;
+        public ChatHub(UserSessionManager userSessionManager, IChatRepository chatRepository, IVuLuuMarkUpRepository remarkRepository)
         {
             _userSessionManager = userSessionManager;
             _chatRepository = chatRepository;
+            _remarkRepository = remarkRepository;
         }
 
         public override async Task OnConnectedAsync()
         {
-            var login = "logout long cac";
-            Console.WriteLine(login);
-            
+          
             // Lấy token từ query string
             var token = Context.GetHttpContext()?.Request.Query["access_token"].FirstOrDefault();
-            Console.WriteLine($"{token} token ne"); // In token ra để kiểm tra
-
-            if (!string.IsNullOrEmpty(token))
-            {
-                var tokenValue = token;
-                var parts = tokenValue.Split('_');
-                Console.WriteLine(parts);
-                if (parts.Length == 3)
-                {
-                    var userId = parts[1];
-                    var email = parts[2];
-
-                    Context.Items["UserId"] = userId;
-                    login = " long cac connection" + Context.ConnectionId;
-                    Console.WriteLine(login);
-                    _userSessionManager.AddConnection(userId, Context.ConnectionId);
-
-                    // Logging
-                    System.Diagnostics.Debug.WriteLine($"User connected: {userId}, Connection ID: {Context.ConnectionId}");
-                }
-            }
+            var email = MyUtil.DecodeJwtTokenToEmail(token);
+            var user = await _chatRepository.GetUsersByEmail(email);
+            Context.Items["UserId"] = user.UserId;
+            Context.Items["UserEmail"] = email;
+            _userSessionManager.AddConnection(user.UserId + "", Context.ConnectionId);
 
             await base.OnConnectedAsync();
         }
@@ -57,26 +45,10 @@ namespace AppChatBackEnd.ChatHub
         {
             // Lấy token từ query string
             var token = Context.GetHttpContext()?.Request.Query["access_token"].FirstOrDefault();
-            Console.WriteLine($"{token} token ne"); // In token ra để kiểm tra
 
-
-            if (!string.IsNullOrEmpty(token))
-            {
-                var tokenValue = token;
-                var parts = tokenValue.Split('_');
-
-                if (parts.Length == 3)
-                {
-                    var userId = parts[1];
-            
-
-                    _userSessionManager.RemoveConnection(userId, Context.ConnectionId);
-
-                    // Logging
-                    System.Diagnostics.Debug.WriteLine($"User disconnected: {userId}, Connection ID: {Context.ConnectionId}");
-                }
-            }
-
+            var email = MyUtil.DecodeJwtTokenToEmail(token);
+            var user = await _chatRepository.GetUsersByEmail(email);
+            _userSessionManager.RemoveConnection(user.UserId +"", Context.ConnectionId);
             await base.OnDisconnectedAsync(exception);
         }
 
@@ -129,6 +101,122 @@ namespace AppChatBackEnd.ChatHub
 
             }
            // await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", messageResponse);
+        }
+        public async Task UpdateProfile(string email, bool isUpdateImage, bool isUpdatePass)
+        {
+            var userEmail = Context.Items["UserEmail"] + "";
+            var user = await _chatRepository.GetUsersByEmail(email);
+            var response = new LoginResponseDTO
+            {
+                UserName = user.UserName,
+                Email = user.Email,
+                Img = user.Img
+            };
+            var connectionsConnect = _userSessionManager.GetConnections(user.UserId + "");
+            foreach (var connectionId in connectionsConnect)
+            {
+                await Clients.Client(connectionId).SendAsync("UserInfoUpdate", response);
+            }
+        }
+        public async Task UpdatePassword(string email)
+        {
+            var user = await _chatRepository.GetUsersByEmail(email);
+            var connectionsConnect = _userSessionManager.GetConnections(user.UserId + "");
+            foreach (var connectionId in connectionsConnect)
+            {
+                await Clients.Client(connectionId).SendAsync("UpdatePasswordAccount", "password changed");
+            }
+        }
+
+        public async Task UpdateChat(string user1Email, string user2Email)
+        {
+            var user1 = await _chatRepository.GetUsersByEmail(user1Email);
+            var user2 = await _chatRepository.GetUsersByEmail(user2Email);
+            var listChatUserReceive = await _chatRepository.GetUsersListChatById(user1.UserId);
+            var listChatUserSender = await _chatRepository.GetUsersListChatById(user2.UserId);
+
+            var connectionsRecipents = _userSessionManager.GetConnections(user1.UserId + "");
+            var connectionsSenders = _userSessionManager.GetConnections(user2.UserId + "");
+            // Gửi tin nhắn đến tất cả các kết nối của người nhận
+            foreach (var connectionId in connectionsRecipents)
+            {
+                await Clients.Client(connectionId).SendAsync("NewListChatReceive", listChatUserReceive);
+            }
+
+            // Gửi tin nhắn đến tất cả các kết nối của người gửi
+            foreach (var connectionId in connectionsSenders)
+            {
+                await Clients.Client(connectionId).SendAsync("NewListChatReceive", listChatUserSender);
+
+            }
+        }
+
+        public async Task UpdateChatWithId(string user1Email, int user2Id)
+        {
+            var user1 = await _chatRepository.GetUsersByEmail(user1Email);
+            var user2 = await _chatRepository.GetUsersById(user2Id);
+            var listChatUserReceive = await _chatRepository.GetUsersListChatById(user1.UserId);
+            var listChatUserSender = await _chatRepository.GetUsersListChatById(user2.UserId);
+
+            var connectionsRecipents = _userSessionManager.GetConnections(user1.UserId + "");
+            var connectionsSenders = _userSessionManager.GetConnections(user2.UserId + "");
+            // Gửi tin nhắn đến tất cả các kết nối của người nhận
+            foreach (var connectionId in connectionsRecipents)
+            {
+                await Clients.Client(connectionId).SendAsync("NewListChatReceive", listChatUserReceive);
+            }
+
+            // Gửi tin nhắn đến tất cả các kết nối của người gửi
+            foreach (var connectionId in connectionsSenders)
+            {
+                await Clients.Client(connectionId).SendAsync("NewListChatReceive", listChatUserSender);
+
+            }
+        }
+
+        public async Task SendNotification(string message)
+        {
+            // Kiểm tra nếu tin nhắn mới giống với tin nhắn cuối cùng đã gửi
+            if (_lastMessageSent == message)
+            {
+                Console.WriteLine("Duplicate message detected. The message has already been sent.");
+                return; // Ngừng việc gửi tin nhắn trùng lặp
+            }
+
+            // Cập nhật biến _lastMessageSent với tin nhắn mới
+            _lastMessageSent = message;
+
+            // Lấy người dùng admin
+            var adminUser = await _chatRepository.GetUsersByEmail("0982407940ab@gmail.com");
+
+            Console.WriteLine(message);
+            // Lấy danh sách người dùng kết bạn với admin
+            var friends = await _chatRepository.GetFriendsByUserId(adminUser.UserId);
+
+            foreach (var friend in friends)
+            {
+                var friendUser = await _chatRepository.GetUserById(friend.UserId);
+
+                if (friendUser != null)
+                {
+                    var messageSave = new Message
+                    {
+                        SenderId = adminUser.UserId,
+                        ReceiverId = friend.UserId,
+                        Content = "THIS IS ADMIN NOTIFICATION\n" + message,
+                        Timestamp = DateTime.Now,
+                        isImage = false // Assuming message is not an image
+                    };
+
+                    await _chatRepository.SaveMessagesToDatabase(messageSave);
+                    var listChatUserReceive = await _chatRepository.GetUsersListChatById(friend.UserId);
+                    var connections = _userSessionManager.GetConnections(friend.UserId + "");
+                    foreach (var connectionId in connections)
+                    {
+                        await Clients.Client(connectionId).SendAsync("NewListChatReceive", listChatUserReceive);
+                    }
+                }
+            }
         }
     }
 }
