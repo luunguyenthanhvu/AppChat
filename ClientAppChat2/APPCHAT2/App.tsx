@@ -24,8 +24,6 @@ const App: React.FC = () => {
 
                 {/* Main Tab Navigator */}
                 <Stack.Screen name="MainTabNavigator" component={MainTabNavigator} options={{ headerShown: false }} />
-
-                {/* Các màn hình chat và profile */}
                 <Stack.Screen name="ChatScreen" component={ChatScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerTitle: 'Hồ sơ' }} />
                 <Stack.Screen name="UserInfoScreen" component={UserInfoScreen} options={{ headerTitle: 'Thông tin người dùng' }} />
