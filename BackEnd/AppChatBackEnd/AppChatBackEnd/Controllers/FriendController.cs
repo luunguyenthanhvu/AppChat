@@ -355,5 +355,47 @@ namespace AppChatBackEnd.Controllers
                 return Ok("Friend request declined and removed.");
             }
         }
+
+        [HttpGet("contacts")]
+        public async Task<IActionResult> GetContacts([FromQuery] string email)
+        {
+            // Tìm người dùng hiện tại dựa trên email
+            var currentUser = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == email);
+
+            if (currentUser == null)
+            {
+                return NotFound("User not found");
+            }
+
+            // Lấy danh sách các bạn bè đã được chấp nhận
+            var friendRequests = await _context.Friends
+                .Where(f => (f.UserId == currentUser.UserId || f.FriendUserId == currentUser.UserId)
+                            && f.Status == FriendStatus.Accepted)
+                .ToListAsync();
+
+            var friendIds = friendRequests
+                .Where(f => f.UserId != currentUser.UserId)  // Lọc ra các bạn bè (loại bỏ chính người dùng hiện tại)
+                .Select(f => f.UserId)
+                .Concat(friendRequests.Where(f => f.FriendUserId != currentUser.UserId)  // Lọc ra các bạn bè (loại bỏ chính người dùng hiện tại)
+                .Select(f => f.FriendUserId))
+                .Distinct()
+                .ToList();
+
+            // Lấy thông tin bạn bè từ danh sách friendIds
+            var friends = await _context.Users
+                .Where(u => friendIds.Contains(u.UserId))
+                .Select(u => new UserDTO
+                {
+                    UserId = u.UserId,
+                    Username = u.UserName,
+                    Email = u.Email,
+                    Img = u.Img
+                })
+                .ToListAsync();
+
+            return Ok(friends);
+        }
+
     }
 }
