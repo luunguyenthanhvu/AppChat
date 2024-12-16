@@ -14,8 +14,11 @@ import axios from 'axios';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { BACKEND_URL_HTTP } from "../config/config";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTheme } from '../context/ThemeContext';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const AddFriendScreen = ({ navigation }) => {
+    const { theme } = useTheme();
     const [friendList, setFriendList] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
     const [contacts, setContacts] = useState([]);
@@ -45,6 +48,23 @@ const AddFriendScreen = ({ navigation }) => {
         };
         loadEmail();
     }, []);
+
+
+    const handleVoiceCall = (user) => {
+        navigation.navigate('CallScreen', {
+            userID: user.userId,
+            userName: user.username,
+            callType: 'audio', // Cuộc gọi âm thanh
+        });
+    };
+
+    const handleVideoCall = (user) => {
+        navigation.navigate('CallScreen', {
+            userID: user.userId,
+            userName: user.username,
+            callType: 'video', // Cuộc gọi video
+        });
+    };
 
     const fetchPotentialFriends = async () => {
         if (!email) return;
@@ -279,22 +299,26 @@ const AddFriendScreen = ({ navigation }) => {
           <Image source={{ uri: item.img }} style={styles.contactAvatar} />
           <Text style={styles.contactName}>{item.username}</Text>
           <View style={styles.callButtonContainer}>
+              {/* Voice Call */}
               <TouchableOpacity
-                style={styles.callButton}
-                onPress={() => console.log(`Calling ${item.username} with voice...`)} // Thay thế bằng hành động gọi voice
+                style={styles.callVoiceButton}
+                onPress={() => handleVoiceCall(item)} // Gọi hàm handleVoiceCall
               >
                   <Icon name="phone" size={20} color="#fff" />
               </TouchableOpacity>
 
+              {/* Video Call */}
               <TouchableOpacity
-                style={styles.callButton}
-                onPress={() => console.log(`Calling ${item.username} with video...`)} // Thay thế bằng hành động gọi video
+                style={styles.callVideoButton}
+                onPress={() => handleVideoCall(item)} // Gọi hàm handleVideoCall
               >
                   <Icon name="video-camera" size={20} color="#fff" />
               </TouchableOpacity>
           </View>
       </View>
     );
+
+
 
     const renderContacts = () => (
       <SectionList
@@ -320,51 +344,93 @@ const AddFriendScreen = ({ navigation }) => {
       </View>
     );
 
+    const handleCreateGroup = () => {
+        // Điều hướng đến màn hình tạo nhóm (tạo nhóm mới)
+        navigation.navigate('CreateGroupScreen'); // 'CreateGroupScreen' là tên màn hình tạo nhóm mới
+    };
     return (
-      <View style={styles.container}>
-          <View style={styles.header}>
+      <View style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
+          <View style={[styles.header, { borderBottomColor: theme.borderColor }]}>
               <TouchableOpacity onPress={() => navigation.goBack()}>
-                  <Icon name="arrow-left" size={24} color="#000" />
+                  <Ionicons name="arrow-back-outline" size={24} color={theme.textColor} />
               </TouchableOpacity>
-              <Text style={styles.headerText}>Kết Bạn</Text>
+              <Text style={[styles.headerText, { color: theme.textColor }]}>Contacts</Text>
           </View>
 
           <TextInput
-            style={styles.searchBar}
+            style={[
+                styles.searchBar,
+                { borderColor: theme.borderColor, color: theme.textColor, backgroundColor: theme.secondaryBackgroundColor }
+            ]}
             placeholder="Search"
+            placeholderTextColor={theme.placeholderColor}
             value={searchUser}
-            onChangeText={handleSearch}
+            onChangeText={setSearchUser}
           />
-
           <View style={styles.tabContainer}>fetchContacts
               <TouchableOpacity
-                style={[styles.tabButton, activeTab === 'addFriend' && styles.activeTab]}
+                style={[
+                    styles.tabButton,
+                    { backgroundColor: activeTab === 'addFriend' ? theme.primaryColor : theme.secondaryBackgroundColor }
+                ]}
                 onPress={() => handleTabChange('addFriend')}
               >
-                  <Text style={[styles.tabText, activeTab === 'addFriend' && styles.activeTabText]}>Add Friend</Text>
+                  <Text style={[styles.tabText, { color: activeTab === 'addFriend' ? theme.lightText : theme.textColor }]}>
+                      Add Friend
+                  </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.tabButton, activeTab === 'pendingRequests' && styles.activeTab]}
+                style={[
+                    styles.tabButton,
+                    { backgroundColor: activeTab === 'pendingRequests' ? theme.primaryColor : theme.secondaryBackgroundColor }
+                ]}
                 onPress={() => handleTabChange('pendingRequests')}
               >
-                  <Text style={[styles.tabText, activeTab === 'pendingRequests' && styles.activeTabText]}>Pending Requests</Text>
+                  <Text style={[styles.tabText, { color: activeTab === 'pendingRequests' ? theme.lightText : theme.textColor }]}>
+                      Pending Requests
+                  </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.tabButton, activeTab === 'contacts' && styles.activeTab]}
+                style={[
+                    styles.tabButton,
+                    { backgroundColor: activeTab === 'contacts' ? theme.primaryColor : theme.secondaryBackgroundColor }
+                ]}
                 onPress={() => handleTabChange('contacts')}
               >
-                  <Text style={[styles.tabText, activeTab === 'contacts' && styles.activeTabText]}>Contacts</Text>
+                  <Text style={[styles.tabText, { color: activeTab === 'contacts' ? theme.lightText : theme.textColor }]}>
+                      Contacts
+                  </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.tabButton, activeTab === 'groups' && styles.activeTab]}
+                style={[
+                    styles.tabButton,
+                    { backgroundColor: activeTab === 'groups' ? theme.primaryColor : theme.secondaryBackgroundColor }
+                ]}
                 onPress={() => handleTabChange('groups')}
               >
-                  <Text style={[styles.tabText, activeTab === 'groups' && styles.activeTabText]}>Groups</Text>
+                  <Text style={[styles.tabText, { color: activeTab === 'groups' ? theme.lightText : theme.textColor }]}>
+                      Groups
+                  </Text>
               </TouchableOpacity>
           </View>
-
+          {activeTab === 'groups' && (
+            <View style={styles.createGroupButtonContainer}>
+                <TouchableOpacity
+                  style={[
+                      styles.createGroupButton,
+                      { backgroundColor: theme.primaryColor }
+                  ]}
+                  onPress={handleCreateGroup}
+                >
+                    <Icon name="plus" size={16} color={theme.lightText} />
+                    <Text style={[styles.createGroupButtonText, { color: theme.lightText }]}>
+                        Create Group
+                    </Text>
+                </TouchableOpacity>
+            </View>
+          )}
           {loading ? (
-            <ActivityIndicator size="large" color="#007bff" />
+            <ActivityIndicator size="large" color={theme.primaryColor} />
           ) : (
             <>
                 {activeTab === 'addFriend' ? (
@@ -372,20 +438,25 @@ const AddFriendScreen = ({ navigation }) => {
                     data={filteredFriendList}
                     keyExtractor={item => item.userId.toString()}
                     renderItem={renderAddFriendItem}
+                    style={{ backgroundColor: theme.secondaryBackgroundColor }}
                   />
                 ) : activeTab === 'pendingRequests' ? (
                   <FlatList
                     data={filteredPendingRequests}
                     keyExtractor={item => item.userId.toString()}
                     renderItem={renderFriendRequestItem}
+                    style={{ backgroundColor: theme.secondaryBackgroundColor }}
                   />
                 ) : activeTab === 'contacts' ? (
-                  renderContacts()
+                  <View style={{ flex: 1, backgroundColor: theme.secondaryBackgroundColor }}>
+                      {renderContacts()}
+                  </View>
                 ) : (
                   <FlatList
                     data={filteredGroups}
                     keyExtractor={item => item.groupId.toString()}
                     renderItem={renderGroupItem}
+                    style={{ backgroundColor: theme.secondaryBackgroundColor }}
                   />
                 )}
             </>
@@ -529,6 +600,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
+
     addFriendText: {
         color: '#fff',
         marginLeft: 5,
@@ -555,11 +627,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     // **Style cho từng nút gọi**
-    callButton: {
+    callVoiceButton: {
         width: 50,            // Đảm bảo nút là hình tròn (có chiều rộng và chiều cao giống nhau)
         height: 50,
         borderRadius: 25,     // Để tạo hình tròn
-        backgroundColor: '#dc8952', // Màu nền xanh
+        backgroundColor: '#2fd324', // Màu nền xanh
+        justifyContent: 'center',  // Căn giữa icon trong nút
+        alignItems: 'center', // Căn giữa icon trong nút
+        marginHorizontal: 10, // Khoảng cách giữa các nút
+    },
+    callVideoButton: {
+        width: 50,            // Đảm bảo nút là hình tròn (có chiều rộng và chiều cao giống nhau)
+        height: 50,
+        borderRadius: 25,     // Để tạo hình tròn
+        backgroundColor: '#d82e42', // Màu nền xanh
         justifyContent: 'center',  // Căn giữa icon trong nút
         alignItems: 'center', // Căn giữa icon trong nút
         marginHorizontal: 10, // Khoảng cách giữa các nút
@@ -567,6 +648,25 @@ const styles = StyleSheet.create({
     callButtonText: {
         color: '#fff',
         fontSize: 12,
+    },
+    createGroupButtonContainer: {
+        alignItems: 'center',
+        marginVertical: 20,
+    },
+    createGroupButton: {
+        flexDirection: 'row',
+        backgroundColor: '#007bff',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 25,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 200, // Kích thước dài của nút
+    },
+    createGroupButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        marginLeft: 10, // Khoảng cách giữa dấu cộng và chữ
     },
 });
 

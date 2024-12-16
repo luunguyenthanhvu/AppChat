@@ -67,6 +67,13 @@ const LoginScreen = () => {
         }
     }, [email, password, navigation, showDialog]);
 
+    // Hàm xử lý login bằng Google
+    const loginWithGoogle = async () => {
+        // Bạn cần tích hợp Google Login SDK ở đây
+        console.log("Login with Google clicked");
+        // Sau khi hoàn tất, bạn có thể lấy thông tin người dùng và xử lý như login thông thường
+        // Ví dụ: Lấy email và token từ Google và gọi API backend để đăng nhập
+    };
 
     return (
       <Provider>
@@ -109,6 +116,14 @@ const LoginScreen = () => {
               </Text>
 
               <Text style={styles.orText}>or login with</Text>
+
+              {/* Thêm nút Login with Google */}
+              <TouchableOpacity style={styles.googleLoginButton} onPress={loginWithGoogle}>
+                  <Image
+                    source={{ uri: 'https://banner2.cleanpng.com/20180423/gkw/avesbl6oq.webp' }}  // Ảnh Google
+                    style={styles.googleIcon}
+                  />
+              </TouchableOpacity>
 
               <Text style={styles.registerText}>
                   Don't have an account?
@@ -197,6 +212,20 @@ const styles = StyleSheet.create({
         marginVertical: 20,
         fontSize: 16,
         fontWeight: '600'
+    },
+    googleLoginButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        marginBottom: 20,
+    },
+    googleIcon: {
+        width: 50,
+        height: 50,
+        borderRadius: 25, // Chuyển ảnh thành hình tròn
+        marginRight: 10,
     },
     registerText: {
         marginTop: 20,

@@ -6,8 +6,10 @@ import { formatDistanceToNow } from 'date-fns'; // Thư viện để định d�
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Thêm AsyncStorage
 import { BACKEND_URL_HTTP } from '../config/config';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import biến cấu hình từ config
+import { useTheme } from '../context/ThemeContext'; // Import ThemeContext
 
 const ChatListScreen: React.FC = ({ navigation }) => {
+    const { theme } = useTheme(); // Lấy theme từ ThemeContext
     const [chats, setChats] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchFriend, setSearchFriend] = useState('');
@@ -48,7 +50,7 @@ const ChatListScreen: React.FC = ({ navigation }) => {
     }, [emailUser]);
 
     const filteredChats = chats.filter(chat =>
-        chat.userName.toLowerCase().includes(searchFriend.toLowerCase())
+      chat.userName.toLowerCase().includes(searchFriend.toLowerCase())
     );
 
     // Hàm định dạng thời gian để hiển thị
@@ -58,79 +60,81 @@ const ChatListScreen: React.FC = ({ navigation }) => {
 
     // Hàm lấy dòng đầu tiên của tin nhắn
     const getFirstLineOfMessage = (messageContent: string) => {
-        // Chia tin nhắn thành các dòng (người dùng có thể sử dụng dấu ngắt dòng '\n')
         const firstLine = messageContent.split('\n')[0];
-        // Nếu dòng quá dài, cắt và thêm "..."
         return firstLine.length > 30 ? firstLine.substring(0, 30) + '...' : firstLine;
     };
 
     if (loading) {
         return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#1e90ff" />
-            </View>
+          <View style={[styles.loadingContainer, { backgroundColor: theme.backgroundColor }]}>
+              <ActivityIndicator size="large" color={theme.primaryColor} />
+          </View>
         );
     }
 
     return (
-        <View style={styles.container}>
-            {/* Header */}
-            <View style={styles.header}>
-                {/* Icon menu bên trái */}
-                <TouchableOpacity
-                    style={styles.menuButton}
-                    onPress={() => navigation.navigate('ProfileScreen')} // Điều hướng tới ProfileScreen
-                >
-                    <Icon name="bars" size={24} color="#000" />
-                </TouchableOpacity>
+      <View style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
+          {/* Header */}
+          <View style={[styles.header, { backgroundColor: theme.headerColor }]}>
+              {/* Icon menu bên trái */}
+              <TouchableOpacity
+                style={styles.menuButton}
+                onPress={() => navigation.navigate('ProfileScreen')} // Điều hướng tới ProfileScreen
+              >
+                  <Icon name="bars" size={24} color={theme.textColor} />
+              </TouchableOpacity>
 
-                {/* Tiêu đề đoạn chat */}
-                <Text style={styles.headerText}>Đoạn chat</Text>
+              {/* Tiêu đề đoạn chat */}
+              <Text style={[styles.headerText, { color: theme.textColor }]}>Messages</Text>
 
-                {/* Icon chỉnh sửa bên phải */}
-                <TouchableOpacity style={styles.editButton}>
-                    <Icon name="pencil" size={24} color="#000" />
-                </TouchableOpacity>
-            </View>
+              {/* Icon chỉnh sửa bên phải */}
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => navigation.navigate('CreateGroupScreen')} // Chuyển đến CreateGroupScreen
+              >
+                  <Icon name="pencil" size={24} color={theme.textColor} />
+              </TouchableOpacity>
 
-            {/* Search Bar */}
-            <View style={styles.searchBar}>
-                <TextInput
-                    style={styles.searchInput}
-                    placeholder="Search"
-                    placeholderTextColor="#888"
-                    value={searchFriend}
-                    onChangeText={(text) => setSearchFriend(text)}
-                />
-            </View>
+          </View>
 
-            {/* Danh sách Chat */}
-            <FlatList
-                data={filteredChats}
-                keyExtractor={item => item.userId.toString()}
-                renderItem={({ item }) => (
-                    <TouchableOpacity
-                        style={styles.chatItem}
-                        onPress={() => navigation.navigate('ChatScreen', { chattingWith: item })}
-                    >
-                        <Avatar.Image size={56} source={{ uri: item.img }} />
-                        <View style={styles.chatTextContainer}>
-                            <Text style={styles.userName}>{item.userName}</Text>
-                            <Text style={styles.lastMessage}>
-                                {item.messageContent ? getFirstLineOfMessage(item.messageContent) : `No message with ${item.userName}`}
-                            </Text>
-                            <Text style={styles.timestamp}>{formatTimestamp(item.timestamp)}</Text>
-                        </View>
-                    </TouchableOpacity>
-                )}
-                ListEmptyComponent={
-                    <View style={styles.noFriendsMessage}>
-                        <Text>You don't have any friends named like this</Text>
-                        <Text>Let's go and add some new friend</Text>
-                    </View>
-                }
-            />
-        </View>
+          {/* Search Bar */}
+          <View style={[styles.searchBar, { borderColor: theme.borderColor }]}>
+              <TextInput
+                style={[styles.searchInput, { color: theme.textColor }]}
+                placeholder="Search"
+                placeholderTextColor={theme.placeholderColor}
+                value={searchFriend}
+                onChangeText={(text) => setSearchFriend(text)}
+              />
+          </View>
+
+          {/* Danh sách Chat */}
+          <FlatList
+            data={filteredChats}
+            keyExtractor={item => item.userId.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={[styles.chatItem, { borderBottomColor: theme.borderColor }]}
+                onPress={() => navigation.navigate('ChatScreen', { chattingWith: item })}
+              >
+                  <Avatar.Image size={56} source={{ uri: item.img }} />
+                  <View style={styles.chatTextContainer}>
+                      <Text style={[styles.userName, { color: theme.textColor }]}>{item.userName}</Text>
+                      <Text style={[styles.lastMessage, { color: theme.placeholderColor }]}>
+                          {item.messageContent ? getFirstLineOfMessage(item.messageContent) : `No message with ${item.userName}`}
+                      </Text>
+                      <Text style={[styles.timestamp, { color: theme.placeholderColor }]}>{formatTimestamp(item.timestamp)}</Text>
+                  </View>
+              </TouchableOpacity>
+            )}
+            ListEmptyComponent={
+                <View style={styles.noFriendsMessage}>
+                    <Text style={{ color: theme.textColor }}>You don't have any friends named like this</Text>
+                    <Text style={{ color: theme.textColor }}>Let's go and add some new friends</Text>
+                </View>
+            }
+          />
+      </View>
     );
 };
 
@@ -160,7 +164,6 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         padding: 10,
-        borderColor: '#555',
         borderWidth: 1,
         borderRadius: 20,
         marginBottom: 10,
@@ -172,7 +175,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         padding: 10,
         borderBottomWidth: 1,
-        borderBottomColor: '#555',
     },
     chatTextContainer: {
         marginLeft: 10,
@@ -184,11 +186,9 @@ const styles = StyleSheet.create({
     },
     lastMessage: {
         fontSize: 14,
-        color: '#777'
     },
     timestamp: {
         fontSize: 12,
-        color: '#999',
         marginTop: 4,
     },
     loadingContainer: {
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 50,
-    }
+    },
 });
 
 export default ChatListScreen;

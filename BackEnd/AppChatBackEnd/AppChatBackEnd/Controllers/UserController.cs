@@ -583,6 +583,40 @@ namespace AppChatBackEnd.Controllers
             return Ok(reports);
         }
 
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetUserProfile([FromQuery] string email)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(email))
+                {
+                    return BadRequest("Email is required.");
+                }
+
+                // Truy vấn thông tin người dùng
+                var user = await _context.Users
+                    .Where(u => u.Email == email)
+                    .Select(u => new
+                    {
+                        u.UserName,
+                        u.Img
+                    })
+                    .FirstOrDefaultAsync();
+
+                if (user == null)
+                {
+                    return NotFound("User not found.");
+                }
+
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while fetching the user profile: " + ex.Message);
+            }
+        }
+
+
 
     }
 }

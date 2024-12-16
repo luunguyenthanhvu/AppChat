@@ -5,8 +5,10 @@ import axios from 'axios';
 import { BACKEND_URL_HTTP } from '../config/config'; // Import URL from config
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import Ionicons from 'react-native-vector-icons/Ionicons'; // Import Ionicons correctly
+import { useTheme } from '../context/ThemeContext'; // Import ThemeContext
 
 const ChatScreen: React.FC = ({ route, navigation }) => {
+    const { theme } = useTheme(); // Lấy theme từ ThemeContext
     const { chattingWith } = route.params; // User you're chatting with
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
@@ -53,10 +55,10 @@ const ChatScreen: React.FC = ({ route, navigation }) => {
         if (newMessage.trim()) {
             const newMsg = {
                 content: newMessage,
-                senderId: 12,  // Replace 12 with a valid value if needed
+                senderId: emailUser, // Replace with valid sender ID
                 receiverId: chattingWith.userId,
                 timestamp: new Date().toISOString(),
-                isImage: false
+                isImage: false,
             };
 
             // Immediately update the message in the UI
@@ -71,7 +73,7 @@ const ChatScreen: React.FC = ({ route, navigation }) => {
         navigation.navigate('CallScreen', {
             userID: chattingWith.userId,
             userName: chattingWith.userName,
-            callType: 'audio'  // Gọi âm thanh
+            callType: 'audio', // Gọi âm thanh
         });
     };
 
@@ -79,104 +81,111 @@ const ChatScreen: React.FC = ({ route, navigation }) => {
         navigation.navigate('CallScreen', {
             userID: chattingWith.userId,
             userName: chattingWith.userName,
-            callType: 'video'  // Gọi video
+            callType: 'video', // Gọi video
         });
     };
 
     if (loading) {
         return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#1e90ff" />
-            </View>
+          <View style={[styles.loadingContainer, { backgroundColor: theme.backgroundColor }]}>
+              <ActivityIndicator size="large" color={theme.primaryColor} />
+          </View>
         );
     }
 
-
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <Ionicons name="arrow-back-outline" size={24} color="#000" />
-                </TouchableOpacity>
-                <Avatar.Image size={40} source={{ uri: chattingWith.img }} />
-                <Text style={styles.userName}>{chattingWith.userName}</Text>
+      <View style={[styles.container, { backgroundColor: theme.backgroundColor }]}>
+          <View style={[styles.header, { backgroundColor: theme.headerColor }]}>
+              <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                  <Ionicons name="arrow-back-outline" size={24} color={theme.textColor} />
+              </TouchableOpacity>
+              <Avatar.Image size={40} source={{ uri: chattingWith.img }} />
+              <Text style={[styles.userName, { color: theme.textColor }]}>{chattingWith.userName}</Text>
 
-                {/* Icons on the right */}
-                <View style={styles.iconContainer}>
-                    <TouchableOpacity onPress={handleCallVoice}>
-                        <Ionicons name="call-outline" size={24} color="orange" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ marginLeft: 15 }} onPress={handleCallVideo}>
-                        <Ionicons name="videocam-outline" size={24} color="orange" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ marginLeft: 15 }} onPress={() => navigation.navigate('UserInfoScreen', { user: chattingWith })}>
-                        <Ionicons name="information-circle-outline" size={24} color="orange" />
-                    </TouchableOpacity>
-                </View>
-            </View>
+              {/* Icons on the right */}
+              <View style={styles.iconContainer}>
+                  <TouchableOpacity onPress={handleCallVoice}>
+                      <Ionicons name="call-outline" size={24} color={theme.iconColor} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{ marginLeft: 15 }} onPress={handleCallVideo}>
+                      <Ionicons name="videocam-outline" size={24} color={theme.iconColor} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{ marginLeft: 15 }} onPress={() => navigation.navigate('UserInfoScreen', { user: chattingWith })}>
+                      <Ionicons name="information-circle-outline" size={24} color={theme.iconColor} />
+                  </TouchableOpacity>
+              </View>
+          </View>
 
-            {/* Message list */}
-            <FlatList
-                data={messages}
-                keyExtractor={item => item.messageId?.toString() || Math.random().toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.messageWrapper}>
-                        {/* Sender's avatar */}
-                        <Avatar.Image
-                            size={40}
-                            source={{ uri: item.senderId === 12 ? 'your-avatar-url' : chattingWith.img }}
-                            style={[styles.avatar, item.senderId === 12 ? styles.myAvatar : styles.theirAvatar]}
-                        />
+          {/* Message list */}
+          <FlatList
+            data={messages}
+            keyExtractor={item => item.messageId?.toString() || Math.random().toString()}
+            renderItem={({ item }) => (
+              <View style={styles.messageWrapper}>
+                  {/* Sender's avatar */}
+                  <Avatar.Image
+                    size={40}
+                    source={{ uri: item.senderId === emailUser ? 'your-avatar-url' : chattingWith.img }}
+                    style={[styles.avatar, item.senderId === emailUser ? styles.myAvatar : styles.theirAvatar]}
+                  />
 
-                        {/* Message content */}
-                        <View style={[styles.messageContainer, item.senderId === 12 ? styles.myMessage : styles.theirMessage]}>
-                            <Text style={styles.messageText}>{item.content}</Text>
-                            <Text style={styles.timestamp}>{new Date(item.timestamp).toLocaleTimeString()}</Text>
-                        </View>
-                    </View>
-                )}
-            />
+                  {/* Message content */}
+                  <View
+                    style={[
+                        styles.messageContainer,
+                        item.senderId === emailUser ? styles.myMessage : styles.theirMessage,
+                        { backgroundColor: item.senderId === emailUser ? theme.primaryColor : theme.secondaryBackgroundColor },
+                    ]}
+                  >
+                      <Text style={[styles.messageText, { color: item.senderId === emailUser ? theme.lightText : theme.textColor }]}>
+                          {item.content}
+                      </Text>
+                      <Text style={[styles.timestamp, { color: theme.placeholderColor }]}>
+                          {new Date(item.timestamp).toLocaleTimeString()}
+                      </Text>
+                  </View>
+              </View>
+            )}
+          />
 
-            {/* Message input */}
-            <View style={styles.inputContainer}>
-                {/* Attach image icon */}
-                <TouchableOpacity>
-                    <Ionicons name="image-outline" size={24} color="#1e90ff" />
-                </TouchableOpacity>
+          {/* Message input */}
+          <View style={[styles.inputContainer, { backgroundColor: theme.headerColor }]}>
+              {/* Attach image icon */}
+              <TouchableOpacity>
+                  <Ionicons name="image-outline" size={24} color={theme.iconColor} />
+              </TouchableOpacity>
 
-                {/* Microphone icon */}
-                <TouchableOpacity>
-                    <Ionicons name="mic-outline" size={24} color="#1e90ff" />
-                </TouchableOpacity>
+              {/* Microphone icon */}
+              <TouchableOpacity>
+                  <Ionicons name="mic-outline" size={24} color={theme.iconColor} />
+              </TouchableOpacity>
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="Enter message..."
-                    value={newMessage}
-                    onChangeText={setNewMessage}
-                />
+              <TextInput
+                style={[styles.input, { color: theme.textColor, borderColor: theme.borderColor }]}
+                placeholder="Enter message..."
+                placeholderTextColor={theme.placeholderColor}
+                value={newMessage}
+                onChangeText={setNewMessage}
+              />
 
-                {/* Send message button */}
-                <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage}>
-                    <Ionicons name="send" size={24} color="#1e90ff" />
-                </TouchableOpacity>
-            </View>
-        </View>
+              {/* Send message button */}
+              <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage}>
+                  <Ionicons name="send" size={24} color={theme.iconColor} />
+              </TouchableOpacity>
+          </View>
+      </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
         padding: 10,
-        backgroundColor: '#f5f5f5',
         borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
     },
     backButton: {
         marginRight: 10,
@@ -190,56 +199,43 @@ const styles = StyleSheet.create({
     iconContainer: {
         flexDirection: 'row',
         marginLeft: 'auto',
-        marginRight: 10,
     },
     messageWrapper: {
-        flexDirection: 'row', // Make sure avatar and message are in one row
+        flexDirection: 'row',
         padding: 10,
         borderRadius: 10,
         marginVertical: 5,
         maxWidth: '80%',
     },
     avatar: {
-        marginRight: 10, // Space between avatar and message
-    },
-    myAvatar: {
-        alignSelf: 'flex-end', // Avatar for the sender on the right
-    },
-    theirAvatar: {
-        alignSelf: 'flex-start', // Avatar for the receiver on the left
+        marginRight: 10,
     },
     messageContainer: {
         flex: 1,
         padding: 10,
         borderRadius: 10,
     },
-    theirMessage: {
-        alignSelf: 'flex-start',
-        backgroundColor: '#e5e5ea',
-    },
     myMessage: {
         alignSelf: 'flex-end',
-        backgroundColor: '#0078fe',
-        color: '#fff',
+    },
+    theirMessage: {
+        alignSelf: 'flex-start',
     },
     messageText: {
         fontSize: 16,
     },
     timestamp: {
         fontSize: 10,
-        color: '#aaa',
         marginTop: 5,
     },
     inputContainer: {
         flexDirection: 'row',
         padding: 10,
         borderTopWidth: 1,
-        borderTopColor: '#ddd',
         alignItems: 'center',
     },
     input: {
         flex: 1,
-        borderColor: '#ccc',
         borderWidth: 1,
         borderRadius: 20,
         paddingHorizontal: 15,
@@ -247,7 +243,6 @@ const styles = StyleSheet.create({
     },
     sendButton: {
         justifyContent: 'center',
-        paddingHorizontal: 10,
     },
     loadingContainer: {
         flex: 1,
