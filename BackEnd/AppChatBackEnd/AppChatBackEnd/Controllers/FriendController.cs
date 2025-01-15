@@ -185,6 +185,12 @@ namespace AppChatBackEnd.Controllers
         [HttpPost("send-friend-request")]
         public async Task<IActionResult> SendFriendRequest([FromBody] FriendRequestDTOVuLuu request)
         {
+            // Check if sender and recipient are the same
+            if (request.SenderEmail == request.RecipientEmail)
+            {
+                return BadRequest("You cannot send a friend request to yourself");
+            }
+
             var sender = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.SenderEmail);
             var recipient = await _context.Users.FirstOrDefaultAsync(u => u.Email == request.RecipientEmail);
 
@@ -250,6 +256,7 @@ namespace AppChatBackEnd.Controllers
 
             return Ok("Friend request sent");
         }
+
 
 
         [HttpPost("accept-friend-request")]

@@ -50,14 +50,14 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
         try {
             // Tạo đối tượng Date từ chuỗi thời gian
             const date = new Date(dateString);
-    
+
             // Kiểm tra xem đối tượng Date có hợp lệ không
             if (isNaN(date.getTime())) {
                 // Trả về một giá trị mặc định nếu đối tượng Date không hợp lệ
                 console.error("Invalid date:", dateString);
                 return 'Invalid date';
             }
-    
+
             // Định dạng ngày
             return formatDistanceToNow(date, { addSuffix: true });
         } catch (error) {
@@ -76,7 +76,6 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
             setImageMessage('');
             setShowFilePond(false);
         }
-        
     }
 
     // for user send to other a image
@@ -100,34 +99,34 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
 
 
     const [imgList, setImgList] = useState([]);
-  
+
 
     const handleProcess = async (fieldName, file, metadata, load, error, progress, abort) => {
         try {
             const signatureResponse = await axios.get(`http://${BACKEND_URL_HTTP}/api/cloudinary/get-signature`);
             //get-signature
             console.log("signature ne" + signatureResponse.data.apiKey + signatureResponse.data.signature);
-            
+
             const formData = new FormData();
             formData.append("file", file);
-            formData.append("api_key", signatureResponse.data.apiKey); 
+            formData.append("api_key", signatureResponse.data.apiKey);
             formData.append("signature", signatureResponse.data.signature);
             formData.append("timestamp", signatureResponse.data.timestamp);
-            
-    
+
+
           const xhr = new XMLHttpRequest();
           xhr.open('POST', 'https://api.cloudinary.com/v1_1/dter3mlpl/image/upload');
-          
+
           xhr.upload.onprogress = (event) => {
             const progressPercentage = Math.round((event.loaded / event.total) * 100);
             progress(progressPercentage);
           };
-    
+
           xhr.onload = () => {
             if (xhr.status >= 200 && xhr.status < 300) {
               const response = JSON.parse(xhr.responseText);
               const public_id = response.public_id;
-              
+
               setImgList((prevList) => [
                 ...prevList,
                 {
@@ -137,19 +136,19 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
                 }
               ]);
             setImageMessage(response.url);
-    
+
               load(public_id);
             } else {
               error('Upload error');
             }
           };
-    
+
           xhr.onerror = () => {
             error('Upload error');
           };
-    
+
           xhr.send(formData);
-    
+
           // Trả về một hàm để xử lý việc hủy upload
           return {
             abort: () => {
@@ -162,7 +161,7 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
           error('Error occurred during upload');
         }
       };
-    
+
     const handleRevert = (source, load, error) => {
         setShowFilePond(false);
         const removeImage = async () => {
@@ -176,10 +175,10 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
             error('Error occurred during removal');
           }
         };
-    
+
         removeImage();
     };
-    
+
     const handleInputBlur = () => {
         setShowFilePond(false);
     }
@@ -204,8 +203,8 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
                 </div>
             </div>
         );
-    } 
-        
+    }
+
     if (userChatLoading) {
         return (
             <div className='chat'>
@@ -234,7 +233,7 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
     if (! chattingWith) {
         return (
             <div className='chat'>
-                
+
             </div>
         );
     }
@@ -267,13 +266,13 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
                         const isSameSender = previousMessage && previousMessage.senderId === message.senderId;
                         const hiddenImg = isSameSender ? 'hidden' : '';
                         const isWithinTenMinutes = previousMessage && (new Date(message.timestamp) - new Date(previousMessage.timestamp)) < TEN_MINUTES;
-    
+
                         // Ẩn hoặc hiển thị thời gian dựa trên điều kiện
                         const showTimestamp = !(isSameSender && isWithinTenMinutes);
 
                         return (
                             <div
-                                className={`message ${chattingWith.userId === message.receiverId ? 'own' : ''}`} 
+                                className={`message ${chattingWith.userId === message.receiverId ? 'own' : ''}`}
                                 key={message.MessageId}
                             >
                                 {/* Chỉ hiển thị hình ảnh nếu tin nhắn trước đó không phải của cùng người gửi */}
@@ -287,16 +286,16 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
                                             alt=''
                                             style={{
                                                 width:'300px',
-                                                maxWidth: '400px', 
+                                                maxWidth: '400px',
                                                 height: 'auto',
-                                                objectFit: 'cover' 
-                                            }}  
+                                                objectFit: 'cover'
+                                            }}
                                         />}
                                     {(showTimestamp) && <span>{formatDate(message.timestamp)}</span>}
                                 </div>
                             </div>
                         );
-                    })                    
+                    })
                 )}
             </div>
              {showFilePond && (
@@ -314,10 +313,10 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
                   labelIdle='Input your image'
                     id='filePond'
                 />
-              
+
             )}
             <div className='bottom'>
-        
+
                 <div className='icons'>
                         <img src='./img.png' onClick={handleChatImg}/>
                         <img src='./camera.png'/>
@@ -338,8 +337,8 @@ function Chat({chattingWith, loadingUser,userChatLoading, chattingContent, sendM
                     placeholder='Type a message...'
                     onChange={e => setMessage(e.target.value)}
                 />
-            
-                
+
+
                 <div className='emoji'>
                     <img src='./emoji.png' onClick={() => setOpenEmoji(prev => !prev)} alt='Emoji Icon' />
                     <div className='picker'>

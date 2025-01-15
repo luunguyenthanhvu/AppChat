@@ -6,7 +6,9 @@ import { formatDistanceToNow } from 'date-fns'; // Thư viện để định d�
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Thêm AsyncStorage
 import { BACKEND_URL_HTTP } from '../config/config';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import biến cấu hình từ config
-import { useTheme } from '../context/ThemeContext'; // Import ThemeContext
+import { useTheme } from '../context/ThemeContext';
+import useChat from '../websocket/UseChat.ts';
+
 
 const ChatListScreen: React.FC = ({ navigation }) => {
     const { theme } = useTheme(); // Lấy theme từ ThemeContext
@@ -14,12 +16,52 @@ const ChatListScreen: React.FC = ({ navigation }) => {
     const [loading, setLoading] = useState(true);
     const [searchFriend, setSearchFriend] = useState('');
     const [emailUser, setEmailUser] = useState(''); // State để lưu email người dùng
+    const [token, setToken] = useState('');
+
+    const {
+            newListChat,
+            messages,
+            serverMessage,
+            userInfo,
+            sendMessage,
+            updateProfile,
+            updatePass,
+            updateChatList,
+            updateChatListWithId,
+    } = useChat();
+
+    useEffect(() => {
+        console.log("Raw newListChat received:", newListChat);
+
+        try {
+            // Kiểm tra nếu `newListChat` là chuỗi JSON
+            const parsedData = typeof newListChat === "string" ? JSON.parse(newListChat) : newListChat;
+            const uniqueMessages = parsedData.filter(
+              (value, index, self) =>
+                index ===
+                self.findIndex(
+                  (t) => t.userId === value.userId && t.timestamp === value.timestamp
+                )
+            );
+            if (Array.isArray(uniqueMessages)) {
+                setChats(uniqueMessages);
+            } else {
+                console.error("Parsed newListChat is not an array:", uniqueMessages);
+                setChats([]); // Nếu không phải mảng, đặt giá trị mặc định là mảng rỗng
+            }
+        } catch (error) {
+            console.error("Error parsing newListChat:", error);
+            setChats([]); // Xử lý khi gặp lỗi
+        }
+    }, [newListChat]);
 
     const getUserEmail = async () => {
         try {
             const userEmail = await AsyncStorage.getItem('email');
+            const tokenUser = await AsyncStorage.getItem('token');
             if (userEmail) {
                 setEmailUser(userEmail);
+                setToken(tokenUser);
             } else {
                 console.error('Không tìm thấy email trong AsyncStorage');
             }
@@ -37,8 +79,25 @@ const ChatListScreen: React.FC = ({ navigation }) => {
 
         const fetchChatList = async () => {
             try {
-                const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/chat/user-chat-list`, { params: { email: emailUser } });
-                setChats(response.data);
+                const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/chat/friend-chat-list`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                    params: {
+                        email: emailUser,
+                        username: searchFriend
+                    }
+                });
+                const uniqueMessages = response.data.filter(
+                  (value, index, self) =>
+                    index ===
+                    self.findIndex(
+                      (t) => t.userId === value.userId && t.timestamp === value.timestamp
+                    )
+                );
+
+                setChats(uniqueMessages);
+                console.log(uniqueMessages);
             } catch (error) {
                 console.error("Lỗi khi lấy danh sách chat:", error);
             } finally {
@@ -115,7 +174,7 @@ const ChatListScreen: React.FC = ({ navigation }) => {
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={[styles.chatItem, { borderBottomColor: theme.borderColor }]}
-                onPress={() => navigation.navigate('ChatScreen', { chattingWith: item })}
+                onPress={() => navigation.navigate('ChatScreen', { chattingWith: item, scrollToBottomOnOpen: true })}
               >
                   <Avatar.Image size={56} source={{ uri: item.img }} />
                   <View style={styles.chatTextContainer}>

@@ -29,13 +29,14 @@ namespace AppChatBackEnd.ChatHub
 
         public override async Task OnConnectedAsync()
         {
-          
+            Console.WriteLine("Log vo dc roi ne");
             // Lấy token từ query string
             var token = Context.GetHttpContext()?.Request.Query["access_token"].FirstOrDefault();
             var email = MyUtil.DecodeJwtTokenToEmail(token);
             var user = await _chatRepository.GetUsersByEmail(email);
             Context.Items["UserId"] = user.UserId;
             Context.Items["UserEmail"] = email;
+            Console.WriteLine("Log vo dc roi ne" + email + token);
             _userSessionManager.AddConnection(user.UserId + "", Context.ConnectionId);
 
             await base.OnConnectedAsync();
@@ -53,52 +54,58 @@ namespace AppChatBackEnd.ChatHub
         }
 
         public async Task SendMessage(string recipientUserId, string message,bool isImage)
-        { 
-            var senderUserId = Context.Items["UserId"] +"";
-            var connectionsRecipents = _userSessionManager.GetConnections(recipientUserId);
-            var connectionsSenders = _userSessionManager.GetConnections(senderUserId);
-
-            if (connectionsSenders == null || !connectionsSenders.Any())
+        {
+            try
             {
-                System.Diagnostics.Debug.WriteLine($"No connections found for recipient: {recipientUserId}");
-                return;
-            }
+                var senderUserId = Context.Items["UserId"] + "";
+                var connectionsRecipents = _userSessionManager.GetConnections(recipientUserId);
+                var connectionsSenders = _userSessionManager.GetConnections(senderUserId);
 
-            var messageResponse = new ListMessageResponseDTO
+                if (connectionsSenders == null || !connectionsSenders.Any())
+                {
+                    System.Diagnostics.Debug.WriteLine($"No connections found for recipient: {recipientUserId}");
+                    return;
+                }
+
+                var messageResponse = new ListMessageResponseDTO
+                {
+                    MessageId = Guid.NewGuid(),
+                    SenderId = int.Parse(senderUserId),
+                    ReceiverId = int.Parse(recipientUserId),
+                    Content = message,
+                    Timestamp = DateTime.Now,
+                    IsImage = isImage
+                };
+
+                var messageSave = new Message
+                {
+                    SenderId = int.Parse(senderUserId),
+                    ReceiverId = int.Parse(recipientUserId),
+                    Content = message,
+                    Timestamp = DateTime.Now,
+                    isImage = isImage
+                };
+
+                await _chatRepository.SaveMessagesToDatabase(messageSave);
+                var listChatUserReceive = await _chatRepository.GetUsersListChatById(int.Parse(recipientUserId));
+                var listChatUserSender = await _chatRepository.GetUsersListChatById(int.Parse(senderUserId));
+                // Gửi tin nhắn đến tất cả các kết nối của người nhận
+                foreach (var connectionId in connectionsRecipents)
+                {
+                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", messageResponse);
+                    await Clients.Client(connectionId).SendAsync("NewListChatReceive", listChatUserReceive);
+                }
+
+                // Gửi tin nhắn đến tất cả các kết nối của người gửi
+                foreach (var connectionId in connectionsSenders)
+                {
+                    await Clients.Client(connectionId).SendAsync("ReceiveMessage", messageResponse);
+                    await Clients.Client(connectionId).SendAsync("NewListChatReceive", listChatUserSender);
+
+                }
+            } catch(Exception e)
             {
-                MessageId = Guid.NewGuid(),
-                SenderId = int.Parse(senderUserId),
-                ReceiverId = int.Parse(recipientUserId),
-                Content = message,
-                Timestamp = DateTime.Now,
-                IsImage = isImage
-            };
-
-            var messageSave = new Message
-            {
-                SenderId = int.Parse(senderUserId),
-                ReceiverId = int.Parse(recipientUserId),
-                Content = message,
-                Timestamp = DateTime.Now,
-                isImage = isImage
-            };
-
-            await _chatRepository.SaveMessagesToDatabase(messageSave);
-            var listChatUserReceive = await _chatRepository.GetUsersListChatById(int.Parse(recipientUserId));
-            var listChatUserSender = await _chatRepository.GetUsersListChatById(int.Parse(senderUserId));
-            // Gửi tin nhắn đến tất cả các kết nối của người nhận
-            foreach (var connectionId in connectionsRecipents)
-            {
-                await Clients.Client(connectionId).SendAsync("ReceiveMessage", messageResponse);
-                await Clients.Client(connectionId).SendAsync("NewListChatReceive", listChatUserReceive);
-            }
-
-            // Gửi tin nhắn đến tất cả các kết nối của người gửi
-            foreach (var connectionId in connectionsSenders)
-            {
-                await Clients.Client(connectionId).SendAsync("ReceiveMessage", messageResponse);
-                await Clients.Client(connectionId).SendAsync("NewListChatReceive", listChatUserSender);
-
+                Console.WriteLine(e);
             }
            // await Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", messageResponse);
         }

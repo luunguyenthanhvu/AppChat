@@ -11,23 +11,35 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const UserInfoScreen = ({ route, navigation }) => {
     const { theme } = useTheme();
     const { user } = route.params;
+    const [emailUser, setEmailUser] = useState('');
     const [userInfo, setUserInfo] = useState<any>(null);
     const [isModalVisible, setModalVisible] = useState(false); // State for Modal visibility
     const [isNicknameModalVisible, setNicknameModalVisible] = useState(false);
     const [nickname, setNickname] = useState('');
     useEffect(() => {
-        const fetchUserInfo = () => {
-            const mockUserData = {
-                id: user.id,
-                userName: 'John Doe',
-                avatar: 'https://randomuser.me/api/portraits/men/12.jpg',
-                phoneNumber: '0123456789',
-                email: 'john@example.com',
-                gender: 'Male', // Thêm giới tính
-                dob: '1990-05-15', // Thêm ngày sinh
-                notifications: true,
-            };
-            setUserInfo(mockUserData);
+        const fetchUserInfo = async () => {
+            const tokenUser = await AsyncStorage.getItem('token');
+            const emailStoreage = await AsyncStorage.getItem('email');
+            // @ts-ignore
+            setEmailUser(emailStoreage);
+            const response = await axios.get(`http://${BACKEND_URL_HTTP}/api/mark-up/user-info/details-id`, {
+                params: {
+                    id: user.userId
+                },
+                headers: {
+                    Authorization: `Bearer ${tokenUser}`
+                }
+            });
+
+            setUserInfo({
+                userId: user.userId,
+                userName: response.data.userName,
+                img: response.data.img,
+                firstName: response.data.firstName,
+                lastName: response.data.lastName,
+                gender: response.data.gender,
+                dob: response.data.dob
+            });
         };
 
         fetchUserInfo();
@@ -43,18 +55,27 @@ const UserInfoScreen = ({ route, navigation }) => {
 
     const handleUnfriend = (userId) => {
         Alert.alert(
-          "Confirm Unfriend",
-          "Are you sure you want to remove this friend?",
+          'Confirm Unfriend',
+          'Are you sure you want to remove this friend?',
           [
-              { text: "Cancel", style: "cancel" },
-              { text: "Unfriend", style: "destructive", onPress: () => performUnfriend(userId) },
-          ]
+            {text: 'Cancel', style: 'cancel'},
+            {
+              text: 'Unfriend',
+              style: 'destructive',
+              onPress: () => performUnfriend(userId),
+            },
+          ],
         );
     };
 
-    const performUnfriend = async (userId) => {
+    const performUnfriend = async (userId: any) => {
         try {
-            await axios.post(`http://${BACKEND_URL_HTTP}/api/friend-controller/delete-friend`, { userId });
+            await axios.delete(`http://${BACKEND_URL_HTTP}/api/friend-controller/delete-friend`, {
+                params: {
+                    userEmail: emailUser,
+                    friendId: user.userId
+                }
+            });
             Alert.alert("Success", "Friend removed successfully!");
             navigation.goBack();
         } catch (error) {
@@ -62,10 +83,32 @@ const UserInfoScreen = ({ route, navigation }) => {
             Alert.alert("Error", "Failed to unfriend user.");
         }
     };
+    const handleReport = async () => {
+        try {
+            const tokenUser = await AsyncStorage.getItem('token');
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${tokenUser}`
+                }
+            };
 
+            const reportPayload = {
+                ReportedUserId: user.userId,
+                Reason: "User spam chat",
+            };
+
+            await axios.put(`http://${BACKEND_URL_HTTP}/api/User/report-user`, reportPayload, config);
+
+            Alert.alert("Success", "Report successfully!");
+            navigation.goBack();
+        } catch (error) {
+            console.error("Error unfriending user:", error);
+            Alert.alert("Error", "Failed to unfriend user.");
+        }
+    };
     const saveNickname = async () => {
         try {
-            await AsyncStorage.setItem(`nickname-${user.id}`, nickname);
+            await AsyncStorage.setItem(`nickname-${user.userId}`, nickname);
             Alert.alert("Success", "Nickname updated successfully!");
             setNicknameModalVisible(false);
         } catch (error) {
@@ -85,7 +128,7 @@ const UserInfoScreen = ({ route, navigation }) => {
 
           {/* Profile Section */}
           <View style={styles.profileContainer}>
-              <Image source={{ uri: userInfo.avatar }} style={styles.avatar} />
+              <Image source={{ uri: userInfo.img }} style={styles.avatar} />
               <Text style={[styles.userName, { color: theme.textColor }]}>{userInfo.userName}</Text>
           </View>
 
@@ -98,13 +141,13 @@ const UserInfoScreen = ({ route, navigation }) => {
                   <Ionicons name="information-circle-outline" size={24} color={theme.iconColor} />
                   <Text style={{ color: theme.textColor }}>Information</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.iconButton} onPress={() => handleUnfriend(userInfo.id)}>
+              <TouchableOpacity style={styles.iconButton} onPress={() => handleUnfriend(user.userId)}>
                   <FontAwesome name="user-times" size={24} color={theme.iconColor} />
                   <Text style={{ color: theme.textColor }}>Unfriend</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.iconButton}
-                onPress={() => Alert.alert('Report', 'Reported successfully.')} // Report action placeholder
+                onPress={handleReport} // Report action placeholder
               >
                   <MaterialIcons name="report" size={24} color={theme.iconColor} />
                   <Text style={{ color: theme.textColor }}>Report</Text>
@@ -112,6 +155,7 @@ const UserInfoScreen = ({ route, navigation }) => {
           </View>
 
           {/* Scrollable "More Actions" */}
+
           <ScrollView style={styles.scrollSection}>
               <View style={styles.actionSection}>
                   <Text style={[styles.sectionTitle, { color: theme.textColor }]}>More Actions</Text>
