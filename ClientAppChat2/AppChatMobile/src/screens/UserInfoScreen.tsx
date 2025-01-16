@@ -77,7 +77,7 @@ const UserInfoScreen = ({ route, navigation }) => {
                 }
             });
             Alert.alert("Success", "Friend removed successfully!");
-            navigation.goBack();
+            navigation.replace('MainTabNavigator');  // Chuyển hướng sang màn hình ChatList
         } catch (error) {
             console.error("Error unfriending user:", error);
             Alert.alert("Error", "Failed to unfriend user.");
@@ -100,7 +100,7 @@ const UserInfoScreen = ({ route, navigation }) => {
             await axios.put(`http://${BACKEND_URL_HTTP}/api/User/report-user`, reportPayload, config);
 
             Alert.alert("Success", "Report successfully!");
-            navigation.goBack();
+            navigation.replace('MainTabNavigator');  // Chuyển hướng sang màn hình ChatList
         } catch (error) {
             console.error("Error unfriending user:", error);
             Alert.alert("Error", "Failed to unfriend user.");

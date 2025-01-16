@@ -3,7 +3,7 @@ import { View, TextInput, StyleSheet, Text, ActivityIndicator, TouchableOpacity 
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { Dialog, Portal, Button, Provider } from 'react-native-paper';
-import { BACKEND_URL_HTTP } from "../config/config"; // Import từ config.js
+import { BACKEND_URL_HTTP } from "../config/config"; // Import from config.js
 
 const RegisterScreen: React.FC = () => {
     const [username, setUsername] = useState('');
@@ -17,7 +17,7 @@ const RegisterScreen: React.FC = () => {
     const validateEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     const validateUserName = (username: string) => username.length >= 3;
 
-    // Hiển thị thông báo lỗi với react-native-paper Dialog
+    // Display error message with react-native-paper Dialog
     const showDialog = (message: string) => {
         setDialogMessage(message);
         setVisible(true);
@@ -27,10 +27,10 @@ const RegisterScreen: React.FC = () => {
         setVisible(false);
     };
 
-    // Hàm xử lý đăng ký tài khoản
+    // Function for handling registration
     const registerHandler = async () => {
         if (!validateUserName(username) || !validateEmail(email) || password === '') {
-            showDialog('Vui lòng kiểm tra lại thông tin.');
+            showDialog('Please check your information.');
             return;
         }
 
@@ -42,75 +42,75 @@ const RegisterScreen: React.FC = () => {
                 password: password,
             });
 
-            if (response.status === 200 && response.data.message === "Đăng ký tài khoản thành công ! Vui lòng xác minh tài khoản") {
-                showDialog('Đăng ký thành công! Vui lòng kiểm tra email để xác minh tài khoản.');
-                navigation.navigate('VerifyRegisterScreen', { email }); // Chuyển hướng đến VerifyRegisterScreen
+            if (response.status === 200 && response.data.message === "Account registration successful! Please verify your account.") {
+                showDialog('Registration successful! Please check your email to verify your account.');
+                navigation.navigate('VerifyRegisterScreen', { email }); // Navigate to VerifyRegisterScreen
             } else {
-                showDialog(response.data.message || 'Đăng ký thất bại. Vui lòng thử lại.');
+                showDialog(response.data.message || 'Registration failed. Please try again.');
             }
         } catch (error) {
-            showDialog('Đã có lỗi xảy ra. Vui lòng thử lại.');
+            showDialog('An error occurred. Please try again.');
         } finally {
             setIsLoading(false);
         }
     };
 
     return (
-        <Provider>
-            <View style={styles.container}>
-                <Text style={styles.title}>Đăng ký tài khoản</Text>
+      <Provider>
+          <View style={styles.container}>
+              <Text style={styles.title}>Register Account</Text>
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="Tên người dùng"
-                    value={username}
-                    onChangeText={setUsername}
-                    autoCapitalize="none"
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    value={email}
-                    onChangeText={setEmail}
-                    autoCapitalize="none"
-                    keyboardType="email-address"
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Mật khẩu"
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry
-                />
+              <TextInput
+                style={styles.input}
+                placeholder="Username"
+                value={username}
+                onChangeText={setUsername}
+                autoCapitalize="none"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+              />
 
-                {isLoading ? (
-                    <ActivityIndicator size="large" color="#1e90ff" />
-                ) : (
-                    <TouchableOpacity style={styles.button} onPress={registerHandler}>
-                        <Text style={styles.buttonText}>Đăng ký</Text>
-                    </TouchableOpacity>
-                )}
-
-                <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                    <Text style={styles.backToLogin}>
-                        Đã có tài khoản? Đăng nhập ngay
-                    </Text>
+              {isLoading ? (
+                <ActivityIndicator size="large" color="#1e90ff" />
+              ) : (
+                <TouchableOpacity style={styles.button} onPress={registerHandler}>
+                    <Text style={styles.buttonText}>Register</Text>
                 </TouchableOpacity>
+              )}
 
-                {/* Dialog for validation or error messages */}
-                <Portal>
-                    <Dialog visible={visible} onDismiss={hideDialog}>
-                        <Dialog.Title>Thông báo</Dialog.Title>
-                        <Dialog.Content>
-                            <Text>{dialogMessage}</Text>
-                        </Dialog.Content>
-                        <Dialog.Actions>
-                            <Button onPress={hideDialog}>OK</Button>
-                        </Dialog.Actions>
-                    </Dialog>
-                </Portal>
-            </View>
-        </Provider>
+              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                  <Text style={styles.backToLogin}>
+                      Already have an account? Log in now
+                  </Text>
+              </TouchableOpacity>
+
+              {/* Dialog for validation or error messages */}
+              <Portal>
+                  <Dialog visible={visible} onDismiss={hideDialog}>
+                      <Dialog.Title>Notification</Dialog.Title>
+                      <Dialog.Content>
+                          <Text>{dialogMessage}</Text>
+                      </Dialog.Content>
+                      <Dialog.Actions>
+                          <Button onPress={hideDialog}>OK</Button>
+                      </Dialog.Actions>
+                  </Dialog>
+              </Portal>
+          </View>
+      </Provider>
     );
 };
 

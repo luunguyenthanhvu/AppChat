@@ -13,13 +13,14 @@ import VerifyRegisterScreen from './src/screens/VerifyRegisterScreen';
 import CallScreen from './src/screens/CallScreen.tsx';
 import CreateGroupScreen from './src/screens/CreateGroupScreen';
 import QRCodeScanScreen from './src/screens/QRCodeScanScreen';
+import { LogBox } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
 // Tách phần Navigation ra để sử dụng hook useTheme
 const AppNavigator: React.FC = () => {
   const { isDarkMode } = useTheme(); // Lấy trạng thái dark mode từ ThemeContext
-
+  LogBox.ignoreAllLogs();
   return (
     <NavigationContainer theme={isDarkMode ? DarkTheme : DefaultTheme}>
       <Stack.Navigator initialRouteName="Login">

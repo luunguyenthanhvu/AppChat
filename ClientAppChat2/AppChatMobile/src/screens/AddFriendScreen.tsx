@@ -139,6 +139,8 @@ const AddFriendScreen = ({ navigation }) => {
             fetchContacts();
         } else if (tab === 'groups') {
             fetchGroups();
+        } else {
+            fetchPotentialFriends();
         }
     };
 
@@ -146,10 +148,11 @@ const AddFriendScreen = ({ navigation }) => {
         if (!email) return;
         try {
             // Gửi yêu cầu POST để gửi yêu cầu kết bạn lên server
-            const response = await axios.post(`http://${BACKEND_URL_HTTP}/api/friend-controller/send-friend-request`, {
-                senderEmail: email,
-                recipientEmail: friendEmail
-            });
+            const response = await axios.post(`http://${BACKEND_URL_HTTP}/api/friend-controller/send-friend-request`,
+              {
+                  senderEmail: email,
+                  recipientEmail: friendEmail
+              });
 
             // Nếu thành công, cập nhật cả friendList và filteredFriendList
             if (response.status === 200) {
@@ -161,7 +164,8 @@ const AddFriendScreen = ({ navigation }) => {
                       friend.username.toLowerCase().includes(searchUser.toLowerCase())
                     );
                     setFilteredFriendList(filteredList);
-                    return updatedList;
+                    alert('Add friend success!');
+                    navigation.replace('MainTabNavigator');
                 });
             } else {
                 alert('Error sending friend request.');
@@ -190,7 +194,8 @@ const AddFriendScreen = ({ navigation }) => {
                       friend.username.toLowerCase().includes(searchUser.toLowerCase())
                     );
                     setFilteredFriendList(filteredList);
-                    return updatedList;
+                    alert('Cancel success!');
+                    navigation.replace('MainTabNavigator');
                 });
             } else {
                 alert('Error cancelling friend request.');
@@ -246,11 +251,11 @@ const AddFriendScreen = ({ navigation }) => {
           <Image source={{ uri: item.img }} style={styles.avatar} />
           <Text style={styles.requestName}>{item.username}</Text>
           <View style={styles.requestActions}>
-              <TouchableOpacity style={styles.actionButton} onPress={() => handleAddFriend(item.email)}>
-                  <Text style={styles.actionText}>Chấp nhận</Text>
+              <TouchableOpacity style={styles.actionButtonAdd} onPress={() => handleAddFriend(item.email)}>
+                  <Text style={styles.actionText}>Accept</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.actionButton} onPress={() => handleCancelRequest(item.email)}>
-                  <Text style={styles.actionText}>Từ chối</Text>
+              <TouchableOpacity style={styles.actionButtonDecline} onPress={() => handleCancelRequest(item.email)}>
+                  <Text style={styles.actionText}>Decline</Text>
               </TouchableOpacity>
           </View>
       </View>
@@ -542,10 +547,16 @@ const styles = StyleSheet.create({
     requestActions: {
         flexDirection: 'row',
     },
-    actionButton: {
+    actionButtonAdd: {
         marginLeft: 10,
         padding: 5,
         backgroundColor: '#007BFF',
+        borderRadius: 5,
+    },
+    actionButtonDecline: {
+        marginLeft: 10,
+        padding: 5,
+        backgroundColor: 'red',
         borderRadius: 5,
     },
     actionText: {

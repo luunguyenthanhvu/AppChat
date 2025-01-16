@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Alert, Dimensions } from "react-native";
+import React, { useState, useEffect, useRef  } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Alert, Dimensions, Animated, } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Camera, useCameraDevice, useCodeScanner } from "react-native-vision-camera";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -107,13 +107,13 @@ const QRCodeScanScreen: React.FC = ({ navigation }) => {
 const QRScanner: React.FC<{ onRead: (qrCode: string | null) => void }> = (props) => {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const device = useCameraDevice("back");
+  const animatedValue = useRef(new Animated.Value(0)).current; // Giá trị cho animation
 
   const codeScanner = useCodeScanner({
     codeTypes: ["qr"],
     onCodeScanned: (codes) => {
-      console.log("onCodeScanned ", codes);
-      console.log("onCodeScanned value", codes[0].value);
-      props.onRead(codes[0].value);  // Gọi callback khi quét được mã QR
+      console.log("Scanned value:", codes[0]?.value);
+      props.onRead(codes[0]?.value); // Gọi callback khi quét được mã QR
     },
   });
 
@@ -129,9 +129,32 @@ const QRScanner: React.FC<{ onRead: (qrCode: string | null) => void }> = (props)
     requestCameraPermission();
   }, []);
 
+  // Animation loop
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(animatedValue, {
+          toValue: 1,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animatedValue, {
+          toValue: 0,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [animatedValue]);
+
   if (device == null || !hasPermission) {
-    return null;  // Nếu không có quyền hoặc không có camera, không làm gì
+    return null; // Nếu không có quyền hoặc không có camera, không làm gì
   }
+
+  const translateY = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 246], // Di chuyển đường quét từ trên xuống dưới (căn với hộp quét)
+  });
 
   return (
     <View style={styles.page2}>
@@ -141,9 +164,23 @@ const QRScanner: React.FC<{ onRead: (qrCode: string | null) => void }> = (props)
         device={device}
         isActive={true}
       />
+      {/* Hộp viền */}
+      <View style={styles.scanBox}>
+        {/* Đường quét */}
+        <Animated.View
+          style={[
+            styles.scanLine,
+            {
+              transform: [{ translateY }],
+            },
+          ]}
+        />
+      </View>
     </View>
   );
 };
+
+
 
 export default QRCodeScanScreen;
 
@@ -163,5 +200,21 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: "center",
     justifyContent: "center",
+  },
+  scanBox: {
+    width: 250, // Kích thước hộp quét
+    height: 250,
+    borderWidth: 2,
+    borderColor: clr1, // Màu viền hộp quét
+    position: "absolute",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden", // Để đường quét không ra ngoài hộp
+  },
+  scanLine: {
+    width: "100%",
+    height: 2,
+    backgroundColor: "red", // Màu của đường quét
+    position: "absolute",
   },
 });

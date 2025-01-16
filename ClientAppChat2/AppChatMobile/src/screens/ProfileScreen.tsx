@@ -19,6 +19,7 @@ import { useTheme } from '../context/ThemeContext';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 const ProfileScreen = ({ navigation }) => {
     const { isDarkMode, toggleTheme, theme } = useTheme();
@@ -38,16 +39,92 @@ const ProfileScreen = ({ navigation }) => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
+    const handleSelectAndUpdateAvatar = async () => {
+        const options = {
+            mediaType: 'photo',
+            includeBase64: false,
+        };
+
+        const result = await launchImageLibrary(options);
+
+        if (result.assets && result.assets.length > 0) {
+            const file = result.assets[0];
+            console.log('Selected avatar:', file);
+
+            try {
+                setLoading(true); // Bắt đầu trạng thái loading
+
+                // Tải ảnh lên Cloudinary
+                const signatureResponse = await axios.get(`http://${BACKEND_URL_HTTP}/api/cloudinary/get-signature`);
+                const { signature, timestamp, apiKey } = signatureResponse.data;
+
+                const formData = new FormData();
+                formData.append('file', {
+                    uri: file.uri,
+                    type: file.type,
+                    name: file.fileName,
+                });
+                formData.append('api_key', apiKey);
+                formData.append('signature', signature);
+                formData.append('timestamp', timestamp);
+
+                const response = await axios.post(
+                  'https://api.cloudinary.com/v1_1/dter3mlpl/image/upload',
+                  formData,
+                  {
+                      headers: { 'Content-Type': 'multipart/form-data' },
+                  }
+                );
+
+                console.log('Avatar upload success:', response.data);
+
+                // Gọi API backend để cập nhật ảnh đại diện
+                const updatedAvatarUrl = response.data.url;
+                console.log(updatedAvatarUrl);
+
+                await axios.put(`http://${BACKEND_URL_HTTP}/api/mark-up/user-info/update-image`, {
+                    email: email,
+                    imageUrl: updatedAvatarUrl,
+                });
+
+                // Cập nhật UI
+                Alert.alert('Success', 'Your avatar updated successfully.');
+                navigation.replace('MainTabNavigator');
+            } catch (error) {
+                console.error('Error updating avatar:', error);
+                Alert.alert('Error', 'Failed to update avatar.');
+            } finally {
+                setLoading(false); // Kết thúc trạng thái loading
+            }
+        } else {
+            console.log('User cancelled avatar selection or no file selected');
+        }
+    };
 
     // Hàm xử lý Save Update cho thông tin cá nhân
-    const handleSaveUserInfo = () => {
+    const handleSaveUserInfo = async () => {
         if (!firstName.trim() || !lastName.trim() || !updatedUserName.trim() || !gender.trim() || !dob) {
             Alert.alert('Error', 'Please fill out all fields');
             return;
         }
-        // Logic gọi API cập nhật thông tin user
-        Alert.alert('Success', 'User Info Updated Successfully');
-        setUpdateModalVisible(false);
+
+        try {
+            const response = await axios.put(`http://${BACKEND_URL_HTTP}/api/mark-up/user-info/update-info`, {
+                email: email,
+                userName: updatedUserName,
+                firstName: firstName,
+                lastName: lastName,
+                gender: gender,
+                dob: dob,
+            });
+
+            Alert.alert('Success', 'User Info Updated Successfully'); // Chuyển vào đây
+            setUpdateModalVisible(false); // Đóng modal sau khi cập nhật thành công
+            console.log('Update response:', response.data); // Thêm log để debug
+        } catch (error) {
+            console.error('Error updating user info:', error); // Sửa lại log cho đúng ngữ cảnh
+            Alert.alert('Error', 'Failed to update user info. Please try again later.');
+        }
     };
 
 // Hàm xử lý Save Update cho mật khẩu
@@ -117,7 +194,10 @@ const ProfileScreen = ({ navigation }) => {
             <ActivityIndicator size="large" color={theme.textColor} />
           ) : (
             <View style={styles.avatarContainer}>
-                <Image source={{ uri: avatar || '' }} style={styles.avatar} />
+                <TouchableOpacity onPress={handleSelectAndUpdateAvatar}>
+                    <Image source={{ uri: avatar || '' }} style={styles.avatar} />
+                    <Text style={{ textAlign: 'center', color: theme.textColor }}>Update Image</Text>
+                </TouchableOpacity>
                 <Text style={[styles.nameText, { color: theme.textColor }]}>{userName || 'Loading...'}</Text>
             </View>
           )}
@@ -257,7 +337,7 @@ const ProfileScreen = ({ navigation }) => {
                           </TouchableOpacity>
 
                           {/* Save Button */}
-                          <TouchableOpacity style={styles.button} onPress={handleSaveUserInfo}>
+                          <TouchableOpacity style={styles.button} onPress={() => handleSaveUserInfo()}>
                               <Text style={styles.buttonText}>Save Update</Text>
                           </TouchableOpacity>
                       </View>
